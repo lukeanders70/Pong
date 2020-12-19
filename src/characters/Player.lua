@@ -1,13 +1,25 @@
 local Character = require('src/characters/Character')
+local Paddle = require('src/objects/Paddle')
 
 local Player = Class{__includes = Character}
 
+Player.PADDLE_HEIGHT = 20
 Player.MAX_MOVEMENT_SPEED = 300
 function Player:init(indexX, indexY)
     local width = 20
     local height = 64
     local color = {0, 10, 50, 255}
     Character.init(self, indexX, indexY, width, height, color, {})
+
+    self.paddle = Paddle(
+        self.x + self.width - 1,
+        self.y,
+        self.width,
+        0,
+        Player.PADDLE_HEIGHT,
+        {0, self.height},
+        {255, 255, 255, 255}
+    )
 end
 
 function Player:update(level, dt)
@@ -23,6 +35,8 @@ function Player:update(level, dt)
     end
     self:capMovementSpeed()
     Character.update(self, level, dt)
+
+    self.paddle:update(self.x, self.y, dt)
 end
 
 function Player:capMovementSpeed()
@@ -41,6 +55,8 @@ end
 
 function Player:render()
     Character.render(self)
+
+    self.paddle:render()
 end
 
 function Player:left(level)

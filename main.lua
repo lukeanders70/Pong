@@ -49,6 +49,9 @@ function love.load(args)
 		['play'] = function() return PlayState() end
 	}
 
+	love.mouse.mousePositionGameX = 0
+	love.mouse.mousePositionGameY = 0
+
 	StatePoints.levelOne()
 end
 
@@ -67,7 +70,9 @@ end
 function love.update(dt)
 	Timer.update(dt)
 
-	love.mouse.mousePositionGameX, love.mouse.mousePositionGameY = push:toGame(love.mouse.getPosition())
+	love.mouse.lastMousePositionGameX = love.mouse.mousePositionGameX
+	love.mouse.lastMousePositionGameY = love.mouse.mousePositionGameY
+	love.mouse.mousePositionGameX, love.mouse.mousePositionGameY = love.mouse.getPosition()
 	
 	-- stateMachine will always have one active state. This is the one we will update
 	GlobalState.stateMachine:update(dt)
