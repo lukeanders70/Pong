@@ -12,7 +12,7 @@ the level file encodes what the level actually looks like. Each tile is defined 
 0001
 ```
 ### First Character
-the first charater signifies if the tile contains a static block, or an enemy. `0` indicates a block, while `1` indicates an enemy. Enemies will move once the game starts, and are assumed to have air behind them `000`
+the first charater signifies if the tile contains a static block, or an enemy. `0` indicates a block, while `1` indicates an enemy. Enemies will move once the game starts, and are assumed to have air behind them `0000`
 
 ### Second Character
 the second character signifies if the block is solid. `0` indicates not-solid while `1` indicates solid. If a block is solid, then the player and enemies cannot pass through it. Enemies are always solid, regaurdless of this value.

@@ -1,18 +1,26 @@
 local Tiles = require('src/level/Tiles')
 local TileMap = require('src/level/TileMap')
 local Player = require('src/characters/Player')
+local EnemyMap = require('src/characters/EnemyMap')
 
 local Level = Class{}
 
 Level.defaultMetaData = {name="Default Level", playerStart={x = 0, y = 1}}
-
+Level.enemyClassCache = {}
 function Level:init(id)
-    local path = "data/levels/" .. id .. "/"
-    self.metaData = Level.safeLoadMetaData(path .. "metadata.lua")
-    self.tiles = Level.parseFromPath(path .. "level.txt")
     self.updateables = {}
     self.renderables = {}
     self.collidables = {}
+    self.enemies = {}
+
+    local path = "data/levels/" .. id .. "/"
+    self.metaData = Level.safeLoadMetaData(path .. "metadata.lua")
+    local levelData = Level.parseFromPath(path .. "level.txt")
+
+    self.tiles = levelData.tiles
+    self:addEnemies(levelData.enemies)
+    
+    Level.enemyClassCache = {}
 
     self.player = Player(self.metaData.playerStart.x, self.metaData.playerStart.y)
 
@@ -21,10 +29,25 @@ function Level:init(id)
     table.insert(self.collidables, self.player)
 end
 
+function Level:addEnemies(enemies)
+    if enemies then
+        for _, enemy in pairs(enemies) do
+            self:addEnemy(enemy)
+        end
+    end
+end
+
+function Level:addEnemy(enemy)
+    table.insert(self.enemies, enemy)
+    table.insert(self.updateables, enemy)
+    table.insert(self.renderables, enemy)
+    table.insert(self.collidables, enemy)
+end
+
 function Level.safeLoadMetaData(path)
     local ok, chunk = pcall( love.filesystem.load, path )
     if not ok then
-        logger('e', "failed to find level at path: " .. path .. ": " .. tostring(chunk))
+        logger('e', "failed to find level at path: " .. path .. ": " .. tostring(path))
         return Level.defaultMetaData
     end
 
@@ -39,6 +62,7 @@ end
 
 function Level.parseFromPath(path)
     local tiles = {}
+    local enemies = {}
 
     local indexX = 1
     local indexY = 1
@@ -49,14 +73,17 @@ function Level.parseFromPath(path)
             if not tiles[indexX] then
                 tiles[indexX] = {}
             end
-            tiles[indexX][indexY] = newTile
+            tiles[indexX][indexY] = newTile.tile
+            if newTile.enemy then
+                table.insert(enemies, newTile.enemy)
+            end
 
             indexX = indexX + 1
         end
         indexX = 1
         indexY = indexY + 1
     end
-    return tiles
+    return { tiles = tiles, enemies = enemies }
 end
 
 function Level.parseTileFromData(tileData, indexX, indexY)
@@ -68,15 +95,25 @@ function Level.parseTileFromData(tileData, indexX, indexY)
     local id = tostring(tileData:sub(3,3)) .. tostring(tileData:sub(4,4))
 
     if isBlock then
-        tileName = getOrElse(TileMap, id, "sky", "Tile ID " .. id .. " not found, defaulting to sky")
-        tileClass = replaceIfNil(Tiles[tileName:gsub("^%l", string.upper)], Tiles[1])
-        tile = tileClass(indexX, indexY, isSolid)
-        return tile
+        local tileName = getOrElse(TileMap, id, "sky", "Tile ID " .. id .. " not found, defaulting to sky")
+        local tileClass = replaceIfNil(Tiles[tileName:gsub("^%l", string.upper)], Tiles["Sky"])
+        local tile = tileClass(indexX, indexY, isSolid)
+        return { tile = tile }
     elseif isEnemy then
-         --TODO: handle case where isEnemy
-        return
+        local returnObj = {}
+        -- sky block behind enemy
+        returnObj.tile = Tiles["Sky"](indexX, indexY, false)
+        local enemyName = getOrElse(EnemyMap, id, nil, "Enemey ID: " .. id .. " not found")
+        if enemyName and table.hasKey(Level.enemyClassCache, enemyName) then
+            returnObj.enemy = enemyClassCache[enemyName](indexX, indexY)
+        else
+            local enemyClass = EnemyMap.loadClassFromName(enemyName)
+            Level.enemyClassCache[enemyName] = enemyClass
+            returnObj.enemy = enemyClass(indexX, indexY)
+        end
+        return returnObj
     else
-         --TODO: handle case where isEnemy
+         --TODO: handle other cases
         return
     end
 end

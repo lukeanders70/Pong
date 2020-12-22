@@ -69,6 +69,9 @@ function table.min(t, f)
     local comparer = f or function(v)
         return v
     end
+    if(#t < 1) then
+        return nil
+    end
     local lowest = comparer(t[1])
     local lowestBase = t[1]
     for _, val in pairs(t) do
@@ -78,4 +81,8 @@ function table.min(t, f)
         end
     end
     return lowestBase
+end
+
+function table.hasKey(t, k)
+    return table[key] ~= nil
 end

@@ -14,7 +14,7 @@ function Player:init(indexX, indexY)
     self.paddle = Paddle(
         self.x + self.width - 1,
         self.y,
-        self.width,
+        self.width - 2,
         0,
         Player.PADDLE_HEIGHT,
         {0, self.height},
@@ -61,13 +61,13 @@ end
 
 function Player:left(level)
     if not self:anyBlocksDirectlyLeft(level) then
-        self.acceleration.x = -1000
+        self.acceleration.x = -2000
     end
 end
 
 function Player:right(level)
     if not self:anyBlocksDirectlyRight(level) then
-        self.acceleration.x = 1000
+        self.acceleration.x = 2000
     end
 end
 

@@ -109,45 +109,53 @@ function Collidable:checkCollidableFromPoints(pixelsToCheck, level)
 end
 
 function Collidable:moveOutsideOf(collidable)
-    local center = self:getCenter()
-    local oldCenter = self:getCenter(self.lastX, self.lastY)
+    if self:intersect(collidable) then
 
-    local directionOut -- default (should never be used)
-    -- if possible, move out the way we moved in
-    if not ((oldCenter.x == center.x) and (oldCenter.y == center.y)) then
-        directionOut = vectorNormalize(vectorSub(oldCenter, center))
-    -- otherwise, move out directly away from the object's center
-    else
-        directionOut = vectorNormalize(vectorSub(center, collidable:getCenter()))
-    end
+        local directionOut -- default (should never be used)
+        -- if possible, move out the way we moved in
+        -- if not ((oldCenter.x == center.x) and (oldCenter.y == center.y)) then
+        --     directionOut = vectorNormalize(vectorSub(oldCenter, center))
+        if not ((self.velocity.x == 0) and (self.velocity.y == 0)) then
+            directionOut = { x = -self.velocity.x, y = -self.velocity.y }
+        -- otherwise, move out directly away from the object's center
+        elseif (collidable.velocity and (collidable.velocity.x ~= 0) and (collidable.velocity.y ~= 0)) then
+            directionOut = { x = collidable.velocity.x, y = collidable.velocity.y }
+        else
+            local center = self:getCenter()
+            directionOut = vectorNormalize(vectorSub(center, collidable:getCenter()))
+        end
 
-    local multOptions = {
-        { axis = 'x', mult = (collidable.x - self.x - self.width) / directionOut.x }, -- move out to left of collidable
-        { axis = 'x', mult = (collidable.x + collidable.width - self.x) / directionOut.x }, -- move out to right of collidable
-        { axis = 'y', mult = (collidable.y - self.y - self.height) / directionOut.y }, -- move out on top of collidable
-        { axis = 'y', mult = (collidable.y + collidable.height - self.y) / directionOut.y } -- move out on bottom of collidable
-    }
+        local multOptions = {
+            { axis = 'x', mult = (collidable.x - self.x - self.width) / directionOut.x }, -- move out to left of collidable
+            { axis = 'x', mult = (collidable.x + collidable.width - self.x) / directionOut.x }, -- move out to right of collidable
+            { axis = 'y', mult = (collidable.y - self.y - self.height) / directionOut.y }, -- move out on top of collidable
+            { axis = 'y', mult = (collidable.y + collidable.height - self.y) / directionOut.y } -- move out on bottom of collidable
+        }
 
-    local multOptionsGreaterThanZero = table.filter(multOptions, function(k, mult) 
-        return mult.mult and (mult.mult > 0)
-    end)
+        -- also tests if it's infinity, negative infinity, or NaN
+        local multOptionsGreaterThanZero = table.filter(multOptions, function(k, mult) 
+            return (mult.mult ~= nil) and (mult.mult > 0) and (not (mult.mult == math.huge)) and (not (mult.mult == -math.huge)) and (not (mult.mult ~= mult.mult))
+        end)
 
-    local multiplier = table.min(multOptionsGreaterThanZero, function(mult) 
-        return mult.mult
-    end)
+        local multiplier = table.min(multOptionsGreaterThanZero, function(mult) 
+            return mult.mult
+        end)
 
-    if multiplier then
-        self.x = self.x + (multiplier.mult * directionOut.x)
-        self.y = self.y + (multiplier.mult * directionOut.y)
+        if multiplier then
+            self.x = self.x + (multiplier.mult * directionOut.x)
+            self.y = self.y + (multiplier.mult * directionOut.y)
 
-        if (multiplier.axis == 'x') and self.velocity and self.acceleration then
-            self.velocity.x = 0
-            self.acceleration.x = 0
-            self.lastX = self.x
-        elseif multiplier.axis == 'y' and self.velocity and self.acceleration then
-            self.velocity.y = 0
-            self.acceleration.y = 0
-            self.lastY = self.y
+            if (multiplier.axis == 'x') and self.velocity and self.acceleration then
+                self.velocity.x = 0
+                self.acceleration.x = 0
+                self.lastX = self.x
+            elseif multiplier.axis == 'y' and self.velocity and self.acceleration then
+                self.velocity.y = 0
+                self.acceleration.y = 0
+                self.lastY = self.y
+            end
+        else
+            logger("w", "unable to moveOutSideOf in collision case")
         end
     end
 end

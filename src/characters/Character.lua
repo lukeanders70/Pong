@@ -4,7 +4,6 @@ local ColliderTypes = require('src/objects/ColliderTypes')
 
 local Character = Class{__includes = Collidable}
 
-Character.colliderType = ColliderTypes.CHARACTER
 function Character:init(indexX, indexY, width, height, color, options)
     Collidable.init(self,
     {
@@ -13,6 +12,7 @@ function Character:init(indexX, indexY, width, height, color, options)
         width = replaceIfNil(width, 1),
         height = replaceIfNil(height, 1)
     })
+    -- self.colliderType = ColliderTypes.CHARACTER
     self.color = color
 
     self.health = getOrElse(options, health, 1)

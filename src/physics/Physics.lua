@@ -2,18 +2,10 @@ local Physics = {}
 
 Physics.GRAVITY = 1024 -- pixels per seconds squared
 Physics.MAX_VELOCITY = 10000 -- pixels per seconds (in any one dimension)
-Physics.FRICTION = 50000
+Physics.FRICTION = 800
 
 
 function Physics.update(moveable, dt)
-
-    if (moveable.acceleration.x == 0) then
-        if moveable.velocity.x > 0 then
-            moveable.acceleration.x = moveable.acceleration.x - (Physics.FRICTION * dt)
-        elseif moveable.velocity.x < 0 then
-            moveable.acceleration.x = moveable.acceleration.x + (Physics.FRICTION * dt)
-        end
-    end
 
     moveable.velocity.x = math.min(
         moveable.velocity.x + (moveable.acceleration.x * dt), 
@@ -24,6 +16,8 @@ function Physics.update(moveable, dt)
         Physics.MAX_VELOCITY
     )
 
+    moveable.velocity.x = Physics.applyFriction(moveable.velocity.x, dt)
+
     moveable.lastX = moveable.x
     moveable.lastY = moveable.y
 
@@ -31,6 +25,16 @@ function Physics.update(moveable, dt)
     moveable.y = moveable.y + (moveable.velocity.y * dt)
 
     Physics.ZeroIfLow(moveable)
+end
+
+function Physics.applyFriction(velocityX, dt)
+    if velocityX > 0 then
+        return math.max(velocityX - (Physics.FRICTION * dt), 0)
+    elseif velocityX < 0 then
+        return math.min(velocityX + (Physics.FRICTION * dt), 0)
+    else
+        return 0
+    end
 end
 
 -- if velocity or acceleration is really low, we just want to push it to zero

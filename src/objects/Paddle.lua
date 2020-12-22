@@ -16,7 +16,7 @@ function Paddle:init(x, y, xOffset, yOffset, height, range, color)
     {
         x = x,
         y = self.yOffset + y,
-        width = 1,
+        width = 2,
         height = height
     })
 end
