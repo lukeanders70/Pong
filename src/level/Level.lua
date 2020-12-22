@@ -12,6 +12,7 @@ function Level:init(id)
     self.renderables = {}
     self.collidables = {}
     self.enemies = {}
+    self.balls = {}
 
     local path = "data/levels/" .. id .. "/"
     self.metaData = Level.safeLoadMetaData(path .. "metadata.lua")
@@ -24,9 +25,10 @@ function Level:init(id)
 
     self.player = Player(self.metaData.playerStart.x, self.metaData.playerStart.y)
 
-    table.insert(self.updateables, self.player)
-    table.insert(self.renderables, self.player)
-    table.insert(self.collidables, self.player)
+    assert(self.player.id, "Player obejct must have hash id defined")
+    self.updateables[self.player.id] = self.player
+    self.renderables[self.player.id] = self.player
+    self.collidables[self.player.id] = self.player
 end
 
 function Level:addEnemies(enemies)
@@ -37,11 +39,41 @@ function Level:addEnemies(enemies)
     end
 end
 
+function Level:destroy(object)
+    local objectID = object.id
+    if object.id then
+        self.enemies[objectID] = nil
+        self.balls[objectID] = nil
+        self.updateables[objectID] = nil
+        self.renderables[objectID] = nil
+        self.collidables[objectID] = nil
+    else
+        logger('e', "no object Id available for object: " ..tostring(object))
+    end
+end
+
 function Level:addEnemy(enemy)
-    table.insert(self.enemies, enemy)
-    table.insert(self.updateables, enemy)
-    table.insert(self.renderables, enemy)
-    table.insert(self.collidables, enemy)
+    local enemyId = enemy.id
+    if not enemy.id then
+        logger('e', "no enemy Id available for enemy: " ..tostring(enemy))
+    else
+        self.enemies[enemyId] = enemy
+        self.updateables[enemyId] = enemy
+        self.renderables[enemyId] = enemy
+        self.collidables[enemyId] = enemy
+    end
+end
+
+function Level:addBall(ball)
+    local ballId = ball.id
+    if not ball.id then
+        logger('e', "no ball ID available for ball: " .. tostring(ball))
+    else
+        self.bals[ballId] = ball
+        self.updateables[ballId] = ball
+        self.renderables[ballId] = ball
+        self.collidables[ballId] = ball
+    end
 end
 
 function Level.safeLoadMetaData(path)

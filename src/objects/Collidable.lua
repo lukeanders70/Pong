@@ -20,10 +20,10 @@ function Collidable:upperRight() return {x = self.x + self.width - 1, y = self.y
 function Collidable:lowerLeft() return {x = self.x, y = self.y + self.height - 1} end
 function Collidable:lowerRight() return {x = self.x + self.width - 1, y = self.y + self.height - 1} end
 
-function Collidable:conditionallyColide(collidable)
+function Collidable:conditionallyColide(level, collidable)
     if self.solid and collidable.solid and self:intersect(collidable) then
-        collidable:collide(self)
-        self:collide(collidable)
+        collidable:collide(level, self)
+        self:collide(leve, collidable)
     end
 end
 
@@ -31,9 +31,9 @@ function Collidable:collide(Collidable)
     return
 end
 
-function Collidable:update(collidables)
+function Collidable:update(level, collidables)
     for _, collidable in pairs(collidables) do
-        self:conditionallyColide(collidable)
+        self:conditionallyColide(level, collidable)
     end
 end
 
@@ -149,15 +149,18 @@ function Collidable:moveOutsideOf(collidable)
                 self.velocity.x = 0
                 self.acceleration.x = 0
                 self.lastX = self.x
+                return 'x'
             elseif multiplier.axis == 'y' and self.velocity and self.acceleration then
                 self.velocity.y = 0
                 self.acceleration.y = 0
                 self.lastY = self.y
+                return 'y'
             end
         else
             logger("w", "unable to moveOutSideOf in collision case")
         end
     end
+    return nil
 end
 
 function Collidable:getCollisionCandidates(level)

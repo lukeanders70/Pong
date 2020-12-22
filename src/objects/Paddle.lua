@@ -3,7 +3,6 @@ local ColliderTypes = require('src/objects/ColliderTypes')
 
 local Paddle = Class{__includes = Collidable}
 
-Paddle.colliderType = ColliderTypes.PADDLE
 function Paddle:init(x, y, xOffset, yOffset, height, range, color)
     assert( (range[2] - range[1]) >= height)
     self.color = color
@@ -19,6 +18,7 @@ function Paddle:init(x, y, xOffset, yOffset, height, range, color)
         width = 2,
         height = height
     })
+    self.colliderType = ColliderTypes.PADDLE
 end
 
 function Paddle:update(x, y, dt)
@@ -28,7 +28,7 @@ function Paddle:update(x, y, dt)
     self.y = y + self.yOffset
 end
 
-function Paddle:collide(collidable)
+function Paddle:collide(level, collidable)
     if collidable.colliderType == ColliderTypes.CHARACTER then
         return
     elseif collidable.colliderType == ColliderTypes.BLOCK then

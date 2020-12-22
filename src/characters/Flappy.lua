@@ -17,8 +17,10 @@ end
 function Flappy:update(level, dt)
     if self:isOutOfIndexRangeLeft() or self:anyBlocksDirectlyLeft(level) then
         self.directionMultiplier = 1
+        self.x = ((self.startingIndex - Flappy.INDEX_RANGE) * Constants.TILE_SIZE)
     elseif self:isOutOfIndexRangeRight() or self:anyBlocksDirectlyRight(level) then
         self.directionMultiplier = -1
+        self.x = ((self.startingIndex + Flappy.INDEX_RANGE) * Constants.TILE_SIZE)
     end
     self.velocity.x = Flappy.MAX_MOVEMENT_SPEED * self.directionMultiplier
     Character.update(self, level, dt)

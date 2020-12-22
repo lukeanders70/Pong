@@ -37,7 +37,7 @@ function State:addUpdateable(updateable)
     if updateable.update and type(updateable.update) == "function" then
         table.insert(self.updateables, updateable)
     else
-        logger("e", "Tried to register: " .. tostring(updateable) .. "for updateing, but it was not updateable")
+        logger("e", "Tried to register: " .. tostring(updateable) .. "for updating, but it was not updateable")
     end
 end
 

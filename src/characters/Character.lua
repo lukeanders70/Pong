@@ -20,6 +20,7 @@ function Character:init(indexX, indexY, width, height, color, options)
 
     self.velocity = {x = 0, y = 0}
     self.acceleration = {x = 0, y = 0}
+    self.id = tostring(self.x) + tostring(self.y)
 end
 
 function Character:update(level, dt)
@@ -31,25 +32,25 @@ function Character:update(level, dt)
     end
     Physics.update(self, dt)
     local collidables = self:getCollisionCandidates(level)
-    Collidable.update(self, collidables)
+    Collidable.update(self, level, collidables)
 end
 
-function Character:collide(collidable)
+function Character:collide(level, collidable)
     if collidable.colliderType == ColliderTypes.CHARACTER then
         return
     elseif collidable.colliderType == ColliderTypes.BLOCK then
         self:moveOutsideOf(collidable)
     elseif collidable.colliderType == ColliderTypes.HARM then
-        self:lowerHealth(1)
+        self:lowerHealth(level, 1)
     else
         logger("w", "Unhandled Collider type in Charater.lua: " .. tostring(collidable.colliderType))
     end
 end
 
-function Character:lowerHealth(amout)
+function Character:lowerHealth(level, amout)
     self.health = self.health - amout
     if self.health <= 0 then
-        -- remove character
+        level:destroy(self)
     end
 end
 

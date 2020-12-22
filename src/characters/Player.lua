@@ -20,6 +20,7 @@ function Player:init(indexX, indexY)
         {0, self.height},
         {255, 255, 255, 255}
     )
+    self.id = "player"
 end
 
 function Player:update(level, dt)
