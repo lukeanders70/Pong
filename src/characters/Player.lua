@@ -9,35 +9,37 @@ function Player:init(indexX, indexY)
     local width = 20
     local height = 64
     local color = {0, 10, 50, 255}
-    Character.init(self, indexX, indexY, width, height, color, {})
 
+    Character.init(self, indexX, indexY, width, height, color, {})
+    self.id = "player"
     self.paddle = Paddle(
+        self,
         self.x + self.width - 1,
         self.y,
-        self.width - 2,
+        self.width,
         0,
         Player.PADDLE_HEIGHT,
         {0, self.height},
         {255, 255, 255, 255}
     )
-    self.id = "player"
+
+    GlobalState.level.priorityCollidables[self.paddle.id] = self.paddle
 end
 
-function Player:update(level, dt)
+function Player:update(dt)
     self.acceleration.x = 0
     self.acceleration.y = 0
     if love.keyboard.isDown( 'a' ) then
-        self:left(level)
+        self:left()
     elseif love.keyboard.isDown( 'd' ) then
-        self:right(level)
+        self:right()
     end
     if love.keyboard.isDown( 'w' ) then
-        self:jump(level)
+        self:jump()
     end
     self:capMovementSpeed()
-    Character.update(self, level, dt)
-
-    self.paddle:update(self.x, self.y, dt)
+    Character.update(self, dt)
+    self.paddle:update(dt)
 end
 
 function Player:capMovementSpeed()
@@ -60,20 +62,20 @@ function Player:render()
     self.paddle:render()
 end
 
-function Player:left(level)
-    if not self:anyBlocksDirectlyLeft(level) then
+function Player:left()
+    if not self:anyBlocksDirectlyLeft() then
         self.acceleration.x = -2000
     end
 end
 
-function Player:right(level)
-    if not self:anyBlocksDirectlyRight(level) then
+function Player:right()
+    if not self:anyBlocksDirectlyRight() then
         self.acceleration.x = 2000
     end
 end
 
-function Player:jump(level)
-    if self:anyBlocksDirectlyBelow(level) then
+function Player:jump()
+    if self:anyBlocksDirectlyBelow() then
         self.velocity.y = -1500
     end
 end

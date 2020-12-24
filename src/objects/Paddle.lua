@@ -3,9 +3,8 @@ local ColliderTypes = require('src/objects/ColliderTypes')
 
 local Paddle = Class{__includes = Collidable}
 
-function Paddle:init(x, y, xOffset, yOffset, height, range, color)
+function Paddle:init(parent, x, y, xOffset, yOffset, height, range, color)
     assert( (range[2] - range[1]) >= height)
-    self.color = color
     self.rangeMin = range[1]
     self.rangeMax = range[2]
     self.height = height
@@ -18,17 +17,22 @@ function Paddle:init(x, y, xOffset, yOffset, height, range, color)
         width = 2,
         height = height
     })
+    self.color = color
+    self.parent = parent
+
+    self.id = parent.id .. "-paddle"
+
     self.colliderType = ColliderTypes.PADDLE
 end
 
-function Paddle:update(x, y, dt)
+function Paddle:update(dt)
     local moveY = love.mouse.mousePositionGameY - love.mouse.lastMousePositionGameY
     self:setYOffset(self.yOffset + moveY)
-    self.x = x + self.xOffset
-    self.y = y + self.yOffset
+    self.x = self.parent.x + self.xOffset
+    self.y = self.parent.y + self.yOffset
 end
 
-function Paddle:collide(level, collidable)
+function Paddle:collide(collidable)
     if collidable.colliderType == ColliderTypes.CHARACTER then
         return
     elseif collidable.colliderType == ColliderTypes.BLOCK then

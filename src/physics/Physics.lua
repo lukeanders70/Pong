@@ -16,10 +16,9 @@ function Physics.update(moveable, dt)
         Physics.MAX_VELOCITY
     )
 
-    moveable.velocity.x = Physics.applyFriction(moveable.velocity.x, dt)
-
-    moveable.lastX = moveable.x
-    moveable.lastY = moveable.y
+    if not moveable.noFriction then
+        moveable.velocity.x = Physics.applyFriction(moveable.velocity.x, dt)
+    end
 
     moveable.x = moveable.x + (moveable.velocity.x * dt)
     moveable.y = moveable.y + (moveable.velocity.y * dt)
@@ -46,10 +45,10 @@ function Physics.ZeroIfLow(moveable)
         moveable.acceleration.y = 0
     end
     if math.abs(moveable.velocity.x) < 1 then
-        moveable.velocity.x =0
+        moveable.velocity.x = 0
     end
     if math.abs(moveable.velocity.y) < 1 then
-        moveable.velocity.y =0
+        moveable.velocity.y = 0
     end
 end
 

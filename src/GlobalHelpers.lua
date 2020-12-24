@@ -46,6 +46,11 @@ function vectorNormalize(v)
     end
 end
 
+-- get a unit vector from p1 to p2
+function vectorDirection(p1, p2)
+    return vectorNormalize(vectorSub(p2, p1))
+end
+
 function round(x)
     return math.floor(x + 0.5)
 end
@@ -86,3 +91,22 @@ end
 function table.hasKey(t, k)
     return table[key] ~= nil
 end
+
+function table.concat(v1, v2)
+    local newTable = {}
+    for _, v in ipairs(v1) do
+        table.insert(newTable, v)
+    end
+    for _, v in ipairs(v2) do
+        table.insert(newTable, v)
+    end
+    return newTable
+end
+
+function vectorEuclidian(v1, v2)
+    return math.sqrt( math.pow((v2.x - v1.x),2) + math.pow((v2.y - v1.y),2) )
+end
+
+function startsWith(test, start)
+    return string.sub(test, 1, string.len(start)) == start
+ end

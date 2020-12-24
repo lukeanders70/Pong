@@ -8,9 +8,12 @@ local Level = Class{}
 Level.defaultMetaData = {name="Default Level", playerStart={x = 0, y = 1}}
 Level.enemyClassCache = {}
 function Level:init(id)
+    GlobalState.level = self
+
     self.updateables = {}
     self.renderables = {}
     self.collidables = {}
+    self.priorityCollidables = {}
     self.enemies = {}
     self.balls = {}
 
@@ -47,6 +50,7 @@ function Level:destroy(object)
         self.updateables[objectID] = nil
         self.renderables[objectID] = nil
         self.collidables[objectID] = nil
+        self.priorityCollidables[objectID] = nil
     else
         logger('e', "no object Id available for object: " ..tostring(object))
     end
@@ -58,9 +62,7 @@ function Level:addEnemy(enemy)
         logger('e', "no enemy Id available for enemy: " ..tostring(enemy))
     else
         self.enemies[enemyId] = enemy
-        self.updateables[enemyId] = enemy
-        self.renderables[enemyId] = enemy
-        self.collidables[enemyId] = enemy
+        self:addObject(enemy, enemyId)
     end
 end
 
@@ -69,11 +71,15 @@ function Level:addBall(ball)
     if not ball.id then
         logger('e', "no ball ID available for ball: " .. tostring(ball))
     else
-        self.bals[ballId] = ball
-        self.updateables[ballId] = ball
-        self.renderables[ballId] = ball
-        self.collidables[ballId] = ball
+        self.balls[ballId] = ball
+        self:addObject(ball, ballId)
     end
+end
+
+function Level:addObject(object, id)
+    self.updateables[id] = object
+    self.renderables[id] = object
+    self.collidables[id] = object
 end
 
 function Level.safeLoadMetaData(path)
@@ -163,7 +169,7 @@ end
 
 function Level:update(dt)
     for _, updateable in pairs(self.updateables) do
-        updateable:update(self, dt)
+        updateable:update(dt)
     end
 end
 

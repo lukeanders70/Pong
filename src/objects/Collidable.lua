@@ -9,10 +9,13 @@ function Collidable:init(params)
 
     self.x = assert(params.x)
     self.y = assert(params.y)
-    self.lastX = x
-    self.lastY = y
     self.width = assert(params.width)
     self.height = assert(params.height)
+
+    self.velocity = {x = 0, y = 0}
+    self.acceleration = {x = 0, y = 0}
+
+    self.id = tostring(self.x) .. tostring(self.y)
 end
 
 function Collidable:upperLeft() return {x = self.x, y = self.y} end
@@ -20,10 +23,10 @@ function Collidable:upperRight() return {x = self.x + self.width - 1, y = self.y
 function Collidable:lowerLeft() return {x = self.x, y = self.y + self.height - 1} end
 function Collidable:lowerRight() return {x = self.x + self.width - 1, y = self.y + self.height - 1} end
 
-function Collidable:conditionallyColide(level, collidable)
+function Collidable:conditionallyColide(collidable)
     if self.solid and collidable.solid and self:intersect(collidable) then
-        collidable:collide(level, self)
-        self:collide(leve, collidable)
+        collidable:collide(self)
+        self:collide(collidable)
     end
 end
 
@@ -31,9 +34,9 @@ function Collidable:collide(Collidable)
     return
 end
 
-function Collidable:update(level, collidables)
+function Collidable:update(collidables)
     for _, collidable in pairs(collidables) do
-        self:conditionallyColide(level, collidable)
+        self:conditionallyColide(collidable)
     end
 end
 
@@ -59,7 +62,7 @@ function Collidable:intersect(col2)
     return retVal
 end
 
-function Collidable:anyBlocksDirectlyBelow(level)
+function Collidable:anyBlocksDirectlyBelow()
     local pixelsToCheck = {}
     local PixelToAddX = self:lowerLeft().x
 
@@ -69,10 +72,10 @@ function Collidable:anyBlocksDirectlyBelow(level)
     end
     table.insert(pixelsToCheck, {x = self:lowerRight().x, y = self:lowerRight().y + 1})
 
-    return self:checkCollidableFromPoints(pixelsToCheck, level)
+    return self:checkCollidableFromPoints(pixelsToCheck)
 end
 
-function Collidable:anyBlocksDirectlyLeft(level)
+function Collidable:anyBlocksDirectlyLeft()
     local pixelsToCheck = {}
     local PixelToAddY = self:upperLeft().y
 
@@ -82,10 +85,10 @@ function Collidable:anyBlocksDirectlyLeft(level)
     end
     table.insert(pixelsToCheck, {x = self:lowerLeft().x - 1, y = self:lowerLeft().y})
 
-    return self:checkCollidableFromPoints(pixelsToCheck, level)
+    return self:checkCollidableFromPoints(pixelsToCheck)
 end
 
-function Collidable:anyBlocksDirectlyRight(level)
+function Collidable:anyBlocksDirectlyRight()
     local pixelsToCheck = {}
     local PixelToAddY = self:upperRight().y
 
@@ -95,12 +98,12 @@ function Collidable:anyBlocksDirectlyRight(level)
     end
     table.insert(pixelsToCheck, {x = self:lowerRight().x + 1, y = self:lowerRight().y})
 
-    return self:checkCollidableFromPoints(pixelsToCheck, level)
+    return self:checkCollidableFromPoints(pixelsToCheck)
 end
 
-function Collidable:checkCollidableFromPoints(pixelsToCheck, level)
+function Collidable:checkCollidableFromPoints(pixelsToCheck)
     for _, checkpoint in pairs(pixelsToCheck) do
-        local tile = level:tileFromPoint(checkpoint)
+        local tile = GlobalState.level:tileFromPoint(checkpoint)
         if tile and tile.solid then
             return tile
         end
@@ -108,14 +111,14 @@ function Collidable:checkCollidableFromPoints(pixelsToCheck, level)
     return false
 end
 
-function Collidable:moveOutsideOf(collidable)
+function Collidable:moveOutsideOf(collidable, direction)
     if self:intersect(collidable) then
 
         local directionOut -- default (should never be used)
-        -- if possible, move out the way we moved in
-        -- if not ((oldCenter.x == center.x) and (oldCenter.y == center.y)) then
-        --     directionOut = vectorNormalize(vectorSub(oldCenter, center))
-        if not ((self.velocity.x == 0) and (self.velocity.y == 0)) then
+
+        if direction then
+            directionOut = direction
+        elseif not ((self.velocity.x == 0) and (self.velocity.y == 0)) then
             directionOut = { x = -self.velocity.x, y = -self.velocity.y }
         -- otherwise, move out directly away from the object's center
         elseif (collidable.velocity and (collidable.velocity.x ~= 0) and (collidable.velocity.y ~= 0)) then
@@ -163,21 +166,27 @@ function Collidable:moveOutsideOf(collidable)
     return nil
 end
 
-function Collidable:getCollisionCandidates(level)
-    local candidates = table.filter(level.collidables, function(k,v)
-        return not (v == self)
+function Collidable:getCollisionCandidates(excludeBlocks)
+    local priorityCandidates = table.filter(GlobalState.level.priorityCollidables, function(k,v)
+        return (not (v == self)) and (not (startsWith(v.id, self.id .. '-')))
     end)
-    -- add surrounding blocks
-    local lowestIndexX = math.floor( (self.x) / Constants.TILE_SIZE) + 1 
-    local highestIndexX = math.floor( (self.x + self.width) / Constants.TILE_SIZE) + 1
+    local regularcandidates = table.filter(GlobalState.level.collidables, function(k,v)
+        return (not (v == self)) and (not (startsWith(v.id, self.id .. '-')))
+    end)
+    local candidates = table.concat(priorityCandidates, regularcandidates)
+    if not excludeBlocks then
+        -- add surrounding blocks
+        local lowestIndexX = math.floor( (self.x) / Constants.TILE_SIZE) + 1 
+        local highestIndexX = math.floor( (self.x + self.width) / Constants.TILE_SIZE) + 1
 
-    local lowestIndexY = math.floor( (self.y) / Constants.TILE_SIZE) + 1
-    local highestIndexY = math.floor( (self.y + self.height) / Constants.TILE_SIZE) + 1
+        local lowestIndexY = math.floor( (self.y) / Constants.TILE_SIZE) + 1
+        local highestIndexY = math.floor( (self.y + self.height) / Constants.TILE_SIZE) + 1
 
-    for indexX = lowestIndexX, highestIndexX do
-        for indexY = lowestIndexY, highestIndexY do
-            if level.tiles[indexX] and level.tiles[indexX][indexY] then
-                table.insert(candidates, level.tiles[indexX][indexY])
+        for indexX = lowestIndexX, highestIndexX do
+            for indexY = lowestIndexY, highestIndexY do
+                if GlobalState.level.tiles[indexX] and GlobalState.level.tiles[indexX][indexY] then
+                    table.insert(candidates, GlobalState.level.tiles[indexX][indexY])
+                end
             end
         end
     end

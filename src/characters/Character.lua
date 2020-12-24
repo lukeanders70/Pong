@@ -12,7 +12,8 @@ function Character:init(indexX, indexY, width, height, color, options)
         width = replaceIfNil(width, 1),
         height = replaceIfNil(height, 1)
     })
-    -- self.colliderType = ColliderTypes.CHARACTER
+    self.colliderType = ColliderTypes.CHARACTER
+    self.alive = true
     self.color = color
 
     self.health = getOrElse(options, health, 1)
@@ -20,38 +21,45 @@ function Character:init(indexX, indexY, width, height, color, options)
 
     self.velocity = {x = 0, y = 0}
     self.acceleration = {x = 0, y = 0}
-    self.id = tostring(self.x) + tostring(self.y)
 end
 
-function Character:update(level, dt)
-    if self.gravity and self:anyBlocksDirectlyBelow(level) then
+function Character:update(dt)
+    if self.gravity and self:anyBlocksDirectlyBelow() then
         self.acceleration.y = 0
         self.velocity.y = math.min(self.velocity.y, 0)
     elseif self.gravity then
         self.acceleration.y = Physics.GRAVITY
     end
     Physics.update(self, dt)
-    local collidables = self:getCollisionCandidates(level)
-    Collidable.update(self, level, collidables)
+    local collidables = self:getCollisionCandidates()
+    Collidable.update(self, collidables)
 end
 
-function Character:collide(level, collidable)
+function Character:collide(collidable)
     if collidable.colliderType == ColliderTypes.CHARACTER then
         return
     elseif collidable.colliderType == ColliderTypes.BLOCK then
         self:moveOutsideOf(collidable)
     elseif collidable.colliderType == ColliderTypes.HARM then
-        self:lowerHealth(level, 1)
+        self:lowerHealth(1)
+        return
+    elseif collidable.colliderType == ColliderTypes.PADDLE then
+        return
     else
         logger("w", "Unhandled Collider type in Charater.lua: " .. tostring(collidable.colliderType))
     end
 end
 
-function Character:lowerHealth(level, amout)
+function Character:lowerHealth(amout)
     self.health = self.health - amout
     if self.health <= 0 then
-        level:destroy(self)
+        self:kill()
     end
+end
+
+function Character:kill()
+    self.alive = false
+    GlobalState.level:destroy(self)
 end
 
 function Character:render()
