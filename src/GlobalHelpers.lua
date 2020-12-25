@@ -109,4 +109,17 @@ end
 
 function startsWith(test, start)
     return string.sub(test, 1, string.len(start)) == start
- end
+end
+
+function sameSign(vec)
+    local numGreater = 0
+    local numLess = 0
+    for _, value in pairs(vec) do
+        if (value >= 0) then
+            numGreater = numGreater + 1
+        else
+            numLess = numLess + 1
+        end
+    end
+    return (numGreater == 0) or (numLess == 0)
+end

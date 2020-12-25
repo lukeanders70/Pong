@@ -27,18 +27,17 @@ function Ball:update(dt)
         return
     end
     Physics.update(self, dt)
-    local collidables = self:getCollisionCandidates()
-    Collidable.update(self, collidables)
 end
 
 function Ball:collide(collidable)
     if collidable.colliderType == ColliderTypes.CHARACTER then
-        -- normally will result in damage to the character, but we leave that to the character to determine
-        self:destroy()
+        -- normally will result in damage to the character,
+        -- and destruction of the ball, but we leave that to the character to determine
+        return
     elseif (collidable.colliderType == ColliderTypes.BLOCK) or (collidable.colliderType == ColliderTypes.PADDLE) then
 
         local velocityBefore = {x = self.velocity.x, y = self.velocity.y}
-        local axis = self:moveOutsideOf(collidable)
+        local moveData = self:moveOutsideOf(collidable)
         self.velocity = velocityBefore
 
         self.bounces = self.bounces - 1
@@ -46,15 +45,15 @@ function Ball:collide(collidable)
             self:destroy()
         end
         
-        if axis then
-            if axis == "x" then
-                self.velocity.x = - self.velocity.x
-            elseif axis == "y" then
-                self.velocity.y = - self.velocity.y
+        if (moveData.axis == "x") or (moveData.axis == "y") then
+            if sameSign({moveData.direction[moveData.axis], self.velocity[moveData.axis], collidable.velocity[moveData.axis]}) then
+                self.velocity[moveData.axis] = collidable.velocity[moveData.axis] + self.velocity[moveData.axis]
             else
-                logger("w", "Ball collided with unrecognized axis: " .. tostring(axis))
-            end 
-        end
+                self.velocity[moveData.axis] = collidable.velocity[moveData.axis] - self.velocity[moveData.axis]
+            end
+        else
+            logger("w", "Ball collided with unrecognized axis: " .. tostring(axis))
+        end 
     elseif collidable.colliderType == ColliderTypes.HARM then
         return
     else

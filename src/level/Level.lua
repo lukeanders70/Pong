@@ -171,6 +171,9 @@ function Level:update(dt)
     for _, updateable in pairs(self.updateables) do
         updateable:update(dt)
     end
+    for _, collidable in pairs(self.collidables) do
+        collidable:updateCollisions()
+    end
 end
 
 function Level:render()

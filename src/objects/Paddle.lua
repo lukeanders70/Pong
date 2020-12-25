@@ -30,6 +30,8 @@ function Paddle:update(dt)
     self:setYOffset(self.yOffset + moveY)
     self.x = self.parent.x + self.xOffset
     self.y = self.parent.y + self.yOffset
+    self.velocity = self.parent.velocity
+    self.acceleration = self.parent.acceleration
 end
 
 function Paddle:collide(collidable)

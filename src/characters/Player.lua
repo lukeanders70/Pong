@@ -56,9 +56,19 @@ function Player:capMovementSpeed()
     end
 end
 
+function Player:harmCollide(collidable)
+    local velocityBefore = {x = collidable.velocity.x, y = collidable.velocity.y}
+    collidable:moveOutsideOf(self)
+    collidable.velocity = velocityBefore
+    local didCollide = self.paddle:conditionallyColide(collidable)
+    if not didCollide then
+        self:lowerHealth(1)
+        collidable:destroy()
+    end
+end
+
 function Player:render()
     Character.render(self)
-
     self.paddle:render()
 end
 

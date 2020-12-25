@@ -31,8 +31,6 @@ function Character:update(dt)
         self.acceleration.y = Physics.GRAVITY
     end
     Physics.update(self, dt)
-    local collidables = self:getCollisionCandidates()
-    Collidable.update(self, collidables)
 end
 
 function Character:collide(collidable)
@@ -40,8 +38,14 @@ function Character:collide(collidable)
         return
     elseif collidable.colliderType == ColliderTypes.BLOCK then
         self:moveOutsideOf(collidable)
+        return
     elseif collidable.colliderType == ColliderTypes.HARM then
-        self:lowerHealth(1)
+        if (self.harmCollide) and (type(self.harmCollide) == "function") then
+            self:harmCollide(collidable)
+        else
+            self:lowerHealth(1)
+            collidable:destroy()
+        end
         return
     elseif collidable.colliderType == ColliderTypes.PADDLE then
         return

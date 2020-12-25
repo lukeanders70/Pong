@@ -27,14 +27,19 @@ function Collidable:conditionallyColide(collidable)
     if self.solid and collidable.solid and self:intersect(collidable) then
         collidable:collide(self)
         self:collide(collidable)
+        return true
     end
+    return false
 end
 
 function Collidable:collide(Collidable)
     return
 end
 
-function Collidable:update(collidables)
+function Collidable:updateCollisions(collidables)
+    if not collidables then
+        collidables = self:getCollisionCandidates()
+    end
     for _, collidable in pairs(collidables) do
         self:conditionallyColide(collidable)
     end
@@ -118,11 +123,8 @@ function Collidable:moveOutsideOf(collidable, direction)
 
         if direction then
             directionOut = direction
-        elseif not ((self.velocity.x == 0) and (self.velocity.y == 0)) then
-            directionOut = { x = -self.velocity.x, y = -self.velocity.y }
-        -- otherwise, move out directly away from the object's center
-        elseif (collidable.velocity and (collidable.velocity.x ~= 0) and (collidable.velocity.y ~= 0)) then
-            directionOut = { x = collidable.velocity.x, y = collidable.velocity.y }
+        elseif not ((self.velocity.x == 0) and (self.velocity.y == 0) and (collidable.velocity.x == 0) and (collidable.velocity.y == 0)) then
+            directionOut = vectorNormalize(vectorSub(collidable.velocity, self.velocity))
         else
             local center = self:getCenter()
             directionOut = vectorNormalize(vectorSub(center, collidable:getCenter()))
@@ -152,12 +154,12 @@ function Collidable:moveOutsideOf(collidable, direction)
                 self.velocity.x = 0
                 self.acceleration.x = 0
                 self.lastX = self.x
-                return 'x'
+                return {axis = 'x', direction = directionOut}
             elseif multiplier.axis == 'y' and self.velocity and self.acceleration then
                 self.velocity.y = 0
                 self.acceleration.y = 0
                 self.lastY = self.y
-                return 'y'
+                return {axis ='y', direction = directionOut}
             end
         else
             logger("w", "unable to moveOutSideOf in collision case")
