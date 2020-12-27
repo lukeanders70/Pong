@@ -23,10 +23,10 @@ function Collidable:upperRight() return {x = self.x + self.width - 1, y = self.y
 function Collidable:lowerLeft() return {x = self.x, y = self.y + self.height - 1} end
 function Collidable:lowerRight() return {x = self.x + self.width - 1, y = self.y + self.height - 1} end
 
-function Collidable:conditionallyColide(collidable)
+function Collidable:conditionallyColide(collidable, dt)
     if self.solid and collidable.solid and self:intersect(collidable) then
-        collidable:collide(self)
-        self:collide(collidable)
+        collidable:collide(self, dt)
+        self:collide(collidable, dt)
         return true
     end
     return false
@@ -36,12 +36,12 @@ function Collidable:collide(Collidable)
     return
 end
 
-function Collidable:updateCollisions(collidables)
+function Collidable:updateCollisions(dt, collidables)
     if not collidables then
         collidables = self:getCollisionCandidates()
     end
     for _, collidable in pairs(collidables) do
-        self:conditionallyColide(collidable)
+        self:conditionallyColide(collidable, dt)
     end
 end
 

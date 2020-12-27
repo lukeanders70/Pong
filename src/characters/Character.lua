@@ -33,7 +33,7 @@ function Character:update(dt)
     Physics.update(self, dt)
 end
 
-function Character:collide(collidable)
+function Character:collide(collidable, dt)
     if collidable.colliderType == ColliderTypes.CHARACTER then
         return
     elseif collidable.colliderType == ColliderTypes.BLOCK then
@@ -41,7 +41,7 @@ function Character:collide(collidable)
         return
     elseif collidable.colliderType == ColliderTypes.HARM then
         if (self.harmCollide) and (type(self.harmCollide) == "function") then
-            self:harmCollide(collidable)
+            self:harmCollide(collidable, dt)
         else
             self:lowerHealth(1)
             collidable:destroy()

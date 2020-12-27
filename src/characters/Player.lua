@@ -23,7 +23,7 @@ function Player:init(indexX, indexY)
         {255, 255, 255, 255}
     )
 
-    GlobalState.level.priorityCollidables[self.paddle.id] = self.paddle
+    GlobalState.level.collidables[self.paddle.id] = self.paddle
 end
 
 function Player:update(dt)
@@ -56,7 +56,12 @@ function Player:capMovementSpeed()
     end
 end
 
-function Player:harmCollide(collidable)
+function Player:collide(collidable, dt)
+    Character.collide(self, collidable, dt)
+    self.paddle:update(dt)
+end
+
+function Player:harmCollide(collidable, dt)
     local velocityBefore = {x = collidable.velocity.x, y = collidable.velocity.y}
     collidable:moveOutsideOf(self)
     collidable.velocity = velocityBefore

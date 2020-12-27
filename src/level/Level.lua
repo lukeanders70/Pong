@@ -172,7 +172,7 @@ function Level:update(dt)
         updateable:update(dt)
     end
     for _, collidable in pairs(self.collidables) do
-        collidable:updateCollisions()
+        collidable:updateCollisions(dt)
     end
 end
 
