@@ -5,6 +5,8 @@ local Physics = require('src/physics/Physics')
 local Ball = Class{__includes = Collidable}
 
 Ball.MAX_DISTANCE = Constants.TILE_SIZE * 20 -- in pixels
+Ball.ACCELERATION_DECAY = 10
+Ball.SPIN_COEFFICIENT = 0.5
 function Ball:init(x, y, velocity, bounces, color)
     Collidable.init(self,
     {
@@ -27,6 +29,11 @@ function Ball:update(dt)
         return
     end
     Physics.update(self, dt)
+    if self.acceleration.y > 0 then
+        self.acceleration.y = math.max(self.acceleration.y - (self.ACCELERATION_DECAY * dt), 0)
+    elseif self.acceleration.y < 0 then
+        self.acceleration.y = math.min(self.acceleration.y + (self.ACCELERATION_DECAY * dt), 0)
+    end 
 end
 
 function Ball:collide(collidable)
@@ -35,6 +42,7 @@ function Ball:collide(collidable)
         -- and destruction of the ball, but we leave that to the character to determine
         return
     elseif (collidable.colliderType == ColliderTypes.BLOCK) or (collidable.colliderType == ColliderTypes.PADDLE) then
+        self.acceleration.y = 0
 
         local velocityBefore = {x = self.velocity.x, y = self.velocity.y}
         local moveData = self:moveOutsideOf(collidable)
@@ -54,6 +62,10 @@ function Ball:collide(collidable)
         else
             logger("w", "Ball collided with unrecognized axis: " .. tostring(axis))
         end 
+
+        if collidable.velocity.y ~= 0 then
+            self.acceleration.y = collidable.velocity.y * self.SPIN_COEFFICIENT
+        end
     elseif collidable.colliderType == ColliderTypes.HARM then
         return
     else

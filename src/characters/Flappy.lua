@@ -5,7 +5,7 @@ local Flappy = Class{__includes = Character}
 
 Flappy.MAX_MOVEMENT_SPEED = 50
 Flappy.INDEX_RANGE = 2 -- the number of blocks (in each direction) flappies will fly to
-Flappy.FIRE_SPEED = 150
+Flappy.FIRE_SPEED = 100
 function Flappy:init(indexX, indexY)
     local width = 20
     local height = 20
