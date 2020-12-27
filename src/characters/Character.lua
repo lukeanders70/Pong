@@ -16,7 +16,7 @@ function Character:init(indexX, indexY, width, height, color, options)
     self.alive = true
     self.color = color
 
-    self.health = getOrElse(options, health, 1)
+    self.health = getOrElse(options, "health", 1)
     self.gravity = getOrElse(options, "gravity", true)
 
     self.velocity = {x = 0, y = 0}

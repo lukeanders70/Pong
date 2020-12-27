@@ -13,10 +13,15 @@ function State:exit()
 
 end
 
+function State:updateCallback()
+    return
+end
+
 function State:update(dt)
     for _, updatable in pairs(self.updateables) do
         updatable:update(dt)
     end
+    self:updateCallback()
 end
 
 function State:render()

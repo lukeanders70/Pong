@@ -10,7 +10,7 @@ function Player:init(indexX, indexY)
     local height = 64
     local color = {0, 10, 50, 255}
 
-    Character.init(self, indexX, indexY, width, height, color, {})
+    Character.init(self, indexX, indexY, width, height, color, {health=100})
     self.id = "player"
     self.paddle = Paddle(
         self,
