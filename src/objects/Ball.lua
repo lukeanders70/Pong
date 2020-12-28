@@ -12,8 +12,8 @@ function Ball:init(x, y, velocity, bounces, color)
     {
         x = x,
         y = y,
-        width = 2,
-        height = 2
+        width = 4,
+        height = 4
     })
     self.color = color
     self.velocity = velocity

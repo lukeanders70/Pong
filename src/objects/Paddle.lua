@@ -5,6 +5,7 @@ local Paddle = Class{__includes = Collidable}
 
 
 Paddle.FIDELITY = 0.3
+Paddle.PADDLE_WIDTH = 2
 function Paddle:init(parent, x, y, xOffset, yOffset, height, range, color)
     assert( (range[2] - range[1]) >= height)
     self.rangeMin = range[1]
@@ -16,7 +17,7 @@ function Paddle:init(parent, x, y, xOffset, yOffset, height, range, color)
     {
         x = x,
         y = self.yOffset + y,
-        width = 2,
+        width = Paddle.PADDLE_WIDTH,
         height = height
     })
     self.lastX = self.x

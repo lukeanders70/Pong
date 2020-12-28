@@ -12,7 +12,7 @@ function Player:init(indexX, indexY)
 
     Character.init(self, indexX, indexY, width, height, color, {health=100})
     self.id = "player"
-    self.paddle = Paddle(
+    self.paddleRight = Paddle(
         self,
         self.x + self.width - 1,
         self.y,
@@ -22,8 +22,19 @@ function Player:init(indexX, indexY)
         {0, self.height},
         {255, 255, 255, 255}
     )
+    self.paddleLeft = Paddle(
+        self,
+        self.x - Paddle.PADDLE_WIDTH,
+        self.y,
+        - Paddle.PADDLE_WIDTH,
+        0,
+        Player.PADDLE_HEIGHT,
+        {0, self.height},
+        {255, 255, 255, 255}
+    )
 
-    GlobalState.level.collidables[self.paddle.id] = self.paddle
+    GlobalState.level.collidables[self.paddleRight.id] = self.paddleRight
+    GlobalState.level.collidables[self.paddleRight.id] = self.paddleLeft
 end
 
 function Player:update(dt)
@@ -39,7 +50,8 @@ function Player:update(dt)
     end
     self:capMovementSpeed()
     Character.update(self, dt)
-    self.paddle:update(dt)
+    self.paddleRight:update(dt)
+    self.paddleLeft:update(dt)
 end
 
 function Player:capMovementSpeed()
@@ -58,14 +70,15 @@ end
 
 function Player:collide(collidable, dt)
     Character.collide(self, collidable, dt)
-    self.paddle:update(dt)
+    self.paddleRight:update(dt)
+    self.paddleLeft:update(dt)
 end
 
 function Player:harmCollide(collidable, dt)
     local velocityBefore = {x = collidable.velocity.x, y = collidable.velocity.y}
     collidable:moveOutsideOf(self)
     collidable.velocity = velocityBefore
-    local didCollide = self.paddle:conditionallyColide(collidable)
+    local didCollide = self.paddleRight:conditionallyColide(collidable) or self.paddleLeft:conditionallyColide(collidable)
     if not didCollide then
         self:lowerHealth(1)
         collidable:destroy()
@@ -74,7 +87,8 @@ end
 
 function Player:render()
     Character.render(self)
-    self.paddle:render()
+    self.paddleRight:render()
+    self.paddleLeft:render()
 end
 
 function Player:left()
