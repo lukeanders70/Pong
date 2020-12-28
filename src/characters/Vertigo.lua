@@ -1,20 +1,20 @@
 local Character = require('src/characters/Character')
 local Ball = require('src/objects/Ball')
 
-local Flappy = Class{__includes = Character}
+local Vertigo = Class{__includes = Character}
 
-Flappy.MAX_MOVEMENT_SPEED = 50
-Flappy.INDEX_RANGE = 2 -- the number of blocks (in each direction) flappies will fly to
-Flappy.FIRE_SPEED = 100
-Flappy.SIGHT_RANGE = 6
-function Flappy:init(indexX, indexY)
+Vertigo.MAX_MOVEMENT_SPEED = 40
+Vertigo.INDEX_RANGE = 1 -- the number of blocks (up and down) vertigo will fly to
+Vertigo.FIRE_SPEED = 100
+Vertigo.SIGHT_RANGE = 6
+function Vertigo:init(indexX, indexY)
     local width = 20
     local height = 20
     local color = {255, 100, 100, 255}
     Character.init(self, indexX, indexY, width, height, color, { gravity = false })
     self.directionMultiplier = -1
-    self.velocity.x = self.directionMultiplier * Flappy.MAX_MOVEMENT_SPEED
-    self.startingIndex = indexX
+    self.velocity.y = self.directionMultiplier * Vertigo.MAX_MOVEMENT_SPEED
+    self.startingIndex = indexY
     self.noFriction = true
     Timer.every(3, function()
         if self.alive then
@@ -24,24 +24,24 @@ function Flappy:init(indexX, indexY)
     end)
 end
 
-function Flappy:update(dt)
-    if self:isOutOfIndexRangeLeft() or self:anyBlocksDirectlyLeft() then
+function Vertigo:update(dt)
+    if self:isOutOfIndexRangeUp() or self:anyBlocksDirectlyAbove() then
         self.directionMultiplier = 1
-        self.x = ((self.startingIndex - Flappy.INDEX_RANGE) * Constants.TILE_SIZE)
-    elseif self:isOutOfIndexRangeRight() or self:anyBlocksDirectlyRight() then
+        self.y = ((self.startingIndex - Vertigo.INDEX_RANGE) * Constants.TILE_SIZE)
+    elseif self:isOutOfIndexRangeDown() or self:anyBlocksDirectlyBelow() then
         self.directionMultiplier = -1
-        self.x = ((self.startingIndex + Flappy.INDEX_RANGE) * Constants.TILE_SIZE)
+        self.y = ((self.startingIndex + Vertigo.INDEX_RANGE) * Constants.TILE_SIZE)
     end
-    self.velocity.x = Flappy.MAX_MOVEMENT_SPEED * self.directionMultiplier
+    self.velocity.y = Vertigo.MAX_MOVEMENT_SPEED * self.directionMultiplier
     Character.update(self, dt)
 end
 
-function Flappy:attack()
+function Vertigo:attack()
     if GlobalState.level.player then
         local player = GlobalState.level.player
         local distance = vectorEuclidian(self:getCenter(), player:getCenter())
         local direction = vectorDirection(self:getCenter(), player:getCenter())
-        if distance < (Flappy.SIGHT_RANGE * Constants.TILE_SIZE) then
+        if distance < (Vertigo.SIGHT_RANGE * Constants.TILE_SIZE) then
             local ball = Ball(
                 self:getCenter().x,
                 self:getCenter().y,
@@ -57,12 +57,12 @@ function Flappy:attack()
     end
 end
 
-function Flappy:isOutOfIndexRangeLeft()
-    return self.x < ((self.startingIndex - Flappy.INDEX_RANGE) * Constants.TILE_SIZE)
+function Vertigo:isOutOfIndexRangeDown()
+    return self.y > ((self.startingIndex + Vertigo.INDEX_RANGE) * Constants.TILE_SIZE)
 end
 
-function Flappy:isOutOfIndexRangeRight()
-    return self.x > ((self.startingIndex + Flappy.INDEX_RANGE) * Constants.TILE_SIZE)
+function Vertigo:isOutOfIndexRangeUp()
+    return self.y < ((self.startingIndex - Vertigo.INDEX_RANGE) * Constants.TILE_SIZE)
 end
 
-return Flappy
+return Vertigo

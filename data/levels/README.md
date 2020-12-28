@@ -7,7 +7,7 @@ Each level is made of two parts:
 the metadata file contains information like the level's name
 
 # Level
-the level file encodes what the level actually looks like. Each tile is defined by three characters
+the level file encodes what the level actually looks like. Each tile is defined by four characters
 ```
 0001
 ```

@@ -80,6 +80,19 @@ function Collidable:anyBlocksDirectlyBelow()
     return self:checkCollidableFromPoints(pixelsToCheck)
 end
 
+function Collidable:anyBlocksDirectlyAbove()
+    local pixelsToCheck = {}
+    local PixelToAddX = self:upperLeft().x
+
+    while PixelToAddX < self:upperRight().x do
+        table.insert(pixelsToCheck, {x = PixelToAddX, y = self:upperRight().y + 1})
+        PixelToAddX = PixelToAddX + Constants.TILE_SIZE
+    end
+    table.insert(pixelsToCheck, {x = self:lowerRight().x, y = self:upperRight().y + 1})
+
+    return self:checkCollidableFromPoints(pixelsToCheck)
+end
+
 function Collidable:anyBlocksDirectlyLeft()
     local pixelsToCheck = {}
     local PixelToAddY = self:upperLeft().y
