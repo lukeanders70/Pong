@@ -176,9 +176,30 @@ function Level:update(dt)
     end
 end
 
+function Level:minVisbileIndexX()
+    local numTilesLeft = ((Constants.VIRTUAL_WIDTH / 2) / Constants.TILE_SIZE) + 1 -- plus one for buffer
+    return math.max(self.player:lowestIndexX() - numTilesLeft, 1)
+end
+
+function Level:maxVisibleIndexX()
+    local numTilesRight = ((Constants.VIRTUAL_WIDTH / 2) / Constants.TILE_SIZE) + 1 -- plus one for buffer
+    return math.min(self.player:highestIndexX() + numTilesRight, #self.tiles)
+end
+
+function Level:minVisbileIndexY()
+    local numTilesLeft = ((Constants.VIRTUAL_HEIGHT / 2) / Constants.TILE_SIZE) + 1 -- plus one for buffer
+    return math.max(self.player:lowestIndexY() - numTilesLeft, 1)
+end
+
+function Level:maxVisibleIndexY()
+    local numTilesRight = ((Constants.VIRTUAL_HEIGHT / 2) / Constants.TILE_SIZE) + 1 -- plus one for buffer
+    return math.min(self.player:highestIndexY() + numTilesRight, #self.tiles[1])
+end
+
+
 function Level:render()
-    for indexX = 1, #self.tiles do
-        for indexY = 1, #self.tiles[indexX] do
+    for indexX = self:minVisbileIndexX(), self:maxVisibleIndexX() do
+        for indexY = self:minVisbileIndexY(), self:maxVisibleIndexY() do
             self.tiles[indexX][indexY]:render()
         end
     end

@@ -181,6 +181,22 @@ function Collidable:moveOutsideOf(collidable, direction)
     return nil
 end
 
+function Collidable:lowestIndexX()
+    return math.floor( (self.x) / Constants.TILE_SIZE) + 1 
+end
+
+function Collidable:highestIndexX()
+    return math.floor( (self.x + self.width) / Constants.TILE_SIZE) + 1
+end
+
+function Collidable:lowestIndexY()
+    return math.floor( (self.y) / Constants.TILE_SIZE) + 1
+end
+
+function Collidable:highestIndexY()
+    return math.floor( (self.y + self.height) / Constants.TILE_SIZE) + 1
+end
+
 function Collidable:getCollisionCandidates(excludeBlocks)
     local priorityCandidates = table.filter(GlobalState.level.priorityCollidables, function(k,v)
         return (not (v == self)) and (not (startsWith(v.id, self.id .. '-')))
@@ -191,14 +207,8 @@ function Collidable:getCollisionCandidates(excludeBlocks)
     local candidates = table.concat(priorityCandidates, regularcandidates)
     if not excludeBlocks then
         -- add surrounding blocks
-        local lowestIndexX = math.floor( (self.x) / Constants.TILE_SIZE) + 1 
-        local highestIndexX = math.floor( (self.x + self.width) / Constants.TILE_SIZE) + 1
-
-        local lowestIndexY = math.floor( (self.y) / Constants.TILE_SIZE) + 1
-        local highestIndexY = math.floor( (self.y + self.height) / Constants.TILE_SIZE) + 1
-
-        for indexX = lowestIndexX, highestIndexX do
-            for indexY = lowestIndexY, highestIndexY do
+        for indexX = self:lowestIndexX(), self:highestIndexX() do
+            for indexY = self:lowestIndexY(), self:highestIndexY() do
                 if GlobalState.level.tiles[indexX] and GlobalState.level.tiles[indexX][indexY] then
                     table.insert(candidates, GlobalState.level.tiles[indexX][indexY])
                 end
