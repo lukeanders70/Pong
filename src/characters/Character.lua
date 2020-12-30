@@ -40,7 +40,7 @@ end
 
 function Character:collide(collidable, dt)
     if collidable.colliderType == ColliderTypes.CHARACTER then
-        return
+        self:characterCollide(collidable, dt)
     elseif collidable.colliderType == ColliderTypes.BLOCK then
         self:blockCollide(collidable, dt)
     elseif collidable.colliderType == ColliderTypes.HARM then
@@ -50,6 +50,10 @@ function Character:collide(collidable, dt)
     else
         logger("w", "Unhandled Collider type in Charater.lua: " .. tostring(collidable.colliderType))
     end
+end
+
+function Character:characterCollide(collidable, dt)
+    return
 end
 
 function Character:blockCollide(collidable, dt)

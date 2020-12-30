@@ -81,6 +81,31 @@ function Player:harmCollide(collidable, dt)
     end
 end
 
+function Player:characterCollide(collidable, dt)
+    if not self.invincible then
+        self:lowerHealth(1)
+        local moveData = self:moveOutsideOf(collidable)
+        if moveData.direction then
+            self.velocity = vectorAdd(vectorScalerMultiply(moveData.direction, 1000), self.velocity)
+        end
+        for _, child in pairs(self.children) do
+            child:update(dt)
+        end
+    end
+end
+
+function Player:lowerHealth(amount)
+    if not self.invincible then
+        Character.lowerHealth(self, amount)
+        self.invincible = true
+        self.color[4] = 100
+        Timer.after(1, function()
+            self.color[4] = 255
+            self.invincible = false
+        end)
+    end
+end
+
 function Player:render()
     Character.render(self)
 end

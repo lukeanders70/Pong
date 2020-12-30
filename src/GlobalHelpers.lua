@@ -29,6 +29,14 @@ function logger(level, message)
     print(tag .. ": " .. message)
 end
 
+function vectorScalerMultiply(v, s)
+    return {x = v.x * s, y = v.y * s}
+end
+
+function vectorAdd(v1, v2)
+    return {x = v1.x + v2.x, y = v1.y + v2.y}
+end
+
 function vectorSub(v1, v2)
     return {x = v1.x - v2.x, y = v1.y - v2.y}
 end
