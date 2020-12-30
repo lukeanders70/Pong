@@ -169,42 +169,57 @@ end
 
 function Level:update(dt)
     for _, updateable in pairs(self.updateables) do
-        updateable:update(dt)
+        if self:renderableInFrame(updateable) then
+            updateable:update(dt)
+        end
     end
     for _, collidable in pairs(self.collidables) do
-        collidable:updateCollisions(dt)
+        if self:renderableInFrame(collidable) then
+            collidable:updateCollisions(dt)
+        end
     end
 end
 
 function Level:minVisbileIndexX()
-    local numTilesLeft = ((Constants.VIRTUAL_WIDTH / 2) / Constants.TILE_SIZE) + 1 -- plus one for buffer
+    local numTilesLeft = math.ceil((Constants.VIRTUAL_WIDTH / 2) / Constants.TILE_SIZE) + 1 -- plus one for buffer
     return math.max(self.player:lowestIndexX() - numTilesLeft, 1)
 end
 
 function Level:maxVisibleIndexX()
-    local numTilesRight = ((Constants.VIRTUAL_WIDTH / 2) / Constants.TILE_SIZE) + 1 -- plus one for buffer
+    local numTilesRight = math.ceil((Constants.VIRTUAL_WIDTH / 2) / Constants.TILE_SIZE) + 1 -- plus one for buffer
     return math.min(self.player:highestIndexX() + numTilesRight, #self.tiles)
 end
 
 function Level:minVisbileIndexY()
-    local numTilesLeft = ((Constants.VIRTUAL_HEIGHT / 2) / Constants.TILE_SIZE) + 1 -- plus one for buffer
+    local numTilesLeft = math.ceil((Constants.VIRTUAL_HEIGHT / 2) / Constants.TILE_SIZE) + 1 -- plus one for buffer
     return math.max(self.player:lowestIndexY() - numTilesLeft, 1)
 end
 
 function Level:maxVisibleIndexY()
-    local numTilesRight = ((Constants.VIRTUAL_HEIGHT / 2) / Constants.TILE_SIZE) + 1 -- plus one for buffer
+    local numTilesRight = math.ceil((Constants.VIRTUAL_HEIGHT / 2) / Constants.TILE_SIZE) + 1 -- plus one for buffer
     return math.min(self.player:highestIndexY() + numTilesRight, #self.tiles[1])
 end
 
+function Level:renderableInFrame(renderable)
+   return (
+        (renderable:lowestIndexX() <= self:maxVisibleIndexX()) and
+        (renderable:highestIndexX() >= self:minVisbileIndexX()) and
+        (renderable:lowestIndexY() <= self:maxVisibleIndexY()) and
+        (renderable:highestIndexY() >= self:minVisbileIndexY())
+    )
+end
 
 function Level:render()
     for indexX = self:minVisbileIndexX(), self:maxVisibleIndexX() do
         for indexY = self:minVisbileIndexY(), self:maxVisibleIndexY() do
+            -- print(indexX .. ", " .. indexY)
             self.tiles[indexX][indexY]:render()
         end
     end
     for _, renderable in pairs(self.renderables) do
-        renderable:render()
+        if self:renderableInFrame(renderable) then
+            renderable:render()
+        end
     end
 end
 
