@@ -85,10 +85,6 @@ function Ball:isfarAway()
     end
 end
 
-function Ball:destroy()
-    GlobalState.level:destroy(self)
-end
-
 function Ball:render()
     love.graphics.setColor(unpack(self.color))
     GlobalState.camera:rectangle(

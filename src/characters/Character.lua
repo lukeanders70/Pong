@@ -21,6 +21,8 @@ function Character:init(indexX, indexY, width, height, color, options)
 
     self.velocity = {x = 0, y = 0}
     self.acceleration = {x = 0, y = 0}
+
+    self.children = {}
 end
 
 function Character:update(dt)
@@ -31,22 +33,18 @@ function Character:update(dt)
         self.acceleration.y = Physics.GRAVITY
     end
     Physics.update(self, dt)
+    for _, child in pairs(self.children) do
+        child:update(dt)
+    end
 end
 
 function Character:collide(collidable, dt)
     if collidable.colliderType == ColliderTypes.CHARACTER then
         return
     elseif collidable.colliderType == ColliderTypes.BLOCK then
-        self:moveOutsideOf(collidable)
-        return
+        self:blockCollide(collidable, dt)
     elseif collidable.colliderType == ColliderTypes.HARM then
-        if (self.harmCollide) and (type(self.harmCollide) == "function") then
-            self:harmCollide(collidable, dt)
-        else
-            self:lowerHealth(1)
-            collidable:destroy()
-        end
-        return
+        self:harmCollide(collidable, dt)
     elseif collidable.colliderType == ColliderTypes.PADDLE then
         return
     else
@@ -54,16 +52,28 @@ function Character:collide(collidable, dt)
     end
 end
 
-function Character:lowerHealth(amout)
-    self.health = self.health - amout
-    if self.health <= 0 then
-        self:kill()
+function Character:blockCollide(collidable, dt)
+    self:moveOutsideOf(collidable)
+    for _, child in pairs(self.children) do
+        child:update(dt)
     end
 end
 
-function Character:kill()
+function Character:harmCollide(collidable, dt)
+    self:lowerHealth(1)
+    collidable:destroy()
+end
+
+function Character:lowerHealth(amout)
+    self.health = self.health - amout
+    if self.health <= 0 then
+        self:destroy()
+    end
+end
+
+function Character:destroy()
     self.alive = false
-    GlobalState.level:destroy(self)
+    Collidable.destroy(self)
 end
 
 function Character:render()
@@ -76,6 +86,9 @@ function Character:render()
         self.height
     )
     love.graphics.setColor(255,255,255,255)
+    for _, child in pairs(self.children) do
+        child:render()
+    end
 end
 
 return Character

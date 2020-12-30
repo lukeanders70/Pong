@@ -218,4 +218,8 @@ function Collidable:getCollisionCandidates(excludeBlocks)
     return candidates
 end
 
+function Collidable:destroy()
+    GlobalState.level:destroy(self)
+end
+
 return Collidable

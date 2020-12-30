@@ -10,7 +10,7 @@ function Player:init(indexX, indexY)
     local height = 64
     local color = {0, 10, 50, 255}
 
-    Character.init(self, indexX, indexY, width, height, color, {health=100})
+    Character.init(self, indexX, indexY, width, height, color, {health=3})
     self.id = "player"
     self.paddleRight = Paddle(
         self,
@@ -35,6 +35,8 @@ function Player:init(indexX, indexY)
 
     GlobalState.level.collidables[self.paddleRight.id] = self.paddleRight
     GlobalState.level.collidables[self.paddleRight.id] = self.paddleLeft
+
+    self.children = { self.paddleRight, self.paddleLeft }
 end
 
 function Player:update(dt)
@@ -68,12 +70,6 @@ function Player:capMovementSpeed()
     end
 end
 
-function Player:collide(collidable, dt)
-    Character.collide(self, collidable, dt)
-    self.paddleRight:update(dt)
-    self.paddleLeft:update(dt)
-end
-
 function Player:harmCollide(collidable, dt)
     local velocityBefore = {x = collidable.velocity.x, y = collidable.velocity.y}
     collidable:moveOutsideOf(self)
@@ -87,8 +83,6 @@ end
 
 function Player:render()
     Character.render(self)
-    self.paddleRight:render()
-    self.paddleLeft:render()
 end
 
 function Player:left()
