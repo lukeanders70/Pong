@@ -41,18 +41,37 @@ function Ball:collide(collidable)
         -- normally will result in damage to the character,
         -- and destruction of the ball, but we leave that to the character to determine
         return
-    elseif (collidable.colliderType == ColliderTypes.BLOCK) or (collidable.colliderType == ColliderTypes.PADDLE) then
-        self.acceleration.y = 0
+    elseif (collidable.colliderType == ColliderTypes.BLOCK) then
+        self:blockCollide(collidable)
+    elseif(collidable.colliderType == ColliderTypes.PADDLE) then
+        self:paddleCollide(collidable)
+    elseif collidable.colliderType == ColliderTypes.HARM then
+        return
+    else
+        logger("w", "Unhandled Collider type in Ball.lua: " .. tostring(collidable.colliderType))
+    end
+end
 
-        local velocityBefore = {x = self.velocity.x, y = self.velocity.y}
-        local moveData = self:moveOutsideOf(collidable)
-        self.velocity = velocityBefore
+function Ball:blockCollide(collidable)
+    self:bounceCollide(collidable)
+end
 
-        self.bounces = self.bounces - 1
-        if self.bounces < 0 then
-            self:destroy()
-        end
-        
+function Ball:paddleCollide(collidable)
+    self:bounceCollide(collidable)
+end
+
+function Ball:bounceCollide(collidable)
+    self.acceleration.y = 0
+
+    local velocityBefore = {x = self.velocity.x, y = self.velocity.y}
+    local moveData = self:moveOutsideOf(collidable)
+    self.velocity = velocityBefore
+
+    self.bounces = self.bounces - 1
+    if self.bounces < 0 then
+        self:destroy()
+    end
+    if moveData and moveData.axis then
         if (moveData.axis == "x") or (moveData.axis == "y") then
             if sameSign({moveData.direction[moveData.axis], self.velocity[moveData.axis], collidable.velocity[moveData.axis]}) then
                 self.velocity[moveData.axis] = collidable.velocity[moveData.axis] + self.velocity[moveData.axis]
@@ -62,14 +81,10 @@ function Ball:collide(collidable)
         else
             logger("w", "Ball collided with unrecognized axis: " .. tostring(axis))
         end 
+    end
 
-        if collidable.velocity.y ~= 0 then
-            self.acceleration.y = collidable.velocity.y * self.SPIN_COEFFICIENT
-        end
-    elseif collidable.colliderType == ColliderTypes.HARM then
-        return
-    else
-        logger("w", "Unhandled Collider type in Ball.lua: " .. tostring(collidable.colliderType))
+    if collidable.velocity.y ~= 0 then
+        self.acceleration.y = collidable.velocity.y * self.SPIN_COEFFICIENT
     end
 end
 
