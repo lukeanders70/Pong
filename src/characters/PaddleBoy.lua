@@ -22,11 +22,10 @@ end
 function PaddleBoy:update(dt)
     if (self.directionMultiplier == -1) and (not self:anyBlockBelowAndLeft()) then
         self.directionMultiplier = 1
-        self.velocity.x = PaddleBoy.MOVEMENT_SPEED * self.directionMultiplier
     elseif (self.directionMultiplier == 1) and (not self:anyBlockBelowAndRight()) then
         self.directionMultiplier = -1
-        self.velocity.x = PaddleBoy.MOVEMENT_SPEED * self.directionMultiplier
     end
+    self.velocity.x = PaddleBoy.MOVEMENT_SPEED * self.directionMultiplier
     self:updatePaddle(dt)
     PaddlerType.update(self, dt)
 end
