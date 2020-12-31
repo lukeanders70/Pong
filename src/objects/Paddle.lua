@@ -3,8 +3,6 @@ local ColliderTypes = require('src/objects/ColliderTypes')
 
 local Paddle = Class{__includes = Collidable}
 
-
-Paddle.FIDELITY = 0.3
 Paddle.PADDLE_WIDTH = 2
 function Paddle:init(parent, x, y, xOffset, yOffset, height, range, color)
     assert( (range[2] - range[1]) >= height)
@@ -30,9 +28,8 @@ function Paddle:init(parent, x, y, xOffset, yOffset, height, range, color)
     self.colliderType = ColliderTypes.PADDLE
 end
 
-function Paddle:update(dt)
-    local moveY = love.mouse.mousePositionGameY - love.mouse.lastMousePositionGameY
-    self:setYOffset(self.yOffset + (moveY * self.FIDELITY))
+function Paddle:update(dt, moveY)
+    self:setYOffset(self.yOffset + (moveY or 0))
     self.lastX = self.x
     self.lastY = self.y
     self.x = self.parent.x + self.xOffset
@@ -51,7 +48,7 @@ function Paddle:collide(collidable)
     elseif collidable.colliderType == ColliderTypes.HARM then
         return
     else
-        logger("w", "Unhandled Collider type in Charater.lua: " .. tostring(collidable.colliderType))
+        logger("w", "Unhandled Collider type in Paddle.lua: " .. tostring(collidable.colliderType))
     end
 end
 

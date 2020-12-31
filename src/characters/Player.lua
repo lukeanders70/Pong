@@ -9,7 +9,7 @@ function Player:init(indexX, indexY)
     local height = 64
     local color = {0, 10, 50, 255}
 
-    PaddlerType.init(self, indexX, indexY, width, height, color, { health=3 })
+    PaddlerType.init(self, indexX, indexY, width, height, color, { health = 3, cursorPaddle = true })
     self.id = "player"
 end
 

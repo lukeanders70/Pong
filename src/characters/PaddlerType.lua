@@ -1,13 +1,22 @@
 local Character = require('src/characters/Character')
 local Paddle = require('src/objects/Paddle')
+local CursorPaddle = require('src/objects/CursorPaddle')
+
 
 local PaddlerType = Class{__includes = Character}
 
 PaddlerType.PADDLE_HEIGHT = 20
 function PaddlerType:init(indexX, indexY, width, height, color, options)
 
+    local paddleClass
+    if options.cursorPaddle then
+        paddleClass = CursorPaddle
+    else
+        paddleClass = Paddle
+    end
+    
     Character.init(self, indexX, indexY, width, height, color, options)
-    self.paddleRight = Paddle(
+    self.paddleRight = paddleClass(
         self,
         self.x + self.width - 1,
         self.y,
@@ -17,7 +26,7 @@ function PaddlerType:init(indexX, indexY, width, height, color, options)
         {0, self.height},
         {255, 255, 255, 255}
     )
-    self.paddleLeft = Paddle(
+    self.paddleLeft = paddleClass(
         self,
         self.x - Paddle.PADDLE_WIDTH,
         self.y,
