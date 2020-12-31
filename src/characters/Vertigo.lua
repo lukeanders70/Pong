@@ -1,27 +1,17 @@
-local Character = require('src/characters/Character')
+local TurretType = require('src/characters/TurretType')
 local Ball = require('src/objects/Ball')
 
-local Vertigo = Class{__includes = Character}
+local Vertigo = Class{__includes = TurretType}
 
 Vertigo.MAX_MOVEMENT_SPEED = 40
 Vertigo.INDEX_RANGE = 1 -- the number of blocks (up and down) vertigo will fly to
-Vertigo.FIRE_SPEED = 100
-Vertigo.SIGHT_RANGE = 6
 function Vertigo:init(indexX, indexY)
-    local width = 20
-    local height = 20
-    local color = {255, 100, 100, 255}
-    Character.init(self, indexX, indexY, width, height, color, { gravity = false })
+
+    TurretType.init(self, indexX, indexY)
+
     self.directionMultiplier = -1
     self.velocity.y = self.directionMultiplier * Vertigo.MAX_MOVEMENT_SPEED
     self.startingIndex = indexY
-    self.noFriction = true
-    Timer.every(3, function()
-        if self.alive then
-            self:attack()
-        end
-        return self.alive
-    end)
 end
 
 function Vertigo:update(dt)
@@ -33,28 +23,7 @@ function Vertigo:update(dt)
         self.y = ((self.startingIndex + Vertigo.INDEX_RANGE) * Constants.TILE_SIZE)
     end
     self.velocity.y = Vertigo.MAX_MOVEMENT_SPEED * self.directionMultiplier
-    Character.update(self, dt)
-end
-
-function Vertigo:attack()
-    if GlobalState.level.player then
-        local player = GlobalState.level.player
-        local distance = vectorEuclidian(self:getCenter(), player:getCenter())
-        local direction = vectorDirection(self:getCenter(), player:getCenter())
-        if distance < (Vertigo.SIGHT_RANGE * Constants.TILE_SIZE) then
-            local ball = Ball(
-                self:getCenter().x,
-                self:getCenter().y,
-                {x = direction.x * self.FIRE_SPEED, y = direction.y * self.FIRE_SPEED},
-                3,
-                {255, 255, 255, 255}
-            )
-            ball:moveOutsideOf(self, direction)
-            ball.velocity = {x = direction.x * self.FIRE_SPEED, y = direction.y * self.FIRE_SPEED}
-            GlobalState.level:addBall(ball)
-            ball:update(0.01) -- move it a little away so that if Flappy updates first it does not move into it and kill itself :(
-        end
-    end
+    TurretType.update(self, dt)
 end
 
 function Vertigo:isOutOfIndexRangeDown()
