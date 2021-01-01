@@ -47,7 +47,7 @@ function Player:characterCollide(collidable, dt)
         self:lowerHealth(1)
         local moveData = self:moveOutsideOf(collidable)
         if moveData.direction then
-            self.velocity = vectorAdd(vectorScalerMultiply(moveData.direction, 1000), self.velocity)
+            self.velocity = vectorAdd(vectorScalerMultiply(moveData.direction, 500), self.velocity)
         end
         for _, child in pairs(self.children) do
             child:update(dt)

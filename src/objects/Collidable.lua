@@ -15,6 +15,8 @@ function Collidable:init(params)
     self.velocity = {x = 0, y = 0}
     self.acceleration = {x = 0, y = 0}
 
+    self.destroyed = false
+
     self.id = tostring(self.x) .. tostring(self.y)
 end
 
@@ -219,6 +221,7 @@ function Collidable:getCollisionCandidates(excludeBlocks)
 end
 
 function Collidable:destroy()
+    self.destroyed = true
     GlobalState.level:destroy(self)
 end
 

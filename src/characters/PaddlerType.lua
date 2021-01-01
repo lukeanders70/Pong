@@ -14,7 +14,7 @@ function PaddlerType:init(indexX, indexY, width, height, color, options)
     else
         paddleClass = Paddle
     end
-    
+
     Character.init(self, indexX, indexY, width, height, color, options)
     self.paddleRight = paddleClass(
         self,
@@ -24,7 +24,8 @@ function PaddlerType:init(indexX, indexY, width, height, color, options)
         0,
         PaddlerType.PADDLE_HEIGHT,
         {0, self.height},
-        {255, 255, 255, 255}
+        {255, 255, 255, 255},
+        "right"
     )
     self.paddleLeft = paddleClass(
         self,
@@ -34,7 +35,8 @@ function PaddlerType:init(indexX, indexY, width, height, color, options)
         0,
         PaddlerType.PADDLE_HEIGHT,
         {0, self.height},
-        {255, 255, 255, 255}
+        {255, 255, 255, 255},
+        "left"
     )
 
     GlobalState.level.collidables[self.paddleRight.id] = self.paddleRight
