@@ -1,10 +1,11 @@
 local Collidable = require('src/objects/Collidable')
 local ColliderTypes = require('src/objects/ColliderTypes')
+local TileTextureIndex = require('src/textures/TileTextureIndex')
 
 local TileBase = Class{__includes = Collidable}
 
 TileBase.color = {0, 0, 0, 255}
-function TileBase:init(indexX, indexY)
+function TileBase:init(indexX, indexY, isSolid)
     Collidable.init(self, 
     {
         x = Constants.TILE_SIZE * (indexX - 1),
@@ -12,35 +13,38 @@ function TileBase:init(indexX, indexY)
         width = Constants.TILE_SIZE,
         height = Constants.TILE_SIZE
     })
+    self.solid = isSolid
     self.indexX = indexX
     self.indexY = indexY
 end
 
-function TileBase:render()
-    love.graphics.setColor(unpack(self.color))
-    GlobalState.camera:rectangle(
-        "fill",
-        self.x,
-        self.y,
-        Constants.TILE_SIZE,
-        Constants.TILE_SIZE
-    )
-    love.graphics.setColor(255,255,255,255)
-end
-
 local Tiles = {
     Sky = Class{__includes = TileBase,
-        color = {100, 100, 100, 255},
+        color = {143, 169, 255, 255},
         init = function(self, indexX, indexY, isSolid)
-            TileBase.init(self, indexX, indexY)
-            self.solid = isSolid
+            TileBase.init(self, indexX, indexY, isSolid)
+            self.image = nil
         end
     },
-    Cubit = Class{__includes = TileBase,
+    Dirt = Class{__includes = TileBase,
         color = {200, 200, 200, 255},
         init = function(self, indexX, indexY, isSolid)
-            TileBase.init(self, indexX, indexY)
-            self.solid = isSolid
+            TileBase.init(self, indexX, indexY, isSolid)
+            self.image = TileTextureIndex.fromId(1)
+        end
+    },
+    FossilDirt = Class{__includes = TileBase,
+        color = {200, 200, 200, 255},
+        init = function(self, indexX, indexY, isSolid)
+            TileBase.init(self, indexX, indexY, isSolid)
+            self.image = TileTextureIndex.fromId(2)
+        end
+    },
+    Grass = Class{__includes = TileBase,
+        color = {200, 200, 200, 255},
+        init = function(self, indexX, indexY, isSolid)
+            TileBase.init(self, indexX, indexY, isSolid)
+            self.image = TileTextureIndex.fromId(3)
         end
     }
 }   

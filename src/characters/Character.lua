@@ -81,15 +81,7 @@ function Character:destroy()
 end
 
 function Character:render()
-    love.graphics.setColor(unpack(self.color))
-    GlobalState.camera:rectangle(
-        "fill",
-        self.x,
-        self.y,
-        self.width,
-        self.height
-    )
-    love.graphics.setColor(255,255,255,255)
+    Collidable.render(self)
     for _, child in pairs(self.children) do
         child:render()
     end

@@ -1,16 +1,14 @@
 local ColliderTypes = require('src/objects/ColliderTypes')
 local Directions = require('src/objects/Directions')
+local Renderable = require('src/objects/Renderable')
 
-local Collidable = Class{}
+local Collidable = Class{__includes = Renderable}
 
 function Collidable:init(params)
     self.colliderType = ColliderTypes.BLOCK
     self.solid = true
 
-    self.x = assert(params.x)
-    self.y = assert(params.y)
-    self.width = assert(params.width)
-    self.height = assert(params.height)
+    Renderable.init(self, params.x, params.y, params.width, params.height)
 
     self.velocity = {x = 0, y = 0}
     self.acceleration = {x = 0, y = 0}
@@ -19,11 +17,6 @@ function Collidable:init(params)
 
     self.id = tostring(self.x) .. tostring(self.y)
 end
-
-function Collidable:upperLeft() return {x = self.x, y = self.y} end
-function Collidable:upperRight() return {x = self.x + self.width - 1, y = self.y} end
-function Collidable:lowerLeft() return {x = self.x, y = self.y + self.height - 1} end
-function Collidable:lowerRight() return {x = self.x + self.width - 1, y = self.y + self.height - 1} end
 
 function Collidable:conditionallyColide(collidable, dt)
     if self.solid and collidable.solid and self:intersect(collidable) then
@@ -45,12 +38,6 @@ function Collidable:updateCollisions(dt, collidables)
     for _, collidable in pairs(collidables) do
         self:conditionallyColide(collidable, dt)
     end
-end
-
-function Collidable:getCenter(x, y)
-    x = x or self.x
-    y = y or self.y
-    return {x = x + (0.5 * self.width), y = y + (0.5 * self.height)}
 end
 
 function Collidable:intersect(col2)
@@ -183,22 +170,6 @@ function Collidable:moveOutsideOf(collidable, direction)
     return nil
 end
 
-function Collidable:lowestIndexX()
-    return math.floor( (self.x) / Constants.TILE_SIZE) + 1 
-end
-
-function Collidable:highestIndexX()
-    return math.floor( (self.x + self.width) / Constants.TILE_SIZE) + 1
-end
-
-function Collidable:lowestIndexY()
-    return math.floor( (self.y) / Constants.TILE_SIZE) + 1
-end
-
-function Collidable:highestIndexY()
-    return math.floor( (self.y + self.height) / Constants.TILE_SIZE) + 1
-end
-
 function Collidable:getCollisionCandidates(excludeBlocks)
     local priorityCandidates = table.filter(GlobalState.level.priorityCollidables, function(k,v)
         return (not (v == self)) and (not (startsWith(v.id, self.id .. '-')))
@@ -223,6 +194,10 @@ end
 function Collidable:destroy()
     self.destroyed = true
     GlobalState.level:destroy(self)
+end
+
+function Collidable:render()
+    Renderable.render(self)
 end
 
 return Collidable

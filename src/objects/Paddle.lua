@@ -47,6 +47,8 @@ function Paddle:collide(collidable)
         return
     elseif collidable.colliderType == ColliderTypes.HARM then
         return
+    elseif collidable.colliderType == ColliderTypes.PADDLE then
+        return
     else
         logger("w", "Unhandled Collider type in Paddle.lua: " .. tostring(collidable.colliderType))
     end

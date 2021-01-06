@@ -1,8 +1,10 @@
 local PaddlerType = require('src/characters/PaddlerType')
 local Paddle = require('src/objects/Paddle')
+local CharacterTextureIndex = require('src/textures/CharacterTextureIndex')
 
 local Player = Class{__includes = PaddlerType}
 
+Player.TEXTURE_PATH = ''
 Player.MAX_MOVEMENT_SPEED = 300
 function Player:init(indexX, indexY)
     local width = 20
@@ -11,15 +13,30 @@ function Player:init(indexX, indexY)
 
     PaddlerType.init(self, indexX, indexY, width, height, color, { health = 3, cursorPaddle = true })
     self.id = "player"
+    self.staticImage = CharacterTextureIndex.fromCharacterName('player', self.width, self.height, false)
+    self.moveAnimation = CharacterTextureIndex.fromCharacterName('player-walk', self.width, self.height, true)
+
+    self.image = self.staticImage
 end
 
 function Player:update(dt)
     self.acceleration.x = 0
     self.acceleration.y = 0
     if love.keyboard.isDown( 'a' ) then
+        if self.image == self.staticImage then 
+            self.image = self.moveAnimation
+            self.moveAnimation:continousCycling()
+        end
         self:left()
     elseif love.keyboard.isDown( 'd' ) then
+        if self.image == self.staticImage then 
+            self.image = self.moveAnimation
+            self.moveAnimation:continousCycling()
+        end
         self:right()
+    elseif self.image == self.moveAnimation then
+        self.image = self.staticImage
+        self.moveAnimation:stopCycle()
     end
     if love.keyboard.isDown( 'w' ) then
         self:jump()
