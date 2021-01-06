@@ -7,6 +7,9 @@ function Renderable:init(x, y, width, height)
     self.y = assert(y)
     self.width = assert(width)
     self.height = assert(height)
+
+    self.xScale = 1
+    self.xRenderOffset = 0
 end
 
 function Renderable:upperLeft() return {x = self.x, y = self.y} end
@@ -36,9 +39,19 @@ function Renderable:highestIndexY()
     return math.floor( (self.y + self.height) / Constants.TILE_SIZE) + 1
 end
 
+function Renderable:flipHorizontal()
+    self.xScale = -1
+	self.xRenderOffset = self.width
+end
+
+function Renderable:unflipHorizontal()
+    self.xScale = 1
+	self.xRenderOffset = 0
+end
+
 function Renderable:render()
     if self.image then
-        GlobalState.camera:draw(self.image.texture, self.image.quad, self.x,  self.y)
+        GlobalState.camera:draw(self.image.texture, self.image.quad, self.x, self.y, nil, nil, self.xScale, 1, self.xRenderOffset)
     elseif self.color then
         love.graphics.setColor(unpack(self.color))
         GlobalState.camera:rectangle(

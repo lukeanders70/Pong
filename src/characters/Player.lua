@@ -27,12 +27,14 @@ function Player:update(dt)
             self.image = self.moveAnimation
             self.moveAnimation:continousCycling()
         end
+        self:flipHorizontal()
         self:left()
     elseif love.keyboard.isDown( 'd' ) then
         if self.image == self.staticImage then 
             self.image = self.moveAnimation
             self.moveAnimation:continousCycling()
         end
+        self:unflipHorizontal()
         self:right()
     elseif self.image == self.moveAnimation then
         self.image = self.staticImage
