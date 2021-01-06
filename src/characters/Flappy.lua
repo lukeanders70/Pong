@@ -1,5 +1,7 @@
 local TurretType = require('src/characters/TurretType')
 local Ball = require('src/objects/Ball')
+local CharacterTextureIndex = require('src/textures/CharacterTextureIndex')
+
 
 local Flappy = Class{__includes = TurretType}
 
@@ -14,6 +16,11 @@ function Flappy:init(indexX, indexY)
     self.directionMultiplier = -1
     self.velocity.x = self.directionMultiplier * Flappy.MAX_MOVEMENT_SPEED
     self.startingIndex = indexX
+
+    self.staticImage = CharacterTextureIndex.fromCharacterName('flappy', self.width, self.height, false)
+    self.attackAnimation = CharacterTextureIndex.fromCharacterName('flappy-turn', self.width, self.height, true)
+
+    self.image = self.staticImage
 end
 
 function Flappy:update(dt)
@@ -26,6 +33,16 @@ function Flappy:update(dt)
     end
     self.velocity.x = Flappy.MAX_MOVEMENT_SPEED * self.directionMultiplier
     TurretType.update(self, dt)
+end
+
+function Flappy:attack()
+    local didFire = TurretType.attack(self)
+    if didFire then
+        self.image = self.attackAnimation
+        self.attackAnimation:cycleOnce(function()
+            self.image = self.staticImage
+        end)
+    end
 end
 
 function Flappy:isOutOfIndexRangeLeft()

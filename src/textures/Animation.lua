@@ -36,7 +36,7 @@ function Animation:init(texture, quads)
     self.currentTimer = nil
 end
 
-function Animation:cycleOnce()
+function Animation:cycleOnce(callback)
     if self.currentTimer then
         self.currentTimer:remove()
         self.currentTimer = nil
@@ -47,6 +47,9 @@ function Animation:cycleOnce()
         self:cycle()
     end):limit(self.numFrames - 1)
 
+    if callback and type(callback) == 'function' then
+        self.currentTimer:finish(callback)
+    end
 end
 
 function Animation:continousCycling()
