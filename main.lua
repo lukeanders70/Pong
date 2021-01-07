@@ -30,7 +30,7 @@ function love.load(args)
 		Constants.WINDOW_HIGHT,
 		{
 			vsync = true,
-			fullscreen = false,
+			fullscreen = true,
 			resizable = true,
 			canvas = true
 		}

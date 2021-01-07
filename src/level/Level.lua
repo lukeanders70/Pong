@@ -2,6 +2,7 @@ local Tiles = require('src/level/Tiles')
 local TileMap = require('src/level/TileMap')
 local Player = require('src/characters/Player')
 local EnemyMap = require('src/characters/EnemyMap')
+local Image = require('src/textures/Image')
 
 local Level = Class{}
 
@@ -32,6 +33,11 @@ function Level:init(id)
     self.updateables[self.player.id] = self.player
     self.renderables[self.player.id] = self.player
     self.collidables[self.player.id] = self.player
+
+    -- images
+    self.heartImage = Image.createFromName("heart")
+    self.background = Image.createFromName(self.metaData.background)
+    self.midground = Image.createFromName(self.metaData.midground)
 end
 
 function Level:addEnemies(enemies)
@@ -209,7 +215,27 @@ function Level:renderableInFrame(renderable)
     )
 end
 
+function Level:renderHearts()
+    local x = 5
+    local y = 5
+    for i = 1, self.player.health do 
+        love.graphics.draw( self.heartImage.texture, self.heartImage.quad, x, y)
+        x = x + 25
+    end
+end
+
+function Level:renderBackground()
+    
+    if self.background then
+        love.graphics.draw(self.background.texture, self.background.quad, 0, 0)
+    end
+    if self.midground then
+        love.graphics.draw(self.midground.texture, self.background.quad, 0, 0)
+    end
+end
+
 function Level:render()
+    self:renderBackground()
     for indexX = self:minVisbileIndexX(), self:maxVisibleIndexX() do
         for indexY = self:minVisbileIndexY(), self:maxVisibleIndexY() do
             -- print(indexX .. ", " .. indexY)
@@ -221,6 +247,7 @@ function Level:render()
             renderable:render()
         end
     end
+    self:renderHearts()
 end
 
 return Level

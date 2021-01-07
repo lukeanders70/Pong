@@ -20,7 +20,7 @@ end
 
 local Tiles = {
     Sky = Class{__includes = TileBase,
-        color = {143, 169, 255, 255},
+        color = {0, 0, 0, 0},
         init = function(self, indexX, indexY, isSolid)
             TileBase.init(self, indexX, indexY, isSolid)
             self.image = nil
