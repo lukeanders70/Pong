@@ -231,10 +231,11 @@ end
 function Level:renderBackground()
     
     if self.background then
-        love.graphics.draw(self.background.texture, self.background.quad, 0, 0)
+        love.graphics.draw(self.background.texture, 0, 0)
     end
     if self.midground then
-        love.graphics.draw(self.midground.texture, self.background.quad, 0, 0)
+        local xOffset = math.floor(GlobalState.camera.x_offest / 3)
+        love.graphics.draw(self.midground.texture, xOffset, 0)
     end
 end
 
