@@ -5,16 +5,26 @@ local Camera = Class{}
 function Camera:init()
 	self.x_offest = 0
 	self.y_offset = 0
+
+	self:setLimits()
+end
+
+function Camera:setX(newX)
+	self.x_offest = math.min(math.max(-self.xMax, newX), -self.xMin)
+end
+
+function Camera:setY(newY)
+	self.y_offset = math.min(math.max(-self.yMax, newY), -self.yMin)
 end
 
 function Camera:translate(dx, dy)
-	self.x_offest = self.x_offest + dx
-	self.y_offset = self.y_offset + dy
+	self:setX(self.x_offest + dx)
+	self:setY(self.y_offset + dy)
 end
 
 function Camera:returnToOrigin()
-	self.x_offest = 0
-	self.y_offset = 0
+	self:setX(0)
+	self:setY(0)
 end
 
 -- object must have x, y (in object coordinates), height, width
@@ -29,8 +39,16 @@ function Camera:centerOnObject(object, parent)
 		objectCenterY = object.y + (0.5 * object.height)
 	end
 
-	self.x_offest = (0.5 * Constants.VIRTUAL_WIDTH) - objectCenterX
-	self.y_offset = (0.5 * Constants.VIRTUAL_HEIGHT) - objectCenterY
+	self:setX((0.5 * Constants.VIRTUAL_WIDTH) - objectCenterX)
+	self:setY((0.5 * Constants.VIRTUAL_HEIGHT) - objectCenterY)
+end
+
+function Camera:setLimits(limits)
+	limits = limits or {}
+	self.xMin = limits.xMin or  (-math.huge)
+	self.xMax = limits.xMax or (math.huge)
+	self.yMin = limits.yMin or (-math.huge)
+	self.yMax = limits.yMax or (math.huge)
 end
 
 -- Given x and y in Camera Space (that is, where top-left of camera view is zero), convert to object coordinate plane space

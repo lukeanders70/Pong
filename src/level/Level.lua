@@ -40,6 +40,14 @@ function Level:init(id)
     self.midground = Image.createFromName(self.metaData.midground)
 end
 
+function Level:yMax()
+    return #self.tiles[1] * Constants.TILE_SIZE
+end
+
+function Level:xMax()
+    return #self.tiles * Constants.TILE_SIZE
+end
+
 function Level:addEnemies(enemies)
     if enemies then
         for _, enemy in pairs(enemies) do
@@ -187,23 +195,19 @@ function Level:update(dt)
 end
 
 function Level:minVisbileIndexX()
-    local numTilesLeft = math.ceil((Constants.VIRTUAL_WIDTH / 2) / Constants.TILE_SIZE) + 1 -- plus one for buffer
-    return math.max(self.player:lowestIndexX() - numTilesLeft, 1)
+    return math.floor(math.max((-GlobalState.camera.x_offest / Constants.TILE_SIZE) -1, 1))
 end
 
 function Level:maxVisibleIndexX()
-    local numTilesRight = math.ceil((Constants.VIRTUAL_WIDTH / 2) / Constants.TILE_SIZE) + 1 -- plus one for buffer
-    return math.min(self.player:highestIndexX() + numTilesRight, #self.tiles)
+    return math.ceil(math.min(((-GlobalState.camera.x_offest + Constants.VIRTUAL_WIDTH) / Constants.TILE_SIZE) + 1, #self.tiles))
 end
 
 function Level:minVisbileIndexY()
-    local numTilesLeft = math.ceil((Constants.VIRTUAL_HEIGHT / 2) / Constants.TILE_SIZE) + 1 -- plus one for buffer
-    return math.max(self.player:lowestIndexY() - numTilesLeft, 1)
+    return math.floor(math.max((-GlobalState.camera.y_offset / Constants.TILE_SIZE) -1, 1))
 end
 
 function Level:maxVisibleIndexY()
-    local numTilesRight = math.ceil((Constants.VIRTUAL_HEIGHT / 2) / Constants.TILE_SIZE) + 1 -- plus one for buffer
-    return math.min(self.player:highestIndexY() + numTilesRight, #self.tiles[1])
+    return math.ceil(math.min(((-GlobalState.camera.y_offset + Constants.VIRTUAL_HEIGHT) / Constants.TILE_SIZE) + 1, #self.tiles[1]))
 end
 
 function Level:renderableInFrame(renderable)
