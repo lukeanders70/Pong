@@ -7,6 +7,7 @@ function Image.createFromName(name)
 end
 
 function Image:init(texture, quad)
+    self.width, self.height = texture:getDimensions()
     self.texture = texture
     self.quad = quad
 end

@@ -234,8 +234,11 @@ function Level:renderBackground()
         love.graphics.draw(self.background.texture, 0, 0)
     end
     if self.midground then
-        local xOffset = math.floor(GlobalState.camera.x_offest / 3)
-        love.graphics.draw(self.midground.texture, xOffset, 0)
+        local xOffset = math.fmod((GlobalState.camera.x_offest / 2), self.midground.width)
+        while xOffset < Constants.VIRTUAL_WIDTH do
+            love.graphics.draw(self.midground.texture, xOffset, 0)
+            xOffset = xOffset + self.midground.width
+        end
     end
 end
 
