@@ -38,8 +38,8 @@ function Paddle:update(dt, moveY)
     self:setYOffset(self.yOffset + (moveY or 0))
     self.lastX = self.x
     self.lastY = self.y
-    self.x = round(self.parent.x + self.xOffset)
-    self.y = round(self.parent.y + self.yOffset)
+    self.x = self.parent.x + self.xOffset
+    self.y = self.parent.y + self.yOffset
     self.velocity.x = self.parent.velocity.x
     -- velocity needs to account for parent velocity and the fact that we're moving the paddle with the cursor
     self.velocity.y = self.parent.velocity.y + ((self.y - self.lastY) / dt)

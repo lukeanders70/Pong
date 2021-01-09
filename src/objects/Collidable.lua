@@ -192,6 +192,7 @@ function Collidable:getCollisionCandidates(excludeBlocks)
 end
 
 function Collidable:destroy()
+    print("collidable destroy " .. self.id)
     self.destroyed = true
     GlobalState.level:destroy(self)
 end

@@ -78,6 +78,9 @@ end
 function Character:destroy()
     self.alive = false
     Collidable.destroy(self)
+    for _, child in pairs(self.children) do
+        child:destroy()
+    end
 end
 
 function Character:render()
