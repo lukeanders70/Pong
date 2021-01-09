@@ -3,6 +3,7 @@ local TileMap = require('src/level/TileMap')
 local Player = require('src/characters/Player')
 local EnemyMap = require('src/characters/EnemyMap')
 local Image = require('src/textures/Image')
+local Midground = require('src/objects/Midground')
 
 local Level = Class{}
 
@@ -37,15 +38,14 @@ function Level:init(id)
     -- images
     self.heartImage = Image.createFromName("heart")
     self.background = Image.createFromName(self.metaData.background)
-    self.midground = Image.createFromName(self.metaData.midground)
-end
+    self.midgrounds = {}
+    for imagePath, paralaxDivider in pairs(self.metaData.midgrounds) do
+        table.insert(self.midgrounds, Midground(Image.createFromName(imagePath), paralaxDivider))
+    end
 
-function Level:yMax()
-    return #self.tiles[1] * Constants.TILE_SIZE
-end
-
-function Level:xMax()
-    return #self.tiles * Constants.TILE_SIZE
+    -- useful values
+    self.yMax = #self.tiles[1] * Constants.TILE_SIZE
+    self.xMax = #self.tiles * Constants.TILE_SIZE
 end
 
 function Level:addEnemies(enemies)
@@ -212,10 +212,10 @@ end
 
 function Level:renderableInFrame(renderable)
    return (
-        (renderable:lowestIndexX() <= self:maxVisibleIndexX()) and
-        (renderable:highestIndexX() >= self:minVisbileIndexX()) and
-        (renderable:lowestIndexY() <= self:maxVisibleIndexY()) and
-        (renderable:highestIndexY() >= self:minVisbileIndexY())
+        (renderable:upperLeft().x <= Constants.VIRTUAL_WIDTH - GlobalState.camera.x_offest) and
+        (renderable:lowerRight().x >= -GlobalState.camera.x_offest) and
+        (renderable:upperLeft().y <= Constants.VIRTUAL_HEIGHT - GlobalState.camera.y_offset) and
+        (renderable:lowerRight().y >= -GlobalState.camera.y_offset)
     )
 end
 
@@ -233,12 +233,8 @@ function Level:renderBackground()
     if self.background then
         love.graphics.draw(self.background.texture, 0, 0)
     end
-    if self.midground then
-        local xOffset = math.fmod((GlobalState.camera.x_offest / 2), self.midground.width)
-        while xOffset < Constants.VIRTUAL_WIDTH do
-            love.graphics.draw(self.midground.texture, xOffset, 0)
-            xOffset = xOffset + self.midground.width
-        end
+    for _, midground in pairs(self.midgrounds) do
+        midground:render()
     end
 end
 

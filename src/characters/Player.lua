@@ -44,6 +44,7 @@ function Player:update(dt)
         self:jump()
     end
     self:capMovementSpeed()
+    self:capPosition()
     PaddlerType.update(self, dt)
 end
 
@@ -58,6 +59,18 @@ function Player:capMovementSpeed()
         self.velocity.y = Player.MAX_MOVEMENT_SPEED
     elseif self.velocity.y < (- Player.MAX_MOVEMENT_SPEED) then
         self.velocity.y = - Player.MAX_MOVEMENT_SPEED
+    end
+end
+
+function Player:capPosition()
+    if self.x < 0 then
+        self.velocity.x = 0
+        self.acceleration.x = 0
+        self.x = 0
+    elseif self.x + self.width > GlobalState.level.xMax then
+        self.velocity.x = 0
+        self.acceleration.x = 0
+        self.x = GlobalState.level.xMax - self.width
     end
 end
 

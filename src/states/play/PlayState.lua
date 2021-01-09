@@ -16,8 +16,8 @@ function PlayState:enter(params)
 
     GlobalState.camera:setLimits({
         xMin = 0,
-        xMax = math.max(self.level:xMax() - Constants.VIRTUAL_WIDTH, 0),
-        yMax = self.level:yMax() - Constants.VIRTUAL_HEIGHT
+        xMax = math.max(self.level.xMax - Constants.VIRTUAL_WIDTH, 0),
+        yMax = self.level.yMax - Constants.VIRTUAL_HEIGHT
     })
 end
 
