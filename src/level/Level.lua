@@ -39,8 +39,8 @@ function Level:init(id)
     self.heartImage = Image.createFromName("heart")
     self.background = Image.createFromName(self.metaData.background)
     self.midgrounds = {}
-    for imagePath, paralaxDivider in pairs(self.metaData.midgrounds) do
-        table.insert(self.midgrounds, Midground(Image.createFromName(imagePath), paralaxDivider))
+    for _, midgroundData in pairs(self.metaData.midgrounds) do
+        table.insert(self.midgrounds, Midground(Image.createFromName(midgroundData.name), midgroundData.paralaxDivider))
     end
 
     -- useful values
