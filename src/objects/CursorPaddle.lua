@@ -15,7 +15,8 @@ function CursorPaddle:init(parent, x, y, xOffset, yOffset, height, range, color,
         yOffset,
         height,
         range,
-        color
+        color,
+        side
     )
     self.side = side or "left"
     self.associatedButtonNumber = 1

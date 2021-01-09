@@ -1,10 +1,11 @@
 local Collidable = require('src/objects/Collidable')
 local ColliderTypes = require('src/objects/ColliderTypes')
+local basicTexturesIndex = require('src/textures/basicTexturesIndex')
 
 local Paddle = Class{__includes = Collidable}
 
-Paddle.PADDLE_WIDTH = 2
-function Paddle:init(parent, x, y, xOffset, yOffset, height, range, color)
+Paddle.PADDLE_WIDTH = 3
+function Paddle:init(parent, x, y, xOffset, yOffset, height, range, color, side)
     assert( (range[2] - range[1]) >= height)
     self.rangeMin = range[1]
     self.rangeMax = range[2]
@@ -25,7 +26,12 @@ function Paddle:init(parent, x, y, xOffset, yOffset, height, range, color)
 
     self.id = parent.id .. "-paddle"
 
+    self.image = basicTexturesIndex.paddle
+
     self.colliderType = ColliderTypes.PADDLE
+    if side == "left" then
+        self:flipHorizontal()
+    end
 end
 
 function Paddle:update(dt, moveY)
@@ -57,18 +63,6 @@ end
 function Paddle:setYOffset(newY)
     self.yOffset = math.min(math.max(newY, self.rangeMin), self.rangeMax - self.height)
     return self.yOffset
-end
-
-function Paddle:render()
-    love.graphics.setColor(unpack(self.color))
-    GlobalState.camera:rectangle(
-        "fill",
-        self.x,
-        self.y,
-        self.width,
-        self.height
-    )
-    love.graphics.setColor(255,255,255,255)
 end
 
 return Paddle

@@ -1,6 +1,7 @@
 local Collidable = require('src/objects/Collidable')
 local ColliderTypes = require('src/objects/ColliderTypes')
 local Physics = require('src/physics/Physics')
+local basicTextureIndex = require('src/textures/BasicTexturesIndex')
 
 local Ball = Class{__includes = Collidable}
 
@@ -21,6 +22,7 @@ function Ball:init(x, y, velocity, bounces, color)
     self.bounces = bounces
     self.id = tostring(love.timer.getTime()) .. tostring(self.x) .. tostring(self.y)
     self.noFriction = true
+    self.image = basicTextureIndex.smallBall
 end
 
 function Ball:update(dt)
@@ -98,18 +100,6 @@ function Ball:isfarAway()
     else
         return true
     end
-end
-
-function Ball:render()
-    love.graphics.setColor(unpack(self.color))
-    GlobalState.camera:rectangle(
-        "fill",
-        self.x,
-        self.y,
-        self.width,
-        self.height
-    )
-    love.graphics.setColor(255,255,255,255)
 end
 
 return Ball
