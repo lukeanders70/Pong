@@ -35,7 +35,7 @@ function Ball:update(dt)
         self.acceleration.y = math.max(self.acceleration.y - (self.ACCELERATION_DECAY * dt), 0)
     elseif self.acceleration.y < 0 then
         self.acceleration.y = math.min(self.acceleration.y + (self.ACCELERATION_DECAY * dt), 0)
-    end 
+    end
 end
 
 function Ball:collide(collidable)
