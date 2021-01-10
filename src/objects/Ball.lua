@@ -26,16 +26,16 @@ function Ball:init(x, y, velocity, bounces, color)
 end
 
 function Ball:update(dt)
-    if self:isfarAway(player) then
-        self:destroy()
-        return
-    end
     Physics.update(self, dt)
     if self.acceleration.y > 0 then
         self.acceleration.y = math.max(self.acceleration.y - (self.ACCELERATION_DECAY * dt), 0)
     elseif self.acceleration.y < 0 then
         self.acceleration.y = math.min(self.acceleration.y + (self.ACCELERATION_DECAY * dt), 0)
     end
+end
+
+function Ball:offscreenUpdate()
+    self:destroy()
 end
 
 function Ball:collide(collidable)
@@ -87,18 +87,6 @@ function Ball:bounceCollide(collidable)
 
     if collidable.velocity.y ~= 0 then
         self.acceleration.y = collidable.velocity.y * self.SPIN_COEFFICIENT
-    end
-end
-
-function Ball:isfarAway()
-    if GlobalState.level.player then
-        if vectorEuclidian(self, GlobalState.level.player) > self.MAX_DISTANCE then
-            return true
-        else
-            return false
-        end
-    else
-        return true
     end
 end
 

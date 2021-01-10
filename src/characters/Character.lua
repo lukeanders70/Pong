@@ -36,6 +36,9 @@ function Character:update(dt)
     for _, child in pairs(self.children) do
         child:update(dt)
     end
+    if self:isOffScreenBottom() then
+        self:destroy()
+    end
 end
 
 function Character:collide(collidable, dt)
@@ -76,6 +79,7 @@ function Character:lowerHealth(amout)
 end
 
 function Character:destroy()
+    self.health = 0
     self.alive = false
     Collidable.destroy(self)
     for _, child in pairs(self.children) do

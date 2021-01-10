@@ -56,6 +56,10 @@ function Collidable:intersect(col2)
     return retVal
 end
 
+function Collidable:isOffScreenBottom()
+    return self:lowerLeft().y > GlobalState.level.yMax
+end
+
 function Collidable:anyBlocksDirectlyBelow()
     local pixelsToCheck = {}
     local PixelToAddX = self:lowerLeft().x
@@ -192,7 +196,6 @@ function Collidable:getCollisionCandidates(excludeBlocks)
 end
 
 function Collidable:destroy()
-    print("collidable destroy " .. self.id)
     self.destroyed = true
     GlobalState.level:destroy(self)
 end

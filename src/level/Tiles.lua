@@ -24,6 +24,7 @@ local Tiles = {
         init = function(self, indexX, indexY, isSolid)
             TileBase.init(self, indexX, indexY, isSolid)
             self.image = nil
+            self.isSky = true -- special case so render knows to just skip this one
         end
     },
     Dirt = Class{__includes = TileBase,

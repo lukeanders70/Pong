@@ -185,6 +185,8 @@ function Level:update(dt)
     for _, updateable in pairs(self.updateables) do
         if self:renderableInFrame(updateable) then
             updateable:update(dt)
+        elseif updateable.offscreenUpdate then
+            updateable:offscreenUpdate(dt)
         end
     end
     for _, collidable in pairs(self.collidables) do
@@ -242,8 +244,9 @@ function Level:render()
     self:renderBackground()
     for indexX = self:minVisbileIndexX(), self:maxVisibleIndexX() do
         for indexY = self:minVisbileIndexY(), self:maxVisibleIndexY() do
-            -- print(indexX .. ", " .. indexY)
-            self.tiles[indexX][indexY]:render()
+            if not self.tiles[indexX][indexY].isSky then
+                self.tiles[indexX][indexY]:render()
+            end
         end
     end
     for _, renderable in pairs(self.renderables) do
