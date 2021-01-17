@@ -203,13 +203,12 @@ end
 function Level:update(dt)
     for _, updateable in pairs(self.updateables) do
         if self.levelCompleted then
-            self.player:update(dt * self.levelCompleteMotionSlowMultipler)
-        else
-            if self:renderableInFrame(updateable) then
-                updateable:update(dt)
-            elseif updateable.offscreenUpdate then
-                updateable:offscreenUpdate(dt)
-            end
+            dt = dt * self.levelCompleteMotionSlowMultipler
+        end
+        if self:renderableInFrame(updateable) then
+            updateable:update(dt)
+        elseif updateable.offscreenUpdate then
+            updateable:offscreenUpdate(dt)
         end
     end
     for _, collidable in pairs(self.collidables) do
