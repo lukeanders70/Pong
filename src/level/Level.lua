@@ -1,6 +1,7 @@
 local Tiles = require('src/level/Tiles')
 local TileMap = require('src/level/TileMap')
 local Player = require('src/characters/Player')
+local Bell = require('src/objects/Bell')
 local EnemyMap = require('src/characters/EnemyMap')
 local Image = require('src/textures/Image')
 local Midground = require('src/objects/Midground')
@@ -9,6 +10,8 @@ local Level = Class{}
 
 Level.defaultMetaData = {name="Default Level", playerStart={x = 0, y = 1}}
 Level.enemyClassCache = {}
+Level.levelCompleteWait = 2 -- seconds
+Level.levelCompleteMotionSlowMultipler = 0.25
 function Level:init(id)
     GlobalState.level = self
 
@@ -29,11 +32,15 @@ function Level:init(id)
     Level.enemyClassCache = {}
 
     self.player = Player(self.metaData.playerStart.x, self.metaData.playerStart.y)
+    self.bell = Bell(self.metaData.endBell.x, self.metaData.endBell.y)
 
     assert(self.player.id, "Player obejct must have hash id defined")
     self.updateables[self.player.id] = self.player
     self.renderables[self.player.id] = self.player
     self.collidables[self.player.id] = self.player
+
+    self.renderables[self.bell.id] = self.bell
+    self.collidables[self.bell.id] = self.bell
 
     -- images
     self.heartImage = Image.createFromName("heart")
@@ -46,6 +53,17 @@ function Level:init(id)
     -- useful values
     self.yMax = #self.tiles[1] * Constants.TILE_SIZE
     self.xMax = #self.tiles * Constants.TILE_SIZE
+
+    self.levelCompleted = false
+end
+
+function Level:levelComplete()
+    if not self.levelCompleted then
+        Timer.after(self.levelCompleteWait, function()
+            GlobalState.stateMachine:remove()
+        end)
+    end
+    self.levelCompleted = true
 end
 
 function Level:addEnemies(enemies)
@@ -183,10 +201,14 @@ end
 
 function Level:update(dt)
     for _, updateable in pairs(self.updateables) do
-        if self:renderableInFrame(updateable) then
-            updateable:update(dt)
-        elseif updateable.offscreenUpdate then
-            updateable:offscreenUpdate(dt)
+        if self.levelCompleted then
+            self.player:update(dt * self.levelCompleteMotionSlowMultipler)
+        else
+            if self:renderableInFrame(updateable) then
+                updateable:update(dt)
+            elseif updateable.offscreenUpdate then
+                updateable:offscreenUpdate(dt)
+            end
         end
     end
     for _, collidable in pairs(self.collidables) do

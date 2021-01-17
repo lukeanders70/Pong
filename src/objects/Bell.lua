@@ -1,0 +1,28 @@
+local Collidable = require('src/objects/Collidable')
+local ColliderTypes = require('src/objects/ColliderTypes')
+local basicTextureIndex = require('src/textures/BasicTexturesIndex')
+local Image = require('src/textures/Image')
+
+local Bell = Class{__includes = Collidable}
+
+function Bell:init(indexX, indexY)
+    Collidable.init(self,
+    {
+        x = (indexX - 1) * Constants.TILE_SIZE,
+        y = (indexY -1) * Constants.TILE_SIZE,
+        width = 64,
+        height = 64
+    })
+    self.colliderType = ColliderTypes.INTERACT
+    self.id = tostring(tostring(self.x) .. "|" .. tostring(self.y))
+    self.image = Image.createFromName("bell")
+    self.alreadyRemoved = false
+end
+
+function Bell:collide(collidable)
+    if (collidable.colliderType == ColliderTypes.CHARACTER) and (collidable.id == "player") and (not self.alreadyRemoved) then
+        GlobalState.level:levelComplete()
+    end
+end
+
+return Bell

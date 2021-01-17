@@ -49,6 +49,8 @@ function Ball:collide(collidable)
         self:paddleCollide(collidable)
     elseif collidable.colliderType == ColliderTypes.HARM then
         return
+    elseif collidable.colliderType == ColliderTypes.INTERACT then
+        return
     else
         logger("w", "Unhandled Collider type in Ball.lua: " .. tostring(collidable.colliderType))
     end

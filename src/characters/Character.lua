@@ -50,9 +50,15 @@ function Character:collide(collidable, dt)
         self:harmCollide(collidable, dt)
     elseif collidable.colliderType == ColliderTypes.PADDLE then
         return
+    elseif collidable.colliderType == ColliderTypes.INTERACT then
+        self:interactCollide(collidable, dt)
     else
         logger("w", "Unhandled Collider type in Charater.lua: " .. tostring(collidable.colliderType))
     end
+end
+
+function Character:interactCollide(collidable, dt)
+    return
 end
 
 function Character:characterCollide(collidable, dt)

@@ -2,7 +2,8 @@ local ColliderTypes = {
     CHARACTER = "character",
     BLOCK = "block",
     HARM = "harm",
-    PADDLE = "paddle"
+    PADDLE = "paddle",
+    INTERACT = "interact"
 }
 
 return ColliderTypes
