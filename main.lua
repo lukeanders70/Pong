@@ -14,7 +14,6 @@ require('src/LoveExtensions')
 
 -- dependencies
 local StateMachine = require('src/states/StateMachine')
-local push = require('lib/push')
 local StatePoints = require('src/StatePoints')
 local Camera = require('src/Camera')
 -- States
@@ -23,20 +22,11 @@ local PlayState = require('src/states/play/PlayState')
 
 function love.load(args)
 	-- Basic Setup
-	print(Constants.SCALE_MULTIPLIER)
-    math.randomseed(os.time())
-	push:setupScreen(
-		Constants.WINDOW_WIDTH,
-		Constants.WINDOW_HIGHT,
-		Constants.WINDOW_WIDTH,
-		Constants.WINDOW_HIGHT,
-		{
-			vsync = true,
-			fullscreen = false,
-			resizable = true,
-			canvas = true
-		}
-	)
+	math.randomseed(os.time())
+	
+	love.window.setMode( 0, 0, {fullscreen = true} )
+
+	setDimensions(love.graphics.getWidth(), love.graphics.getHeight())
 
 	--setup fonts
 	-- fontWhite = love.graphics.newImageFont("graphics/font-small.png"," ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/")
@@ -58,7 +48,13 @@ function love.load(args)
 end
 
 function love.resize(w, h)
-	push:resize(w, h)
+	setDimensions(w, h)
+end
+
+function setDimensions(w, h)
+	Constants.WINDOW_WIDTH = w
+	Constants.WINDOW_HIGHT = h
+	Constants.SCALE_MULTIPLIER = Constants.WINDOW_WIDTH / Constants.VIRTUAL_WIDTH
 end
 
 function love.keypressed(key)
@@ -81,10 +77,8 @@ function love.update(dt)
 end
 
 function love.draw()
-	push:start()
 
 	-- stateMachine will draw all open states
 	GlobalState.stateMachine:render()
 
-	push:finish()
 end
