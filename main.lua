@@ -10,6 +10,7 @@ Class = require('lib/class')
 
 -- set Global Helper Functions
 require('src/GlobalHelpers')
+require('src/LoveExtensions')
 
 -- dependencies
 local StateMachine = require('src/states/StateMachine')
@@ -22,15 +23,16 @@ local PlayState = require('src/states/play/PlayState')
 
 function love.load(args)
 	-- Basic Setup
+	print(Constants.SCALE_MULTIPLIER)
     math.randomseed(os.time())
 	push:setupScreen(
-		Constants.VIRTUAL_WIDTH,
-		Constants.VIRTUAL_HEIGHT,
+		Constants.WINDOW_WIDTH,
+		Constants.WINDOW_HIGHT,
 		Constants.WINDOW_WIDTH,
 		Constants.WINDOW_HIGHT,
 		{
 			vsync = true,
-			fullscreen = true,
+			fullscreen = false,
 			resizable = true,
 			canvas = true
 		}
@@ -68,7 +70,7 @@ function love.mousepressed( x, y, button, istouch, presses )
 end
 
 function love.update(dt)
-	--Timer.update(dt)
+	Timer.update(dt)
 
 	love.mouse.lastMousePositionGameX = love.mouse.mousePositionGameX
 	love.mouse.lastMousePositionGameY = love.mouse.mousePositionGameY

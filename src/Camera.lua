@@ -60,7 +60,7 @@ end
 -- the parent object must have x and y value denoting its coordinates
 function Camera:draw(tex, quad, x, y, parent, rotation, scaleX, scaleY, offsetX, originX, originY)
 	if parent then
-		love.graphics.draw(
+		love.graphics.drawScaled(
 			tex,
 			quad,
 			x + self.x_offest + parent.x + (offsetX or 0),
@@ -72,11 +72,11 @@ function Camera:draw(tex, quad, x, y, parent, rotation, scaleX, scaleY, offsetX,
 			originY
 		)
 	else
-		love.graphics.draw(
+		love.graphics.drawScaled(
 			tex,
 			quad,
-			round(x + self.x_offest + (offsetX or 0)),
-			round(y + self.y_offset),
+			x + self.x_offest + (offsetX or 0),
+			y + self.y_offset,
 			rotation,
 			scaleX,
 			scaleY,
@@ -91,9 +91,9 @@ end
 -- the parent object must have x and y value denoting its coordinates
 function Camera:rectangle(type, x, y, width, height, cornerRadius, parent)
 	if parent then
-		love.graphics.rectangle(type, x + self.x_offest + parent.x, y + self.y_offset + parent.y, width, height, cornerRadius)
+		love.graphics.rectangleScaled(type, x + self.x_offest + parent.x, y + self.y_offset + parent.y, width, height, cornerRadius)
 	else
-		love.graphics.rectangle(type, x + self.x_offest, y + self.y_offset, width, height, cornerRadius)
+		love.graphics.rectangleScaled(type, x + self.x_offest, y + self.y_offset, width, height, cornerRadius)
 	end
 end
 

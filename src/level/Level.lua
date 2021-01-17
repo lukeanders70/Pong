@@ -248,7 +248,7 @@ function Level:renderHearts()
     local x = 5
     local y = 5
     for i = 1, self.player.health do 
-        love.graphics.draw( self.heartImage.texture, self.heartImage.quad, x, y)
+        love.graphics.drawScaled( self.heartImage.texture, self.heartImage.quad, x, y)
         x = x + 25
     end
 end
@@ -256,7 +256,7 @@ end
 function Level:renderBackground()
     
     if self.background then
-        love.graphics.draw(self.background.texture, 0, 0)
+        love.graphics.drawScaledNoQuad(self.background.texture, 0, 0)
     end
     for _, midground in pairs(self.midgrounds) do
         midground:render()
