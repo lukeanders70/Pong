@@ -1,6 +1,6 @@
 local TurretType = require('src/characters/TurretType')
 local Ball = require('src/objects/Ball')
-local CharacterTextureIndex = require('src/textures/CharacterTextureIndex')
+local ObjectTextureIndex = require('src/textures/ObjectTextureIndex')
 
 
 local Flappy = Class{__includes = TurretType}
@@ -17,8 +17,8 @@ function Flappy:init(indexX, indexY)
     self.velocity.x = self.directionMultiplier * Flappy.MAX_MOVEMENT_SPEED
     self.startingIndex = indexX
 
-    self.staticImage = CharacterTextureIndex.fromCharacterName('flappy', self.width, self.height, false)
-    self.attackAnimation = CharacterTextureIndex.fromCharacterName('flappy-turn', self.width, self.height, true)
+    self.staticImage = ObjectTextureIndex.getImage('flappy', self.width, self.height)
+    self.attackAnimation = ObjectTextureIndex.getAnimation('flappy-turn', self.width, self.height, self.timerGroup)
 
     self.image = self.staticImage
 end

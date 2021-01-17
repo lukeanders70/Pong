@@ -68,7 +68,7 @@ function love.mousepressed( x, y, button, istouch, presses )
 end
 
 function love.update(dt)
-	Timer.update(dt)
+	--Timer.update(dt)
 
 	love.mouse.lastMousePositionGameX = love.mouse.mousePositionGameX
 	love.mouse.lastMousePositionGameY = love.mouse.mousePositionGameY

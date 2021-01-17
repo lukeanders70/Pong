@@ -22,7 +22,7 @@ function TurretType:init(indexX, indexY, options)
             self:attack()
         end
         return self.alive
-    end)
+    end):group(self.timerGroup)
 end
 
 function TurretType:update(dt)

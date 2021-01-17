@@ -10,6 +10,8 @@ function Renderable:init(x, y, width, height)
 
     self.xScale = 1
     self.xRenderOffset = 0
+
+    self.timerGroup = {}
 end
 
 function Renderable:upperLeft() return {x = self.x, y = self.y} end
@@ -47,6 +49,16 @@ end
 function Renderable:unflipHorizontal()
     self.xScale = 1
 	self.xRenderOffset = 0
+end
+
+function Renderable:update(dt)
+    if #self.timerGroup > 0 then
+        Timer.update(dt, self.timerGroup)
+    end
+end
+
+function Renderable:destroy()
+    Timer.clear(self.timerGroup)
 end
 
 function Renderable:render()

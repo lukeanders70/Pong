@@ -39,6 +39,7 @@ function Level:init(id)
     self.renderables[self.player.id] = self.player
     self.collidables[self.player.id] = self.player
 
+    self.updateables[self.bell.id] = self.bell
     self.renderables[self.bell.id] = self.bell
     self.collidables[self.bell.id] = self.bell
 

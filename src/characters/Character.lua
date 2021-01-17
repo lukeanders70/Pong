@@ -26,6 +26,7 @@ function Character:init(indexX, indexY, width, height, color, options)
 end
 
 function Character:update(dt)
+    Collidable.update(self, dt)
     if self.gravity and self:anyBlocksDirectlyBelow() then
         self.acceleration.y = 0
         self.velocity.y = math.min(self.velocity.y, 0)

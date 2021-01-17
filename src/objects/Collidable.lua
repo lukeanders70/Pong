@@ -196,12 +196,17 @@ function Collidable:getCollisionCandidates(excludeBlocks)
 end
 
 function Collidable:destroy()
+    Renderable.destroy(self)
     self.destroyed = true
     GlobalState.level:destroy(self)
 end
 
 function Collidable:render()
     Renderable.render(self)
+end
+
+function Collidable:update(dt)
+    Renderable.update(self, dt)
 end
 
 return Collidable

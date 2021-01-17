@@ -3,7 +3,7 @@ local Animation = Class{}
 -- creates an animation by generating quads from a texture based on image dimenstions
 -- textures should always have animations horizontal, going from left to right
 Animation.frameDelay = 0.15
-function Animation.create(texture, imageheight, imageWidth)
+function Animation.create(texture, imageheight, imageWidth, timerGroup)
     local textureX, textureY = texture:getDimensions()
     if (textureX % imageWidth ~= 0) then
         logger('w', 'animation processed with image width [' .. imageWidth .. '] failed to divide into texture width [' .. tostring(textureX) .. ']')
@@ -23,15 +23,16 @@ function Animation.create(texture, imageheight, imageWidth)
         )
         xOffset = xOffset + imageWidth
     end
-    return Animation(texture, quads)
+    return Animation(texture, quads, timerGroup)
 end
 
-function Animation:init(texture, quads)
+function Animation:init(texture, quads, timerGroup)
     self.texture = texture
     self.quads = quads
     self.currentFrame = 1
     self.numFrames = #quads
     self.quad = quads[self.currentFrame]
+    self.timerGroup = timerGroup
 
     self.currentTimer = nil
 end
@@ -45,7 +46,7 @@ function Animation:cycleOnce(callback)
     self:setFrame(1)
     self.currentTimer = Timer.every(Animation.frameDelay, function()
         self:cycle()
-    end):limit(self.numFrames - 1)
+    end):limit(self.numFrames - 1):group(self.timerGroup)
 
     if callback and type(callback) == 'function' then
         self.currentTimer:finish(callback)
@@ -61,7 +62,7 @@ function Animation:continousCycling()
     self:setFrame(1)
     self.currentTimer = Timer.every(Animation.frameDelay, function()
         self:cycle()
-    end)
+    end):group(self.timerGroup)
 end
 
 function Animation:cycle()

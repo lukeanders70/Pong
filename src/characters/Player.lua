@@ -1,6 +1,6 @@
 local PaddlerType = require('src/characters/PaddlerType')
 local Paddle = require('src/objects/Paddle')
-local CharacterTextureIndex = require('src/textures/CharacterTextureIndex')
+local ObjectTextureIndex = require('src/textures/ObjectTextureIndex')
 
 local Player = Class{__includes = PaddlerType}
 
@@ -13,8 +13,8 @@ function Player:init(indexX, indexY)
 
     PaddlerType.init(self, indexX, indexY, width, height, color, { health = 3, cursorPaddle = true })
     self.id = "player"
-    self.staticImage = CharacterTextureIndex.fromCharacterName('player', self.width, self.height, false)
-    self.moveAnimation = CharacterTextureIndex.fromCharacterName('player-walk', self.width, self.height, true)
+    self.staticImage = ObjectTextureIndex.getImage('player', self.width, self.height)
+    self.moveAnimation = ObjectTextureIndex.getAnimation('player-walk', self.width, self.height, self.timerGroup)
 
     self.image = self.staticImage
 end
