@@ -9,7 +9,8 @@ end
 
 function PlayState:enter(params)
     local levelId = getOrElse(params, "levelId", 1, "PlayState level id not found in params")
-    self.level = Level(levelId)
+    local worldName = getOrElse(params, "worldName", "steaming-desert")
+    self.level = Level(worldName, levelId)
     self.player = self.level.player
     self:addRenderable(self.level)
     self:addUpdateable(self.level)

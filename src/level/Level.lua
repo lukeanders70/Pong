@@ -12,7 +12,7 @@ Level.defaultMetaData = {name="Default Level", playerStart={x = 0, y = 1}}
 Level.enemyClassCache = {}
 Level.levelCompleteWait = 2 -- seconds
 Level.levelCompleteMotionSlowMultipler = 0.25
-function Level:init(id)
+function Level:init(worldName, id)
     GlobalState.level = self
 
     self.updateables = {}
@@ -22,7 +22,7 @@ function Level:init(id)
     self.enemies = {}
     self.balls = {}
 
-    local path = "data/levels/" .. id .. "/"
+    local path = "data/worlds/" .. worldName .. "/levels/" .. id .. "/"
     self.metaData = Level.safeLoadMetaData(path .. "metadata.lua")
     local levelData = Level.parseFromPath(path .. "level.txt")
 
@@ -62,6 +62,7 @@ function Level:levelComplete()
     if not self.levelCompleted then
         Timer.after(self.levelCompleteWait, function()
             GlobalState.stateMachine:remove()
+            GlobalState.level = nil
         end)
     end
     self.levelCompleted = true

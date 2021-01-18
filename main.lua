@@ -18,6 +18,7 @@ local StatePoints = require('src/StatePoints')
 local Camera = require('src/Camera')
 -- States
 local PlayState = require('src/states/play/PlayState')
+local MapState = require('src/states/map/MapState')
 
 
 function love.load(args)
@@ -33,18 +34,17 @@ function love.load(args)
 	-- fontBlack = love.graphics.newImageFont("graphics/font-small-black.png"," ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/")
     -- love.graphics.setFont(fontBlack)
     
-	push:setBorderColor({0, 0, 0, 255})
-
 	-- Setup GlobalState
     GlobalState.camera = Camera()
 	GlobalState.stateMachine = StateMachine {
-		['play'] = function() return PlayState() end
+		['play'] = function() return PlayState() end,
+		['map'] = function() return  MapState() end
 	}
 
 	love.mouse.mousePositionGameX = 0
 	love.mouse.mousePositionGameY = 0
 
-	StatePoints.levelOne()
+	StatePoints.worldOne()
 end
 
 function love.resize(w, h)
