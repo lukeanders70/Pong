@@ -1,5 +1,6 @@
 local Image = require('src/textures/Image')
 local PathGraph = require('src/world/PathGraph')
+local OverworldPlayer = require('src/world/OverworldPlayer')
 
 local World = Class{}
 
@@ -17,7 +18,9 @@ function World:init(name)
 
     -- images
     self.mapImage = Image.createFromName(self.metadata.map)
+
     self.pathGraph = PathGraph(self.metadata.nodes, self.metadata.paths)
+    self.player = OverworldPlayer(self.pathGraph.nodes[1])
 end
 
 function World.safeLoadMetaData(path)
@@ -37,9 +40,14 @@ function World.safeLoadMetaData(path)
     return result
 end
 
+function World:update()
+    self.player:update()
+end
+
 function World:render()
     love.graphics.drawScaled( self.mapImage.texture, self.mapImage.quad, 0, 0)
     self.pathGraph:render()
+    self.player:render()
 end
 
 return World

@@ -16,10 +16,6 @@ function PathGraph:init(nodesData, pathsData)
         end
     end
 
-    if #self.nodes > 0 then
-        self.nodes[1].active = true
-    end
-
     self.paths = {}
     for _, pathData in pairs(pathsData) do
         local node1 = self.nodes[pathData[1]]
@@ -27,6 +23,10 @@ function PathGraph:init(nodesData, pathsData)
         node1:addNeighbor(node2)
         node2:addNeighbor(node1)
         table.insert(self.paths, Path(node1, node2))
+    end
+
+    if #self.nodes > 0 then
+        self.nodes[1]:setComplete()
     end
 end
 

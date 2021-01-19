@@ -4,7 +4,8 @@ local Path = Class{}
 
 Path.PATH_WIDTH = 1
 function Path:init(firstNode, secondNode)
-    self.active = (firstNode.complete) or (secondNode.complete)
+    self.firstNode = firstNode
+    self.secondNode = secondNode
     if firstNode.x == secondNode.x then
         self.orientation = "vertical"
     elseif firstNode.y == secondNode.y then
@@ -24,9 +25,15 @@ function Path:init(firstNode, secondNode)
     self.width = math.max(math.max(firstNode.x, secondNode.x) - self.x, Path.PATH_WIDTH)
 end
 
+function Path:shouldRender()
+    return (self.firstNode.state == Node.states.COMPLETE) or (self.secondNode.state == Node.states.COMPLETE)
+end
+
 function Path:render()
-    love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.rectangleScaled( "fill", self.x, self.y, self.width, self.height)
+    if self:shouldRender() then
+        love.graphics.setColor(255, 255, 255, 255)
+        love.graphics.rectangleScaled( "fill", self.x, self.y, self.width, self.height)
+    end
 end
 
 return Path

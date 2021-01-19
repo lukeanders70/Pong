@@ -2,6 +2,11 @@ local Node = Class{}
 
 Node.WIDTH = 5
 Node.HEIGHT = 3
+Node.states = {
+    INACTIVE = "inactive",
+    COMPLETE = "complete",
+    ACTIVE = "active"
+}
 function Node:init(x, y, neighbors)
     self.x = x
     self.y = y
@@ -14,6 +19,8 @@ function Node:init(x, y, neighbors)
 
     self.width = Node.WIDTH
     self.height = Node.HEIGHT
+
+    self.state = Node.states.INACTIVE
 end
 
 function Node:addNeighbor(node)
@@ -36,9 +43,27 @@ function Node:addNeighbor(node)
     table.insert(self.neighbors, node)
 end
 
+function Node:setComplete()
+    self.state = Node.states.COMPLETE
+    for _, node in pairs(self.neighbors) do
+        node:setActive()
+    end
+end
+
+function Node:setActive()
+    if not (self.state == Node.states.COMPLETE) then
+        self.state = Node.states.ACTIVE
+    end
+end
+
+function Node:isMovable()
+    return (self.state == Node.states.COMPLETE) or (self.state == Node.states.ACTIVE)
+end
+
 function Node:render()
-    love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.rectangleScaled( "fill",  self.x, self.y, self.width, self.height )
+    if (self.state == Node.states.ACTIVE) or (self.states == Node.states.COMPLETE) then
+        love.graphics.rectangleScaled( "fill",  self.x, self.y, self.width, self.height )
+    end
 end
 
 return Node
