@@ -22,9 +22,8 @@ function Level:init(worldName, id)
     self.enemies = {}
     self.balls = {}
 
-    local path = "data/worlds/" .. worldName .. "/levels/" .. id .. "/"
-    self.metaData = Level.safeLoadMetaData(path .. "metadata.lua")
-    local levelData = Level.parseFromPath(path .. "level.txt")
+    self.metaData = Level.safeLoadMetaData(worldName, id)
+    local levelData = Level.safeLoadData(worldName, id)
 
     self.tiles = levelData.tiles
     self:addEnemies(levelData.enemies)
@@ -116,7 +115,8 @@ function Level:addObject(object, id)
     self.collidables[id] = object
 end
 
-function Level.safeLoadMetaData(path)
+function Level.safeLoadMetaData(worldName, id)
+    local path = "data/worlds/" .. worldName .. "/levels/" .. id .. "/" .. "metadata.lua"
     local ok, chunk = pcall( love.filesystem.load, path )
     if not ok then
         logger('e', "failed to find level at path: " .. path .. ": " .. tostring(path))
@@ -132,7 +132,8 @@ function Level.safeLoadMetaData(path)
     return result
 end
 
-function Level.parseFromPath(path)
+function Level.safeLoadData(worldName, id)
+    local path = "data/worlds/" .. worldName .. "/levels/" .. id .. "/" .. "level.txt"
     local tiles = {}
     local enemies = {}
 

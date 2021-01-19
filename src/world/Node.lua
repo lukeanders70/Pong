@@ -7,7 +7,9 @@ Node.states = {
     COMPLETE = "complete",
     ACTIVE = "active"
 }
-function Node:init(x, y, neighbors)
+function Node:init(x, y, neighbors, graph)
+    self.graph = graph
+    
     self.x = x
     self.y = y
     self.neighbors = neighbors

@@ -2,7 +2,9 @@ local Image = require('src/textures/Image')
 
 local OverworldPlayer = Class{}
 
-function OverworldPlayer:init(node)
+function OverworldPlayer:init(node, world)
+    self.world = world
+
     self.image = Image.createFromName("overworld-player")
     self.width = self.image.width
     self.height = self.image.height
@@ -40,7 +42,8 @@ function OverworldPlayer:update()
             moveNode = self.node.below
         elseif love.keyboard.isDown( 'd' ) then
             moveNode = self.node.right
-        else
+        elseif love.keyboard.isDown( 'return' ) then
+            self.world:startLevel(self.node)
             return
         end
 

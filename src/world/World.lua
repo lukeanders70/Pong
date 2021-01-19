@@ -5,7 +5,8 @@ local OverworldPlayer = require('src/world/OverworldPlayer')
 local World = Class{}
 
 World.defaultMetaData = {
-    name = "Steaming Desert",
+    name_display = "Steaming Desert",
+    name = "steaming-desert",
     playerStart = {x = 2, y = 1},
     map = "world1",
     nodes = {},
@@ -19,8 +20,8 @@ function World:init(name)
     -- images
     self.mapImage = Image.createFromName(self.metadata.map)
 
-    self.pathGraph = PathGraph(self.metadata.nodes, self.metadata.paths)
-    self.player = OverworldPlayer(self.pathGraph.nodes[1])
+    self.pathGraph = PathGraph(self.metadata.nodes, self.metadata.paths, self)
+    self.player = OverworldPlayer(self.pathGraph.nodes[1], self)
 end
 
 function World.safeLoadMetaData(path)
@@ -38,6 +39,13 @@ function World.safeLoadMetaData(path)
     end
 
     return result
+end
+
+
+function World:startLevel(node)
+    if node and node.levelId then
+        GlobalState.stateMachine:swap('play', {levelId = node.levelId, worldName = self.metadata.name})
+    end
 end
 
 function World:update()

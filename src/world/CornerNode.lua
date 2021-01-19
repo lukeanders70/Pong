@@ -3,8 +3,8 @@ local Path = require('src/world/Path')
 
 local CornerNode = Class{__includes = Node}
 
-function CornerNode:init(x, y, neighbors)
-    Node.init(self, x, y, neighbors)
+function CornerNode:init(x, y, neighbors, graph)
+    Node.init(self, x, y, neighbors, graph)
 end
 
 function CornerNode:setActive()

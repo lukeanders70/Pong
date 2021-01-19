@@ -1,5 +1,6 @@
 local data = {
-    name = "Steaming Desert",
+    name_display = "Steaming Desert",
+    name = "steaming-desert",
     map = "world1",
     nodes = {
         {type = "level", x = 110, y = 167, id = 1},

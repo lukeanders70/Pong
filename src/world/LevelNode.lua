@@ -1,10 +1,17 @@
 local Node = require('src/world/Node')
+local Level = require('src/level/Level')
 
 local LevelNode = Class{__includes = Node}
 
-function LevelNode:init(x, y, neighbors, levelId)
+function LevelNode:init(x, y, neighbors, levelId, graph)
     self.levelId = levelId
-    Node.init(self, x, y, neighbors)
+    self.levelMetadata = Level.safeLoadMetaData( graph.world.metadata.name , self.levelId)
+    if self.levelMetadata then
+        self.levelName = self.levelMetadata.name
+    else
+        Logger('e', 'Level Node failed to load metadata for level ID: ' .. self.levelId)
+    end
+    Node.init(self, x, y, neighbors, graph)
 end
 
 function LevelNode:render()

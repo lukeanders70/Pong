@@ -4,13 +4,14 @@ local Path = require('src/world/Path')
 
 local PathGraph = Class{}
 
-function PathGraph:init(nodesData, pathsData)
+function PathGraph:init(nodesData, pathsData, world)
+    self.world = world
     self.nodes = {}
     for _, nodeData in pairs(nodesData) do
         if nodeData.type == "level" then
-            table.insert(self.nodes, LevelNode(nodeData.x, nodeData.y, {}, nodeData.id))
+            table.insert(self.nodes, LevelNode(nodeData.x, nodeData.y, {}, nodeData.id, self))
         elseif nodeData.type == "corner" then
-            table.insert(self.nodes, CornerNode(nodeData.x, nodeData.y, {}))
+            table.insert(self.nodes, CornerNode(nodeData.x, nodeData.y, {}, self))
         else
             logger('e', 'Node has unknown type: ' .. nodeData.type)
         end
