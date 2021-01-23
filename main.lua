@@ -16,6 +16,8 @@ require('src/LoveExtensions')
 local StateMachine = require('src/states/StateMachine')
 local StatePoints = require('src/StatePoints')
 local Camera = require('src/Camera')
+local SaveData = require('src/SaveData')
+
 -- States
 local PlayState = require('src/states/play/PlayState')
 local MapState = require('src/states/map/MapState')
@@ -40,6 +42,7 @@ function love.load(args)
 		['play'] = function() return PlayState() end,
 		['map'] = function() return  MapState() end
 	}
+	GlobalState.saveData = SaveData()
 
 	love.mouse.mousePositionGameX = 0
 	love.mouse.mousePositionGameY = 0

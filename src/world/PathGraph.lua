@@ -27,7 +27,16 @@ function PathGraph:init(nodesData, pathsData, world)
     end
 
     if #self.nodes > 0 then
-        self.nodes[1]:setComplete()
+        self.nodes[1]:setActive()
+    end
+
+    -- we need to set completed nodes as complete after building the graph
+    for _, node in pairs(self.nodes) do
+        if node.levelId then
+            if GlobalState.saveData:isLevelComplete(self.world.name, node.levelId) then
+                node:setComplete()
+            end
+        end
     end
 end
 

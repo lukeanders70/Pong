@@ -22,6 +22,8 @@ function Level:init(worldName, id)
     self.enemies = {}
     self.balls = {}
 
+    self.id = id
+    self.worldName = worldName
     self.metaData = Level.safeLoadMetaData(worldName, id)
     local levelData = Level.safeLoadData(worldName, id)
 
@@ -60,7 +62,9 @@ end
 function Level:levelComplete()
     if not self.levelCompleted then
         Timer.after(self.levelCompleteWait, function()
-            GlobalState.stateMachine:remove()
+            print("setting complete: " .. self.worldName .. " - " .. self.id)
+            GlobalState.saveData:levelComplete(self.worldName, self.id)
+            GlobalState.stateMachine:swap('map', {worldName = self.worldName})
             GlobalState.level = nil
         end)
     end

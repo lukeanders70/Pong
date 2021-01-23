@@ -14,7 +14,9 @@ World.defaultMetaData = {
 }
 function World:init(name)
 
-    local path = "data/worlds/" .. name .. "/"
+    self.name = name
+
+    local path = "data/worlds/" .. self.name .. "/"
     self.metadata = World.safeLoadMetaData(path .. "metadata.lua")
 
     -- images
