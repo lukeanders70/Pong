@@ -100,7 +100,7 @@ function table.hasKey(t, k)
     return table[key] ~= nil
 end
 
-function table.concat(v1, v2)
+function table.simpleConcat(v1, v2)
     local newTable = {}
     for _, v in ipairs(v1) do
         table.insert(newTable, v)

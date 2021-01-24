@@ -181,7 +181,7 @@ function Collidable:getCollisionCandidates(excludeBlocks)
     local regularcandidates = table.filter(GlobalState.level.collidables, function(k,v)
         return (not (v == self)) and (not (startsWith(v.id, self.id .. '-')))
     end)
-    local candidates = table.concat(priorityCandidates, regularcandidates)
+    local candidates = table.simpleConcat(priorityCandidates, regularcandidates)
     if not excludeBlocks then
         -- add surrounding blocks
         for indexX = self:lowestIndexX(), self:highestIndexX() do

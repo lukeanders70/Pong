@@ -42,7 +42,7 @@ function love.load(args)
 		['play'] = function() return PlayState() end,
 		['map'] = function() return  MapState() end
 	}
-	GlobalState.saveData = SaveData()
+	GlobalState.saveData = SaveData(true)
 
 	love.mouse.mousePositionGameX = 0
 	love.mouse.mousePositionGameY = 0
