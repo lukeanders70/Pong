@@ -8,7 +8,7 @@ function CornerNode:init(x, y, neighbors, graph)
 end
 
 function CornerNode:setActive()
-    self.state = self:setComplete() -- we treat corners as levels that just so happened to be done
+    self:setComplete() -- we treat corners as levels that just so happened to be done
 end
 
 return CornerNode

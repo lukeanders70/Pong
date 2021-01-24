@@ -47,6 +47,27 @@ local Tiles = {
             TileBase.init(self, indexX, indexY, isSolid)
             self.image = TileTextureIndex.fromId(3)
         end
+    },
+    Sand = Class{__includes = TileBase,
+        color = {200, 200, 200, 255},
+        init = function(self, indexX, indexY, isSolid)
+            TileBase.init(self, indexX, indexY, isSolid)
+            self.image = TileTextureIndex.fromId(5)
+        end
+    },
+    TopSand = Class{__includes = TileBase,
+        color = {200, 200, 200, 255},
+        init = function(self, indexX, indexY, isSolid)
+            TileBase.init(self, indexX, indexY, isSolid)
+            self.image = TileTextureIndex.fromId(6)
+        end
+    },
+    FossilSand = Class{__includes = TileBase,
+        color = {200, 200, 200, 255},
+        init = function(self, indexX, indexY, isSolid)
+            TileBase.init(self, indexX, indexY, isSolid)
+            self.image = TileTextureIndex.fromId(7)
+        end
     }
 }   
 

@@ -4,7 +4,7 @@ local TileTextureIndex = {}
 
 TileTextureIndex.tileTextureImageCache = {}
 TileTextureIndex.texture = love.graphics.newImage('assets/tiles.png')
-TileTextureIndex.numColumns = 3
+TileTextureIndex.numColumns = 7
 function TileTextureIndex.fromId(id)
     if (type(id) ~= 'number') or (id <= 0) then
         logger('w', 'attempted to retreive TileTexture with invalid id: ' .. tostring(id))
