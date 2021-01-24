@@ -36,7 +36,6 @@ end
 
 function SaveData:save()
     local j = json.encode(self.data)
-    print("about to write to filesystem: " .. tostring(j))
     love.filesystem.write( SaveData.defaultSaveLocation, j )
 end
 

@@ -25,7 +25,7 @@ function Level:init(worldName, id)
     self.id = id
     self.worldName = worldName
     self.metaData = Level.safeLoadMetaData(worldName, id)
-    local levelData = Level.safeLoadData(worldName, id)
+    local levelData = Level.safeLoadData(worldName, id, self.metaData.segmentLength or 26, self.metaData.segmentHeight or 10)
 
     self.tiles = levelData.tiles
     self:addEnemies(levelData.enemies)
@@ -62,7 +62,6 @@ end
 function Level:levelComplete()
     if not self.levelCompleted then
         Timer.after(self.levelCompleteWait, function()
-            print("setting complete: " .. self.worldName .. " - " .. self.id)
             GlobalState.saveData:levelComplete(self.worldName, self.id)
             GlobalState.saveData:save()
             GlobalState.stateMachine:swap('map', {worldName = self.worldName})
@@ -137,29 +136,35 @@ function Level.safeLoadMetaData(worldName, id)
     return result
 end
 
-function Level.safeLoadData(worldName, id)
+function Level.safeLoadData(worldName, id, segmentLength, segmentHeight)
     local path = "data/worlds/" .. worldName .. "/levels/" .. id .. "/" .. "level.txt"
     local tiles = {}
     local enemies = {}
 
+    local segment = 0
     local indexX = 1
     local indexY = 1
     for line in love.filesystem.lines(path) do
-        for tileData in string.gmatch(line, "[^ ]+") do
-            local newTile = Level.parseTileFromData(tileData, indexX, indexY)
+        if line == "" then
+            segment = segment + 1
+        else
+            for tileData in string.gmatch(line, "[^ ]+") do
+                local tileIndex = {x = indexX + (segment * segmentLength), y = indexY - (segment * segmentHeight)}
+                local newTile = Level.parseTileFromData(tileData, tileIndex.x, tileIndex.y)
 
-            if not tiles[indexX] then
-                tiles[indexX] = {}
-            end
-            tiles[indexX][indexY] = newTile.tile
-            if newTile.enemy then
-                table.insert(enemies, newTile.enemy)
-            end
+                if not tiles[tileIndex.x] then
+                    tiles[tileIndex.x] = {}
+                end
+                tiles[tileIndex.x][tileIndex.y] = newTile.tile
+                if newTile.enemy then
+                    table.insert(enemies, newTile.enemy)
+                end
 
-            indexX = indexX + 1
+                indexX = indexX + 1
+            end
+            indexX = 1
+            indexY = indexY + 1
         end
-        indexX = 1
-        indexY = indexY + 1
     end
     return { tiles = tiles, enemies = enemies }
 end
