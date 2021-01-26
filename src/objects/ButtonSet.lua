@@ -1,4 +1,5 @@
 local Directions = require('src/objects/Directions')
+local UITextureIndex = require("src/textures/UITextureIndex")
 
 local  ButtonSet = Class{}
 
@@ -64,6 +65,14 @@ end
 function ButtonSet:render()
     for i, button in ipairs(self.buttons) do
         button:render()
+    end
+    if self.activeButtonIndex and self.buttons[self.activeButtonIndex] then
+        love.graphics.drawScaled(
+            UITextureIndex.selector.texture,
+            UITextureIndex.selector.quad,
+            self.buttons[self.activeButtonIndex].x - 20,
+            self.buttons[self.activeButtonIndex].y
+        )
     end
 end
 

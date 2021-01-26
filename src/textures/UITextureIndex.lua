@@ -43,5 +43,15 @@ UITextureIndex.newGame = Image(
          UITextureIndex.baseTexture:getDimensions()
     )
 )
+UITextureIndex.selector = Image(
+    UITextureIndex.baseTexture,
+    love.graphics.newQuad(
+        0,
+        60,
+        15,
+        15,
+         UITextureIndex.baseTexture:getDimensions()
+    )
+)
 
 return  UITextureIndex

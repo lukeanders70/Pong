@@ -1,6 +1,7 @@
 local Image = require('src/textures/Image')
 local PathGraph = require('src/world/PathGraph')
 local OverworldPlayer = require('src/world/OverworldPlayer')
+local ObjectTextureIndex = require('src/textures/ObjectTextureIndex')
 
 local World = Class{}
 
@@ -20,7 +21,10 @@ function World:init(name)
     self.metadata = World.safeLoadMetaData(path .. "metadata.lua")
 
     -- images
-    self.mapImage = Image.createFromName(self.metadata.map)
+    -- self.mapImage = Image.createFromName(self.metadata.map)
+    self.mapImage = ObjectTextureIndex.getAnimation(self.metadata.map, Constants.VIRTUAL_WIDTH, Constants.VIRTUAL_HEIGHT)
+    self.mapImage.frameDelay = 0.3
+    self.mapImage:continousCycling()
 
     self.pathGraph = PathGraph(self.metadata.nodes, self.metadata.paths, self)
     self.player = OverworldPlayer(self.pathGraph.nodes[1], self)

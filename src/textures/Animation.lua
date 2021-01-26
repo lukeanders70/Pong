@@ -60,7 +60,7 @@ function Animation:continousCycling()
     end
 
     self:setFrame(1)
-    self.currentTimer = Timer.every(Animation.frameDelay, function()
+    self.currentTimer = Timer.every(self.frameDelay, function()
         self:cycle()
     end):group(self.timerGroup)
 end
