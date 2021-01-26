@@ -1,7 +1,7 @@
 local data = {
     name_display = "Steaming Desert",
     name = "steaming-desert",
-    map = "world1",
+    map = "world1-animated",
     nodes = {
         {type = "level", x = 110, y = 167, id = 1},
         {type = "level", x = 161, y = 167, id = 2},
