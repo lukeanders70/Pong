@@ -34,6 +34,15 @@ function SaveData:loadData()
     end
 end
 
+function SaveData:isEmpty()
+    return self.data == {}
+end
+
+function SaveData:clear()
+    self.data = {}
+    self:save()
+end
+
 function SaveData:save()
     local j = json.encode(self.data)
     love.filesystem.write( SaveData.defaultSaveLocation, j )

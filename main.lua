@@ -21,6 +21,7 @@ local SaveData = require('src/SaveData')
 -- States
 local PlayState = require('src/states/play/PlayState')
 local MapState = require('src/states/map/MapState')
+local TitleScreenState = require('src/states/titleScreen/TitleScreenState')
 
 
 function love.load(args)
@@ -40,14 +41,15 @@ function love.load(args)
     GlobalState.camera = Camera()
 	GlobalState.stateMachine = StateMachine {
 		['play'] = function() return PlayState() end,
-		['map'] = function() return  MapState() end
+		['map'] = function() return  MapState() end,
+		['titleScreen'] = function() return TitleScreenState() end
 	}
 	GlobalState.saveData = SaveData(true)
 
 	love.mouse.mousePositionGameX = 0
 	love.mouse.mousePositionGameY = 0
 
-	StatePoints.worldOne()
+	StatePoints.titleScreen()
 end
 
 function love.resize(w, h)
@@ -61,7 +63,7 @@ function setDimensions(w, h)
 end
 
 function love.keypressed(key)
-
+	GlobalState.stateMachine:handleKeyEvent(key)
 end
 
 function love.mousepressed( x, y, button, istouch, presses )

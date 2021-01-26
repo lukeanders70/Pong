@@ -46,4 +46,8 @@ function State:addUpdateable(updateable)
     end
 end
 
+function State:inputHandleKeyPress(key)
+    return
+end
+
 return State

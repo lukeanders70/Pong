@@ -2,6 +2,12 @@ local Directions = require('src/objects/Directions')
 
 local Renderable = Class{}
 
+function Renderable.fromImage(image, x, y)
+    local r = Renderable(x, y, image.width, image.height)
+    r.image = image
+    return r
+end
+
 function Renderable:init(x, y, width, height)
     self.x = assert(x)
     self.y = assert(y)
@@ -12,6 +18,8 @@ function Renderable:init(x, y, width, height)
     self.xRenderOffset = 0
 
     self.timerGroup = {}
+
+    self.color = {255, 255, 255, 255}
 end
 
 function Renderable:upperLeft() return {x = self.x, y = self.y} end
@@ -62,10 +70,10 @@ function Renderable:destroy()
 end
 
 function Renderable:render()
+    love.graphics.setColor(unpack(self.color))
     if self.image then
         GlobalState.camera:draw(self.image.texture, self.image.quad, self.x, self.y, nil, nil, self.xScale, 1, self.xRenderOffset)
-    elseif self.color then
-        love.graphics.setColor(unpack(self.color))
+    else
         GlobalState.camera:rectangle(
             "fill",
             self.x,
@@ -73,8 +81,8 @@ function Renderable:render()
             self.width,
             self.height
         )
-        love.graphics.setColor(255,255,255,255)
     end
+    love.graphics.setColor(255,255,255,255)
 end
 
 return Renderable

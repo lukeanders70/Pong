@@ -64,7 +64,9 @@ function StateMachine:handleMouseEvent(mousePress)
 end
 
 function StateMachine:handleKeyEvent(key)
-	self.current[#self.current].inputHandler:inputHandleKeyPress(key)
+	if #self.current > 0 then
+		self.current[#self.current]:inputHandleKeyPress(key)
+	end
 end
 
 function StateMachine:render()
