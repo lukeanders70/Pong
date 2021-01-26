@@ -11,7 +11,10 @@ function MapState:enter(params)
     local worldName = getOrElse(params, "worldName", "steaming-desert", "MapState world name not found in params")
     self.world = World(worldName)
     self:addRenderable(self.world)
-    self:addUpdateable(self.world)
+end
+
+function MapState:inputHandleKeyPress(key)
+    self.world:inputHandleKeyPress(key)
 end
 
 return MapState

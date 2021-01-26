@@ -50,8 +50,8 @@ function World:startLevel(node)
     end
 end
 
-function World:update()
-    self.player:update()
+function World:inputHandleKeyPress(key)
+    self.player:inputHandleKeyPress(key)
 end
 
 function World:render()

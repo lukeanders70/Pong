@@ -8,4 +8,8 @@ function StatePoints.worldOne()
     GlobalState.stateMachine:add('map', {worldName = "steaming-desert"})
 end
 
+function StatePoints.titleScreen()
+    GlobalState.stateMachine:add('titleScreen', {})
+end
+
 return StatePoints

@@ -14,7 +14,6 @@ function Character:init(indexX, indexY, width, height, color, options)
     })
     self.colliderType = ColliderTypes.CHARACTER
     self.alive = true
-    self.color = color
 
     self.health = getOrElse(options, "health", 1)
     self.gravity = getOrElse(options, "gravity", true)

@@ -29,7 +29,7 @@ function OverworldPlayer:yFromNode(node)
     return node.y - self.height + 2
 end
 
-function OverworldPlayer:update()
+function OverworldPlayer:inputHandleKeyPress()
     if (not self.moving) and (self.node) then
 
         local moveNode
