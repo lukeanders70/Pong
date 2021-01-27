@@ -64,8 +64,10 @@ function Level:levelComplete()
         Timer.after(self.levelCompleteWait, function()
             GlobalState.saveData:levelComplete(self.worldName, self.id)
             GlobalState.saveData:save()
-            GlobalState.stateMachine:swap('map', {worldName = self.worldName})
-            GlobalState.level = nil
+            GlobalState.stateMachine:add('levelComplete', {callback = function()
+                GlobalState.stateMachine:swap('map', {worldName = self.worldName})
+                GlobalState.level = nil
+            end})
         end)
     end
     self.levelCompleted = true
