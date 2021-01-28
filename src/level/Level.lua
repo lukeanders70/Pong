@@ -73,6 +73,11 @@ function Level:levelComplete()
     self.levelCompleted = true
 end
 
+function Level:levelFailed()
+    GlobalState.stateMachine:swap('map', {worldName = self.worldName})
+    self.levelComplete = true
+end
+
 function Level:addEnemies(enemies)
     if enemies then
         for _, enemy in pairs(enemies) do

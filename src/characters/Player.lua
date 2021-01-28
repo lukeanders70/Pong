@@ -78,7 +78,7 @@ function Player:characterCollide(collidable, dt)
     if not self.invincible then
         self:lowerHealth(1)
         local moveData = self:moveOutsideOf(collidable)
-        if moveData.direction then
+        if moveData and moveData.direction then
             self.velocity = vectorAdd(vectorScalerMultiply(moveData.direction, 500), self.velocity)
         end
         for _, child in pairs(self.children) do
@@ -97,6 +97,11 @@ function Player:lowerHealth(amount)
             self.invincible = false
         end)
     end
+end
+
+function Player:destroy()
+    PaddlerType.destroy(self)
+    GlobalState.level:levelFailed()
 end
 
 function Player:left()
