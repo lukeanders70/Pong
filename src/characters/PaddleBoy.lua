@@ -1,6 +1,8 @@
 local PaddlerType = require('src/characters/PaddlerType')
 local Paddle = require('src/objects/Paddle')
 local BulletBall = require('src/objects/BulletBall')
+local ObjectTextureIndex = require('src/textures/ObjectTextureIndex')
+local PaddleBoyHead = require('src/objects/PaddleBoyHead')
 
 local PaddleBoy = Class{__includes = PaddlerType}
 
@@ -9,12 +11,20 @@ PaddleBoy.PADDLE_SPEED = 15
 PaddleBoy.FIRE_SPEED = 100
 function PaddleBoy:init(indexX, indexY)
     local width = 20
-    local height = 50
+    local height = 64
     local color = {255, 100, 100, 255}
 
     PaddlerType.init(self, indexX, indexY, width, height, color, {})
 
     self.noFriction = true
+
+    self.image = ObjectTextureIndex.getImage('paddle-boy-body', self.width, self.height)
+
+    self.topHead = PaddleBoyHead(self, 5)
+    self.bottomHead = PaddleBoyHead(self, 38)
+
+    table.insert(self.children, self.topHead)
+    table.insert(self.children, self.bottomHead)
 
     self.paddleDirectionMultiplier = 1
     self.directionMultiplier = -1
@@ -24,8 +34,14 @@ end
 function PaddleBoy:update(dt)
     if (self.directionMultiplier == -1) and (not self:anyBlockBelowAndLeft()) then
         self.directionMultiplier = 1
+        self:unflipHorizontal()
+        self.topHead:unflipHorizontal()
+        self.bottomHead:unflipHorizontal()
     elseif (self.directionMultiplier == 1) and (not self:anyBlockBelowAndRight()) then
         self.directionMultiplier = -1
+        self:flipHorizontal()
+        self.topHead:flipHorizontal()
+        self.bottomHead:flipHorizontal()
     end
     self.velocity.x = PaddleBoy.MOVEMENT_SPEED * self.directionMultiplier
     self:updatePaddle(dt)
@@ -62,6 +78,7 @@ end
 
 function PaddleBoy:fireBottom()
     if GlobalState.level.player then
+        self.bottomHead:attackAnimation()
         if GlobalState.level.player.x < self.x then
             self:fire(-1, 3/4)
         else
@@ -72,6 +89,7 @@ end
 
 function PaddleBoy:fireTop()
     if GlobalState.level.player then
+        self.topHead:attackAnimation()
         if GlobalState.level.player.x < self.x then
             self:fire(-1, 1/4)
         else
