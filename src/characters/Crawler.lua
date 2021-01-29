@@ -11,11 +11,6 @@ function Crawler:init(indexX, indexY, options)
 
     self.image = ObjectTextureIndex.getAnimation('crawler', self.width, self.height, self.timerGroup)
     self.image:continousCycling()
-
-    self.noFriction = true
-
-    self.directionMultiplier = 1
-    self.velocity.x = PacerType.MOVEMENT_SPEED * self.directionMultiplier
 end
 
 function Crawler:update(dt)

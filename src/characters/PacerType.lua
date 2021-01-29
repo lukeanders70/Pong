@@ -9,7 +9,7 @@ function PacerType:init(indexX, indexY, width, height, color, options)
     self.noFriction = true
 
     self.directionMultiplier = -1
-    self.velocity.x = PacerType.MOVEMENT_SPEED * self.directionMultiplier
+    self.velocity.x = self.MOVEMENT_SPEED * self.directionMultiplier
 end
 
 function PacerType:update(dt)
@@ -26,7 +26,7 @@ function PacerType:update(dt)
             child:flipHorizontal()
         end
     end
-    self.velocity.x = PacerType.MOVEMENT_SPEED * self.directionMultiplier
+    self.velocity.x = self.MOVEMENT_SPEED * self.directionMultiplier
     Character.update(self, dt)
 end
 
