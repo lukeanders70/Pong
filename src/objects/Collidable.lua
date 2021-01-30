@@ -153,19 +153,18 @@ function Collidable:moveOutsideOf(collidable, direction)
         end)
 
         if multiplier then
-            self.x = self.x + (multiplier.mult * directionOut.x)
-            self.y = self.y + (multiplier.mult * directionOut.y)
+            self[multiplier.axis] = self[multiplier.axis] + (multiplier.mult * directionOut[multiplier.axis])
 
             if (multiplier.axis == 'x') and self.velocity and self.acceleration then
                 self.velocity.x = 0
                 self.acceleration.x = 0
                 self.lastX = self.x
-                return {axis = 'x', direction = directionOut}
+                return {axis = 'x', direction = {x = directionOut.x, y = 0 }}
             elseif multiplier.axis == 'y' and self.velocity and self.acceleration then
                 self.velocity.y = 0
                 self.acceleration.y = 0
                 self.lastY = self.y
-                return {axis ='y', direction = directionOut}
+                return {axis ='y', direction = {x = 0, y = directionOut.y }}
             end
         else
             logger("w", "unable to moveOutSideOf in collision case")

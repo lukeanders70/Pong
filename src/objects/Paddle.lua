@@ -24,7 +24,7 @@ function Paddle:init(parent, x, y, xOffset, yOffset, height, range, color, side)
     self.color = color
     self.parent = parent
 
-    self.id = parent.id .. "-paddle"
+    self.id = parent.id .. "-" .. side or "left" .. "-paddle"
 
     self.image = basicTexturesIndex.paddle
 
