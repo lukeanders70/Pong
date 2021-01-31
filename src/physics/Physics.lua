@@ -1,18 +1,22 @@
 local Physics = {}
 
-Physics.GRAVITY = 1024 -- pixels per seconds squared
+Physics.GRAVITY = 1524 -- pixels per seconds squared
 Physics.MAX_VELOCITY = 10000 -- pixels per seconds (in any one dimension)
-Physics.FRICTION = 800
+Physics.FRICTION = 1000
 
 
-function Physics.update(moveable, dt)
+function Physics.update(moveable, dt, blockBelow)
 
     moveable.velocity.x = math.min(
         moveable.velocity.x + (moveable.acceleration.x * dt), 
         Physics.MAX_VELOCITY
     )
+    local usedAccelectionY = moveable.acceleration.y
+    if moveable.gravity and (not blockBelow) then
+        usedAccelectionY = usedAccelectionY + Physics.GRAVITY
+    end
     moveable.velocity.y = math.min(
-        moveable.velocity.y + (moveable.acceleration.y * dt),
+        moveable.velocity.y + (usedAccelectionY * dt),
         Physics.MAX_VELOCITY
     )
 
