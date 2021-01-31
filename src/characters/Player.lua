@@ -17,11 +17,15 @@ function Player:init(indexX, indexY)
     self.moveAnimation = ObjectTextureIndex.getAnimation('player-walk', self.width, self.height, self.timerGroup)
 
     self.image = self.staticImage
+
+    self.doubleJumped = true
 end
 
 function Player:update(dt)
     self.acceleration.x = 0
     self.acceleration.y = 0
+    
+    -- for when keys are held down
     if love.keyboard.isDown( 'a' ) then
         if self.image == self.staticImage then 
             self.image = self.moveAnimation
@@ -41,11 +45,18 @@ function Player:update(dt)
         self.moveAnimation:stopCycle()
     end
     if love.keyboard.isDown( 'w' ) then
-        self:jump()
+        self:struggleUp()
     end
     self:capMovementSpeed()
     self:capPosition()
     PaddlerType.update(self, dt)
+end
+
+-- for when keys are pressed
+function Player:inputHandleKeyPress(key)
+    if key == 'w' then
+        self:jump()
+    end
 end
 
 function Player:capMovementSpeed()
@@ -116,9 +127,20 @@ function Player:right()
     end
 end
 
+-- when jumping, allows holding up to increase jump height
+function Player:struggleUp()
+    if self.velocity.y < 0 and (not self.doubleJumped) and (not self:anyBlocksDirectlyBelow()) then
+        self.acceleration.y = -900
+    end
+end
+
 function Player:jump()
     if self:anyBlocksDirectlyBelow() then
-        self.velocity.y = -1500
+        self.velocity.y = -2000
+        self.doubleJumped = false
+    elseif not self.doubleJumped then
+        self.velocity.y = -1200
+        self.doubleJumped = true
     end
 end
 

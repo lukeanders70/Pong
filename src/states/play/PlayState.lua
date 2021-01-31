@@ -22,6 +22,10 @@ function PlayState:enter(params)
     })
 end
 
+function PlayState:inputHandleKeyPress(key)
+    self.player:inputHandleKeyPress(key)
+end
+
 function PlayState:updateCallback()
     GlobalState.camera:centerOnObject(self.player)
 end

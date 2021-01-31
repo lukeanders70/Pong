@@ -27,12 +27,11 @@ end
 function Character:update(dt)
     Collidable.update(self, dt)
     if self.gravity and self:anyBlocksDirectlyBelow() then
-        self.acceleration.y = 0
         self.velocity.y = math.min(self.velocity.y, 0)
-    elseif self.gravity then
-        self.acceleration.y = Physics.GRAVITY
+        Physics.update(self, dt, true)
+    else
+        Physics.update(self, dt)
     end
-    Physics.update(self, dt)
     for _, child in pairs(self.children) do
         child:update(dt)
     end
