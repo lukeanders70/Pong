@@ -46,14 +46,14 @@ function PaddlerType:init(indexX, indexY, width, height, color, options)
 end
 
 function PaddlerType:harmCollide(collidable, dt)
-    -- local velocityBefore = {x = collidable.velocity.x, y = collidable.velocity.y}
-    -- collidable:moveOutsideOf(self)
-    -- collidable.velocity = velocityBefore
-    -- local didCollide = self.paddleRight:conditionallyColide(collidable) or self.paddleLeft:conditionallyColide(collidable)
-    -- if not didCollide then
-    self:lowerHealth(1)
-    collidable:destroy()
-    -- end
+    local velocityBefore = {x = collidable.velocity.x, y = collidable.velocity.y}
+    collidable:moveOutsideOf(self)
+    collidable.velocity = velocityBefore
+    local didCollide = self.paddleRight:conditionallyColide(collidable) or self.paddleLeft:conditionallyColide(collidable)
+    if not didCollide then
+        self:lowerHealth(1)
+        collidable:destroy()
+    end
 end
 
 return PaddlerType
