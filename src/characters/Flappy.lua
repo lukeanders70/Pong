@@ -6,9 +6,9 @@ local ObjectTextureIndex = require('src/textures/ObjectTextureIndex')
 local Flappy = Class{__includes = TurretType}
 
 Flappy.MAX_MOVEMENT_SPEED = 50
-Flappy.INDEX_RANGE = 2 -- the number of blocks (in each direction) flappies will fly to
+Flappy.INDEX_RANGE = 4 -- the number of blocks (in each direction) flappies will fly to
 Flappy.FIRE_SPEED = 100
-Flappy.SIGHT_RANGE = 6
+Flappy.SIGHT_RANGE = 12
 function Flappy:init(indexX, indexY)
 
     TurretType.init(self, indexX, indexY)

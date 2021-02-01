@@ -1,4 +1,4 @@
-local Tiles = require('src/level/Tiles')
+local Tile = require('src/level/Tiles')
 local TileMap = require('src/level/TileMap')
 local Player = require('src/characters/Player')
 local Bell = require('src/objects/Bell')
@@ -55,6 +55,7 @@ function Level:init(worldName, id)
     -- useful values
     self.yMax = #self.tiles[1] * Constants.TILE_SIZE
     self.xMax = #self.tiles * Constants.TILE_SIZE
+    self.segmentHeight = self.metaData.segmentHeight or 10
 
     self.levelCompleted = false
 end
@@ -185,14 +186,14 @@ function Level.parseTileFromData(tileData, indexX, indexY)
     local id = tostring(tileData:sub(3,3)) .. tostring(tileData:sub(4,4))
 
     if isBlock then
-        local tileName = getOrElse(TileMap, id, "sky", "Tile ID " .. id .. " not found, defaulting to sky")
-        local tileClass = replaceIfNil(Tiles[tileName:gsub("^%l", string.upper)], Tiles["Sky"])
-        local tile = tileClass(indexX, indexY, isSolid)
+        -- local tileName = getOrElse(TileMap, id, "sky", "Tile ID " .. id .. " not found, defaulting to sky")
+        -- local tileClass = replaceIfNil(Tiles[tileName:gsub("^%l", string.upper)], Tiles["Sky"])
+        local tile = Tile(indexX, indexY, id, isSolid)
         return { tile = tile }
     elseif isEnemy then
         local returnObj = {}
         -- sky block behind enemy
-        returnObj.tile = Tiles["Sky"](indexX, indexY, false)
+        returnObj.tile = Tile(indexX, indexY, '00', isSolid)
         local enemyName = getOrElse(EnemyMap, id, nil, "Enemey ID: " .. id .. " not found")
         if enemyName and table.hasKey(Level.enemyClassCache, enemyName) then
             returnObj.enemy = enemyClassCache[enemyName](indexX, indexY)
@@ -250,7 +251,7 @@ function Level:minVisbileIndexY()
 end
 
 function Level:maxVisibleIndexY()
-    return math.ceil(math.min(((-GlobalState.camera.y_offset + Constants.VIRTUAL_HEIGHT) / Constants.TILE_SIZE) + 1, #self.tiles[1]))
+    return math.ceil(math.min(((-GlobalState.camera.y_offset + Constants.VIRTUAL_HEIGHT) / Constants.TILE_SIZE) + 1, self.segmentHeight))
 end
 
 function Level:renderableInFrame(renderable)

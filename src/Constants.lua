@@ -5,7 +5,7 @@ local Constants = {
 	VIRTUAL_WIDTH = 512,
 	VIRTUAL_HEIGHT = 288,
 
-	TILE_SIZE = 32,
+	TILE_SIZE = 16,
 	colors = {
 		lightGrey = {213, 213, 213, 255},
 		white = {255, 255, 255, 255}

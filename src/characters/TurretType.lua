@@ -4,7 +4,7 @@ local Ball = require('src/objects/Ball')
 local TurretType = Class{__includes = Character}
 
 TurretType.FIRE_SPEED = 100
-TurretType.SIGHT_RANGE = 6
+TurretType.SIGHT_RANGE = 12
 
 function TurretType:init(indexX, indexY, options)
     local width = 20

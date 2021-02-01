@@ -4,7 +4,7 @@ local Ball = require('src/objects/Ball')
 local Vertigo = Class{__includes = TurretType}
 
 Vertigo.MAX_MOVEMENT_SPEED = 40
-Vertigo.INDEX_RANGE = 1 -- the number of blocks (up and down) vertigo will fly to
+Vertigo.INDEX_RANGE = 2 -- the number of blocks (up and down) vertigo will fly to
 function Vertigo:init(indexX, indexY)
 
     TurretType.init(self, indexX, indexY)
