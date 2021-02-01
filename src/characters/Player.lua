@@ -5,7 +5,9 @@ local ObjectTextureIndex = require('src/textures/ObjectTextureIndex')
 local Player = Class{__includes = PaddlerType}
 
 Player.TEXTURE_PATH = ''
-Player.MAX_MOVEMENT_SPEED = 300
+Player.MAX_MOVEMENT_SPEED_VERTICAL = 2000
+Player.MAX_MOVEMENT_SPEED_HORIZONTAL = 200
+
 function Player:init(indexX, indexY)
     local width = 20
     local height = 64
@@ -60,16 +62,16 @@ function Player:inputHandleKeyPress(key)
 end
 
 function Player:capMovementSpeed()
-    if self.velocity.x > Player.MAX_MOVEMENT_SPEED then
-        self.velocity.x = Player.MAX_MOVEMENT_SPEED
-    elseif self.velocity.x < (- Player.MAX_MOVEMENT_SPEED) then
-        self.velocity.x = - Player.MAX_MOVEMENT_SPEED
+    if self.velocity.x > Player.MAX_MOVEMENT_SPEED_HORIZONTAL then
+        self.velocity.x = Player.MAX_MOVEMENT_SPEED_HORIZONTAL
+    elseif self.velocity.x < (- Player.MAX_MOVEMENT_SPEED_HORIZONTAL) then
+        self.velocity.x = - Player.MAX_MOVEMENT_SPEED_HORIZONTAL
     end
 
-    if self.velocity.y > Player.MAX_MOVEMENT_SPEED then
-        self.velocity.y = Player.MAX_MOVEMENT_SPEED
-    elseif self.velocity.y < (- Player.MAX_MOVEMENT_SPEED) then
-        self.velocity.y = - Player.MAX_MOVEMENT_SPEED
+    if self.velocity.y > Player.MAX_MOVEMENT_SPEED_VERTICAL then
+        self.velocity.y = Player.MAX_MOVEMENT_SPEED_VERTICAL
+    elseif self.velocity.y < (- Player.MAX_MOVEMENT_SPEED_VERTICAL) then
+        self.velocity.y = - Player.MAX_MOVEMENT_SPEED_VERTICAL
     end
 end
 
@@ -136,10 +138,10 @@ end
 
 function Player:jump()
     if self:anyBlocksDirectlyBelow() then
-        self.velocity.y = -2000
+        self.velocity.y = -300
         self.doubleJumped = false
     elseif not self.doubleJumped then
-        self.velocity.y = -1200
+        self.velocity.y = -200
         self.doubleJumped = true
     end
 end

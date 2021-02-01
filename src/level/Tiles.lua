@@ -2,10 +2,10 @@ local Collidable = require('src/objects/Collidable')
 local ColliderTypes = require('src/objects/ColliderTypes')
 local TileTextureIndex = require('src/textures/TileTextureIndex')
 
-local TileBase = Class{__includes = Collidable}
+local Tile = Class{__includes = Collidable}
 
-TileBase.color = {0, 0, 0, 255}
-function TileBase:init(indexX, indexY, isSolid)
+Tile.color = {0, 0, 0, 255}
+function Tile:init(indexX, indexY, id, isSolid)
     Collidable.init(self, 
     {
         x = Constants.TILE_SIZE * (indexX - 1),
@@ -16,59 +16,26 @@ function TileBase:init(indexX, indexY, isSolid)
     self.solid = isSolid
     self.indexX = indexX
     self.indexY = indexY
+
+    self.id = tonumber(Tile.removeZeroPrefix(id))
+
+    self.isSky = self.id == 0
+
+    if self.isSky then
+        self.color = {0,0,0,0}
+    else
+        self.image = TileTextureIndex.fromId(self.id)
+    end
+
 end
 
-local Tiles = {
-    Sky = Class{__includes = TileBase,
-        color = {0, 0, 0, 0},
-        init = function(self, indexX, indexY, isSolid)
-            TileBase.init(self, indexX, indexY, isSolid)
-            self.image = nil
-            self.isSky = true -- special case so render knows to just skip this one
-        end
-    },
-    Dirt = Class{__includes = TileBase,
-        color = {200, 200, 200, 255},
-        init = function(self, indexX, indexY, isSolid)
-            TileBase.init(self, indexX, indexY, isSolid)
-            self.image = TileTextureIndex.fromId(1)
-        end
-    },
-    FossilDirt = Class{__includes = TileBase,
-        color = {200, 200, 200, 255},
-        init = function(self, indexX, indexY, isSolid)
-            TileBase.init(self, indexX, indexY, isSolid)
-            self.image = TileTextureIndex.fromId(2)
-        end
-    },
-    Grass = Class{__includes = TileBase,
-        color = {200, 200, 200, 255},
-        init = function(self, indexX, indexY, isSolid)
-            TileBase.init(self, indexX, indexY, isSolid)
-            self.image = TileTextureIndex.fromId(3)
-        end
-    },
-    Sand = Class{__includes = TileBase,
-        color = {200, 200, 200, 255},
-        init = function(self, indexX, indexY, isSolid)
-            TileBase.init(self, indexX, indexY, isSolid)
-            self.image = TileTextureIndex.fromId(5)
-        end
-    },
-    TopSand = Class{__includes = TileBase,
-        color = {200, 200, 200, 255},
-        init = function(self, indexX, indexY, isSolid)
-            TileBase.init(self, indexX, indexY, isSolid)
-            self.image = TileTextureIndex.fromId(6)
-        end
-    },
-    FossilSand = Class{__includes = TileBase,
-        color = {200, 200, 200, 255},
-        init = function(self, indexX, indexY, isSolid)
-            TileBase.init(self, indexX, indexY, isSolid)
-            self.image = TileTextureIndex.fromId(7)
-        end
-    }
-}   
+function Tile.removeZeroPrefix(index)
+    if startsWith(index, '0') then
+        local sub = string.sub(index, 2, 2)
+        return sub
+    else
+        return index
+    end
+end
 
-return Tiles
+return Tile
