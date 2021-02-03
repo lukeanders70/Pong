@@ -28,6 +28,16 @@ function TileTextureIndex.fromId(id)
     end
 end
 
+function TileTextureIndex.animationFromId(id, numFrames)
+    local idToGrab = id
+    local images = {}
+    while idToGrab < id + numFrames do
+        table.insert(images, TileTextureIndex.fromId(idToGrab))
+        idToGrab = idToGrab + 1
+    end
+    return images
+end
+
 function TileTextureIndex.IndiciesFromId(id)
     return { indexX = id % TileTextureIndex.numColumns, indexY = math.floor(id / TileTextureIndex.numColumns)}
 end

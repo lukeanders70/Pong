@@ -1,5 +1,4 @@
-local Tile = require('src/level/Tiles')
-local TileMap = require('src/level/TileMap')
+local TileIndex = require('src/level/TileIndex')
 local Player = require('src/characters/Player')
 local Bell = require('src/objects/Bell')
 local EnemyMap = require('src/characters/EnemyMap')
@@ -186,14 +185,12 @@ function Level.parseTileFromData(tileData, indexX, indexY)
     local id = tostring(tileData:sub(3,3)) .. tostring(tileData:sub(4,4))
 
     if isBlock then
-        -- local tileName = getOrElse(TileMap, id, "sky", "Tile ID " .. id .. " not found, defaulting to sky")
-        -- local tileClass = replaceIfNil(Tiles[tileName:gsub("^%l", string.upper)], Tiles["Sky"])
-        local tile = Tile(indexX, indexY, id, isSolid)
+        local tile = TileIndex.create(indexX, indexY, id, isSolid)
         return { tile = tile }
     elseif isEnemy then
         local returnObj = {}
         -- sky block behind enemy
-        returnObj.tile = Tile(indexX, indexY, '00', isSolid)
+        returnObj.tile = TileIndex.create(indexX, indexY, '00', isSolid)
         local enemyName = getOrElse(EnemyMap, id, nil, "Enemey ID: " .. id .. " not found")
         if enemyName and table.hasKey(Level.enemyClassCache, enemyName) then
             returnObj.enemy = enemyClassCache[enemyName](indexX, indexY)
@@ -221,6 +218,13 @@ function Level:tileFromPoint(point)
 end
 
 function Level:update(dt)
+    for indexX = self:minVisbileIndexX(), self:maxVisibleIndexX() do
+        for indexY = self:minVisbileIndexY(), self:maxVisibleIndexY() do
+            if self.tiles[indexX][indexY].isUpdateable then
+                self.tiles[indexX][indexY]:update(dt)
+            end
+        end
+    end
     for _, updateable in pairs(self.updateables) do
         if self.levelCompleted then
             dt = dt * self.levelCompleteMotionSlowMultipler
@@ -286,7 +290,7 @@ function Level:render()
     self:renderBackground()
     for indexX = self:minVisbileIndexX(), self:maxVisibleIndexX() do
         for indexY = self:minVisbileIndexY(), self:maxVisibleIndexY() do
-            if not self.tiles[indexX][indexY].isSky then
+            if self.tiles[indexX][indexY].isRenderable then
                 self.tiles[indexX][indexY]:render()
             end
         end
