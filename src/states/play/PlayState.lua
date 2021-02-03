@@ -8,6 +8,15 @@ function PlayState:init()
 end
 
 function PlayState:enter(params)
+
+    GlobalState.timerValue = 0
+    self.levelTimer = Timer.every(0.3, function()
+        GlobalState.timerValue = GlobalState.timerValue + 1
+        if GlobalState.timerValue > 10000 then
+            GlobalState.timerValue = 0
+        end
+    end)
+
     local levelId = getOrElse(params, "levelId", 1, "PlayState level id not found in params")
     local worldName = getOrElse(params, "worldName", "steaming-desert")
     self.level = Level(worldName, levelId)
@@ -28,6 +37,10 @@ end
 
 function PlayState:updateCallback()
     GlobalState.camera:centerOnObject(self.player)
+end
+
+function PlayState:exit()
+    Timer.clear(self.levelTimer)
 end
 
 return PlayState

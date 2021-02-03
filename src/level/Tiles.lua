@@ -19,11 +19,10 @@ function Tile:init(indexX, indexY, id, isSolid)
 
     self.id = tonumber(Tile.removeZeroPrefix(id))
 
-    self.isSky = self.id == 0
+    self.isUpdateable = false
+    self.isRenderable = true
 
-    if self.isSky then
-        self.color = {0,0,0,0}
-    else
+    if self.id > 0 then
         self.image = TileTextureIndex.fromId(self.id)
     end
 
