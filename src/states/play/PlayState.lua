@@ -19,7 +19,7 @@ function PlayState:enter(params)
         end
     end):group(self.levelTimerGroup)
 
-    local levelId = getOrElse(params, "levelId", 1, "PlayState level id not found in params")
+    local levelId = getOrElse(params, "levelId", "1", "PlayState level id not found in params")
     local worldName = getOrElse(params, "worldName", "steaming-desert")
     self.level = Level(worldName, levelId)
     self.player = self.level.player
