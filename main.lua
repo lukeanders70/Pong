@@ -50,7 +50,7 @@ function love.load(args)
 	love.mouse.mousePositionGameX = 0
 	love.mouse.mousePositionGameY = 0
 
-	StatePoints.levelFour()
+	StatePoints.titleScreen()
 end
 
 function love.resize(w, h)

@@ -21,7 +21,6 @@ function World:init(name)
     self.metadata = World.safeLoadMetaData(path .. "metadata.lua")
 
     -- images
-    -- self.mapImage = Image.createFromName(self.metadata.map)
     self.mapImage = ObjectTextureIndex.getAnimation(self.metadata.map, Constants.VIRTUAL_WIDTH, Constants.VIRTUAL_HEIGHT)
     self.mapImage.frameDelay = 0.3
     self.mapImage:continousCycling()
@@ -50,7 +49,7 @@ end
 
 function World:startLevel(node)
     if node and node.levelId then
-        GlobalState.stateMachine:swap('play', {levelId = node.levelId, worldName = self.metadata.name})
+        GlobalState.stateMachine:swap('play', {levelId = tostring(node.levelId), worldName = self.metadata.name})
     end
 end
 

@@ -11,7 +11,6 @@ end
 function LevelCompleteState:enter(params)
     self.callback = params.callback
     self.image = Image.createFromName("victory")
-    self:addRenderable(self.image)
     
     self.canDismiss = false
 

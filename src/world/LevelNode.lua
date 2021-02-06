@@ -4,7 +4,7 @@ local Level = require('src/level/Level')
 local LevelNode = Class{__includes = Node}
 
 function LevelNode:init(x, y, neighbors, levelId, graph)
-    self.levelId = levelId
+    self.levelId = tostring(levelId)
     self.levelMetadata = Level.safeLoadMetaData( graph.world.metadata.name , self.levelId)
     if self.levelMetadata then
         self.levelName = self.levelMetadata.name
