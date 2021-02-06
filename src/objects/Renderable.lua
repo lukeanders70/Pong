@@ -49,6 +49,13 @@ function Renderable:highestIndexY()
     return math.floor( (self.y + self.height) / Constants.TILE_SIZE) + 1
 end
 
+function Renderable:pointInside(point)
+    return (point.x <= self:upperRight().x) and
+    (point.x >= self:upperLeft().x) and
+    (point.y <= self:lowerRight().y) and
+    (point.y >= self:upperRight().y)
+end
+
 function Renderable:flipHorizontal()
     self.xScale = -1
 	self.xRenderOffset = self.width
