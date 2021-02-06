@@ -9,13 +9,15 @@ end
 
 function PlayState:enter(params)
 
+    self.levelTimerGroup = {}
+    GlobalState.timerGroup = self.levelTimerGroup
     GlobalState.timerValue = 0
     self.levelTimer = Timer.every(0.3, function()
         GlobalState.timerValue = GlobalState.timerValue + 1
         if GlobalState.timerValue > 10000 then
             GlobalState.timerValue = 0
         end
-    end)
+    end):group(self.levelTimerGroup)
 
     local levelId = getOrElse(params, "levelId", 1, "PlayState level id not found in params")
     local worldName = getOrElse(params, "worldName", "steaming-desert")
@@ -31,6 +33,11 @@ function PlayState:enter(params)
     })
 end
 
+function PlayState:update(dt)
+    Timer.update(dt, self.levelTimerGroup)
+    State.update(self, dt)
+end
+
 function PlayState:inputHandleKeyPress(key)
     self.player:inputHandleKeyPress(key)
 end
@@ -40,7 +47,9 @@ function PlayState:updateCallback()
 end
 
 function PlayState:exit()
-    Timer.clear(self.levelTimer)
+    Timer.clear(self.levelTimerGroup)
+    GlobalState.timerValue = 0
+    GlobalState.timerGroup = nil
 end
 
 return PlayState

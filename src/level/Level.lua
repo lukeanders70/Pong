@@ -24,15 +24,16 @@ function Level:init(worldName, id)
     self.id = id
     self.worldName = worldName
     self.metaData = Level.safeLoadMetaData(worldName, id)
+
+    self.player = Player(self.metaData.playerStart.x, self.metaData.playerStart.y)
+    self.bell = Bell(self.metaData.endBell.x, self.metaData.endBell.y)
+
     local levelData = Level.safeLoadData(worldName, id, self.metaData.segmentLength or 26, self.metaData.segmentHeight or 10)
 
     self.tiles = levelData.tiles
     self:addEnemies(levelData.enemies)
     
     Level.enemyClassCache = {}
-
-    self.player = Player(self.metaData.playerStart.x, self.metaData.playerStart.y)
-    self.bell = Bell(self.metaData.endBell.x, self.metaData.endBell.y)
 
     assert(self.player.id, "Player obejct must have hash id defined")
     self.updateables[self.player.id] = self.player

@@ -86,6 +86,10 @@ function Collidable:anyBlocksDirectlyAbove()
     return self:checkCollidableFromPoints(pixelsToCheck)
 end
 
+function Collidable:isDirectlyAbove(collidable)
+    return collidable:pointInside({x = self.x, y = self.y - 1}) or collidable:pointInside({x = self.x + self.width, y = self.y - 1})
+end
+
 function Collidable:anyBlocksDirectlyLeft()
     local pixelsToCheck = {}
     local PixelToAddY = self:upperLeft().y

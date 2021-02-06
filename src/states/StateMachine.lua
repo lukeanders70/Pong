@@ -87,4 +87,8 @@ function StateMachine:addAndSuspend(stateName, enterParams)
 	self:add(stateName, enterParams)
 end
 
+function StateMachine:getState()
+	return self.current[#self.current]
+end
+
 return StateMachine
