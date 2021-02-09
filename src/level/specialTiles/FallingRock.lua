@@ -5,6 +5,7 @@ local Animation = require('src/textures/Animation')
 local FallingRock = Class{__includes = Tile}
 
 FallingRock.SHAKE_TIME = 2
+FallingRock.REFORM_TIME = 5
 function FallingRock:init(indexX, indexY, id, isSolid, level)
     Tile.init(self, indexX, indexY, id, isSolid)
     self.isFalling = false
@@ -17,6 +18,7 @@ function FallingRock:init(indexX, indexY, id, isSolid, level)
         table.insert(quads, image.quad)
     end
     self.breakAnimation = Animation(TileTextureIndex.texture, quads)
+    self.originalImage = self.image
 end
 
 function FallingRock:update(dt)
@@ -37,13 +39,26 @@ function FallingRock:triggerFall()
     Timer.after(FallingRock.SHAKE_TIME, function()
         shakeTimer:remove()
         
-        self.solid = false
         self.image = self.breakAnimation
         self.breakAnimation:cycleOnce(function()
+            self.solid = false
             self.isRenderable = false
             self.image = nil
             self.color = {0,0,0,0}
+            self:triggerReform()
         end)
+    end)
+end
+
+function FallingRock:triggerReform()
+    Timer.after(FallingRock.REFORM_TIME, function()
+        self.isFalling = false
+        self.isUpdateable = true
+        self.xRenderOffset = 0
+        self.solid = true
+        self.isRenderable = true
+        self.image = self.originalImage
+        self.color = {255, 255, 255, 255}
     end)
 end
 

@@ -109,7 +109,7 @@ function PaddleBoy:fire(xDirMultiplider, yFraction)
     )
     ball:moveOutsideOf(self, { x = xDirMultiplider, y = 0 })
     ball.velocity.x = velocityX
-    GlobalState.level:addBall(ball)
+    GlobalState.level:addObject(ball)
     ball:update(0.01)
 end
 

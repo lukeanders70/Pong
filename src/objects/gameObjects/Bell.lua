@@ -15,6 +15,10 @@ function Bell:init(indexX, indexY)
         height = 64
     })
     self.colliderType = ColliderTypes.INTERACT
+    self.doesCollideWith = {
+        [ColliderTypes.CHARACTER] = true
+    }
+
     self.id = tostring(tostring(self.x) .. "|" .. tostring(self.y))
     self.image = ObjectTextureIndex.getAnimation('bell-idle', self.width, self.height, self.timerGroup)
     self.image:continousCycling()

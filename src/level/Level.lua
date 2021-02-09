@@ -1,14 +1,16 @@
 local TileIndex = require('src/level/TileIndex')
 local Player = require('src/characters/Player')
-local Bell = require('src/objects/Bell')
 local EnemyMap = require('src/characters/EnemyMap')
+local GameObjectMap = require('src/objects/gameObjects/GameObjectsMap')
 local Image = require('src/textures/Image')
 local Midground = require('src/objects/Midground')
+local ColliderTypes = require('src/objects/ColliderTypes')
 
 local Level = Class{}
 
 Level.defaultMetaData = {name="Default Level", playerStart={x = 0, y = 1}}
 Level.enemyClassCache = {}
+Level.gameObjectClassCache = {}
 Level.levelCompleteWait = 2 -- seconds
 Level.levelCompleteMotionSlowMultipler = 0.25
 function Level:init(worldName, id)
@@ -16,33 +18,30 @@ function Level:init(worldName, id)
 
     self.updateables = {}
     self.renderables = {}
-    self.collidables = {}
-    self.priorityCollidables = {}
-    self.enemies = {}
-    self.balls = {}
+    for _, v in pairs(ColliderTypes) do
+        self["collider-"..v] = {}
+    end
 
     self.id = id
     self.worldName = worldName
     self.metaData = Level.safeLoadMetaData(worldName, id)
 
     self.player = Player(self.metaData.playerStart.x, self.metaData.playerStart.y)
-    self.bell = Bell(self.metaData.endBell.x, self.metaData.endBell.y)
+    --self.bell = Bell(self.metaData.endBell.x, self.metaData.endBell.y)
 
     local levelData = Level.safeLoadData(worldName, id, self.metaData.segmentLength or 26, self.metaData.segmentHeight or 10)
 
     self.tiles = levelData.tiles
-    self:addEnemies(levelData.enemies)
+    self:addObjects(levelData.objects)
     
     Level.enemyClassCache = {}
 
     assert(self.player.id, "Player obejct must have hash id defined")
-    self.updateables[self.player.id] = self.player
-    self.renderables[self.player.id] = self.player
-    self.collidables[self.player.id] = self.player
+    self:addObject(self.player)
 
-    self.updateables[self.bell.id] = self.bell
-    self.renderables[self.bell.id] = self.bell
-    self.collidables[self.bell.id] = self.bell
+    -- self.updateables[self.bell.id] = self.bell
+    -- self.renderables[self.bell.id] = self.bell
+    -- self.collidables[self.bell.id] = self.bell
 
     -- images
     self.heartImage = Image.createFromName("heart")
@@ -79,10 +78,10 @@ function Level:levelFailed()
     self.levelComplete = true
 end
 
-function Level:addEnemies(enemies)
-    if enemies then
-        for _, enemy in pairs(enemies) do
-            self:addEnemy(enemy)
+function Level:addObjects(objects)
+    if objects then
+        for _, object in pairs(objects) do
+            self:addObject(object)
         end
     end
 end
@@ -90,41 +89,34 @@ end
 function Level:destroy(object)
     local objectID = object.id
     if object.id then
-        self.enemies[objectID] = nil
-        self.balls[objectID] = nil
         self.updateables[objectID] = nil
         self.renderables[objectID] = nil
-        self.collidables[objectID] = nil
-        self.priorityCollidables[objectID] = nil
+        if object.colliderType and self["collider-" .. object.colliderType] then
+            self["collider-"..object.colliderType][objectID] = nil
+        end
     else
         logger('e', "no object Id available for object: " ..tostring(object))
     end
 end
 
-function Level:addEnemy(enemy)
-    local enemyId = enemy.id
-    if not enemy.id then
-        logger('e', "no enemy Id available for enemy: " ..tostring(enemy))
+function Level:addObject(object)
+    local id = object.id
+    if not id then
+        logger('e', 'object was added without id: ' .. tostring(object))
     else
-        self.enemies[enemyId] = enemy
-        self:addObject(enemy, enemyId)
+        self.renderables[id] = object
+        self.updateables[id] = object
+        self:addCollidable(object)
     end
 end
 
-function Level:addBall(ball)
-    local ballId = ball.id
-    if not ball.id then
-        logger('e', "no ball ID available for ball: " .. tostring(ball))
-    else
-        self.balls[ballId] = ball
-        self:addObject(ball, ballId)
+function Level:addCollidable(collidable)
+    local id = collidable.id
+    if collidable.id then
+        if collidable.colliderType and self["collider-" .. collidable.colliderType] then
+            self["collider-"..collidable.colliderType][id] = collidable
+        end
     end
-end
-
-function Level:addObject(object, id)
-    self.updateables[id] = object
-    self.renderables[id] = object
-    self.collidables[id] = object
 end
 
 function Level.safeLoadMetaData(worldName, id)
@@ -147,7 +139,7 @@ end
 function Level.safeLoadData(worldName, id, segmentLength, segmentHeight)
     local path = "data/worlds/" .. worldName .. "/levels/" .. id .. "/" .. "level.txt"
     local tiles = {}
-    local enemies = {}
+    local objects = {}
 
     local segment = 0
     local indexX = 1
@@ -164,8 +156,8 @@ function Level.safeLoadData(worldName, id, segmentLength, segmentHeight)
                     tiles[tileIndex.x] = {}
                 end
                 tiles[tileIndex.x][tileIndex.y] = newTile.tile
-                if newTile.enemy then
-                    table.insert(enemies, newTile.enemy)
+                if newTile.object then
+                    table.insert(objects, newTile.object)
                 end
 
                 indexX = indexX + 1
@@ -174,12 +166,13 @@ function Level.safeLoadData(worldName, id, segmentLength, segmentHeight)
             indexY = indexY + 1
         end
     end
-    return { tiles = tiles, enemies = enemies }
+    return { tiles = tiles, objects = objects }
 end
 
 function Level.parseTileFromData(tileData, indexX, indexY)
     local isBlock = tileData:sub(1,1) == "0"
-    local isEnemy = not isBlock
+    local isEnemy = tileData:sub(1,1) == "1"
+    local isGameObject = tileData:sub(1,1) == "2"
 
     local isSolid = tileData:sub(2,2) == "1"
 
@@ -194,11 +187,24 @@ function Level.parseTileFromData(tileData, indexX, indexY)
         returnObj.tile = TileIndex.create(indexX, indexY, '00', isSolid)
         local enemyName = getOrElse(EnemyMap, id, nil, "Enemey ID: " .. id .. " not found")
         if enemyName and table.hasKey(Level.enemyClassCache, enemyName) then
-            returnObj.enemy = enemyClassCache[enemyName](indexX, indexY)
+            returnObj.object = Level.enemyClassCache[enemyName](indexX, indexY)
         else
             local enemyClass = EnemyMap.loadClassFromName(enemyName)
             Level.enemyClassCache[enemyName] = enemyClass
-            returnObj.enemy = enemyClass(indexX, indexY)
+            returnObj.object = enemyClass(indexX, indexY)
+        end
+        return returnObj
+    elseif isGameObject then
+        local returnObj = {}
+        -- sky block behind gameObject
+        returnObj.tile = TileIndex.create(indexX, indexY, '00', isSolid)
+        local gameObjectName = getOrElse(GameObjectMap, id, nil, "Game Object ID: " .. id .. " not found")
+        if gameObjectName and table.hasKey(Level.gameObjectClassCache, gameObjectName) then
+            returnObj.object = Level.gameObjectClassCache[gameObjectName](indexX, indexY)
+        else
+            local gameObjectClass = GameObjectMap.loadClassFromName(gameObjectName)
+            Level.gameObjectClassCache[gameObjectName] = gameObjectName
+            returnObj.object = gameObjectClass(indexX, indexY)
         end
         return returnObj
     else
@@ -227,17 +233,14 @@ function Level:update(dt)
         end
     end
     for _, updateable in pairs(self.updateables) do
-        if self.levelCompleted then
-            dt = dt * self.levelCompleteMotionSlowMultipler
-        end
         if self:renderableInFrame(updateable) then
             updateable:update(dt)
         elseif updateable.offscreenUpdate then
             updateable:offscreenUpdate(dt)
         end
     end
-    for _, collidable in pairs(self.collidables) do
-        if self:renderableInFrame(collidable) then
+    for _, v in pairs(ColliderTypes) do
+        for _, collidable in pairs(self["collider-"..v]) do
             collidable:updateCollisions(dt)
         end
     end

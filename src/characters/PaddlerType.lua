@@ -39,8 +39,8 @@ function PaddlerType:init(indexX, indexY, width, height, color, options)
         "left"
     )
 
-    GlobalState.level.collidables[self.paddleRight.id] = self.paddleRight
-    GlobalState.level.collidables[self.paddleLeft.id] = self.paddleLeft
+    GlobalState.level:addCollidable(self.paddleRight)
+    GlobalState.level:addCollidable(self.paddleLeft)
 
     self.children = { self.paddleRight, self.paddleLeft }
 end
