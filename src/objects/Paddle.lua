@@ -19,6 +19,8 @@ function Paddle:init(parent, x, y, xOffset, yOffset, height, range, color, side)
         width = Paddle.PADDLE_WIDTH,
         height = height
     })
+    self.doesCollideWith = {}
+
     self.lastX = self.x
     self.lastY = self.y
     self.color = color

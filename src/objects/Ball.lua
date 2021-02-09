@@ -16,6 +16,11 @@ function Ball:init(x, y, velocity, bounces, color)
         width = 4,
         height = 4
     })
+    self.doesCollideWith = {
+        [ColliderTypes.BLOCK] = true,
+        [ColliderTypes.PADDLE] = true
+    }
+
     self.color = color
     self.velocity = velocity
     self.colliderType = ColliderTypes.HARM

@@ -13,6 +13,8 @@ function Character:init(indexX, indexY, width, height, color, options)
         height = replaceIfNil(height, 1)
     })
     self.colliderType = ColliderTypes.CHARACTER
+    self.doesCollideWith[ColliderTypes.PADDLE] = nil
+    
     self.alive = true
 
     self.health = getOrElse(options, "health", 1)
@@ -47,8 +49,6 @@ function Character:collide(collidable, dt)
         self:blockCollide(collidable, dt)
     elseif collidable.colliderType == ColliderTypes.HARM then
         self:harmCollide(collidable, dt)
-    elseif collidable.colliderType == ColliderTypes.PADDLE then
-        return
     elseif collidable.colliderType == ColliderTypes.INTERACT then
         self:interactCollide(collidable, dt)
     else

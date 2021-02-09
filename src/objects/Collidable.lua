@@ -6,6 +6,13 @@ local Collidable = Class{__includes = Renderable}
 
 function Collidable:init(params)
     self.colliderType = ColliderTypes.BLOCK
+
+    -- by default we collide with all types
+    self.doesCollideWith = {}
+    for _, type in pairs(ColliderTypes) do
+        self.doesCollideWith[type] = true
+    end
+
     self.solid = true
 
     Renderable.init(self, params.x, params.y, params.width, params.height)
@@ -177,21 +184,21 @@ function Collidable:moveOutsideOf(collidable, direction)
     return nil
 end
 
-function Collidable:getCollisionCandidates(excludeBlocks)
-    local priorityCandidates = table.filter(GlobalState.level.priorityCollidables, function(k,v)
-        return (not (v == self)) and (not (startsWith(v.id, self.id .. '-')))
-    end)
-    local regularcandidates = table.filter(GlobalState.level.collidables, function(k,v)
-        return (not (v == self)) and (not (startsWith(v.id, self.id .. '-')))
-    end)
-    local candidates = table.simpleConcat(priorityCandidates, regularcandidates)
-    if not excludeBlocks then
-        -- add surrounding blocks
-        for indexX = self:lowestIndexX(), self:highestIndexX() do
-            for indexY = self:lowestIndexY(), self:highestIndexY() do
-                if GlobalState.level.tiles[indexX] and GlobalState.level.tiles[indexX][indexY] then
-                    table.insert(candidates, GlobalState.level.tiles[indexX][indexY])
-                end
+function Collidable:getCollisionCandidates()
+    local candidates = {}
+    for type, _ in pairs(self.doesCollideWith) do
+        for _, collider in pairs(GlobalState.level["collider-" .. type]) do
+            -- collider is not this object or one of this objects children
+            if (not (collider == self)) and (not (startsWith(collider.id, self.id .. '-'))) then
+                table.insert(candidates, collider)
+            end
+        end
+    end
+    -- add surrounding blocks
+    for indexX = self:lowestIndexX(), self:highestIndexX() do
+        for indexY = self:lowestIndexY(), self:highestIndexY() do
+            if GlobalState.level.tiles[indexX] and GlobalState.level.tiles[indexX][indexY] then
+                table.insert(candidates, GlobalState.level.tiles[indexX][indexY])
             end
         end
     end
