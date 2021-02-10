@@ -35,7 +35,6 @@ function Level:init(worldName, id)
     self:addObjects(levelData.objects)
     
     Level.enemyClassCache = {}
-
     assert(self.player.id, "Player obejct must have hash id defined")
     self:addObject(self.player)
 
@@ -295,11 +294,12 @@ function Level:render()
             end
         end
     end
-    for _, renderable in pairs(self.renderables) do
-        if self:renderableInFrame(renderable) then
+    for id, renderable in pairs(self.renderables) do
+        if self:renderableInFrame(renderable) and (not (id == "player")) then     
             renderable:render()
         end
     end
+    self.renderables["player"]:render()
     self:renderHearts()
 end
 

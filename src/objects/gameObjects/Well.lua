@@ -12,11 +12,12 @@ function Well:init(indexX, indexY)
         x = (indexX - 1) * Constants.TILE_SIZE,
         y = (indexY -1) * Constants.TILE_SIZE,
         width = 48,
-        height = 48
+        height = 32
     })
+    self.yRenderOffset = -16
     self.colliderType = ColliderTypes.BLOCK
     self.id = tostring(tostring(self.x) .. "|" .. tostring(self.y))
-    self.image = ObjectTextureIndex.getImage('well', self.width, self.height)
+    self.image = ObjectTextureIndex.getImage('well', self.width, self.height - (self.yRenderOffset))
 end
 
 return Well
