@@ -58,13 +58,13 @@ end
 
 -- draws the object to screen relative to camera position and, if present, parent position.
 -- the parent object must have x and y value denoting its coordinates
-function Camera:draw(tex, quad, x, y, parent, rotation, scaleX, scaleY, offsetX, originX, originY)
+function Camera:draw(tex, quad, x, y, parent, rotation, scaleX, scaleY, offsetX, offsetY, originX, originY)
 	if parent then
 		love.graphics.drawScaled(
 			tex,
 			quad,
 			x + self.x_offest + parent.x + (offsetX or 0),
-			y + self.y_offset + parent.y,
+			y + self.y_offset + parent.y + (offsetY or 0),
 			rotation,
 			scaleX,
 			scaleY,
@@ -76,7 +76,7 @@ function Camera:draw(tex, quad, x, y, parent, rotation, scaleX, scaleY, offsetX,
 			tex,
 			quad,
 			x + self.x_offest + (offsetX or 0),
-			y + self.y_offset,
+			y + self.y_offset + (offsetY or 0),
 			rotation,
 			scaleX,
 			scaleY,
