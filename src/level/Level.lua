@@ -39,10 +39,6 @@ function Level:init(worldName, id)
     assert(self.player.id, "Player obejct must have hash id defined")
     self:addObject(self.player)
 
-    -- self.updateables[self.bell.id] = self.bell
-    -- self.renderables[self.bell.id] = self.bell
-    -- self.collidables[self.bell.id] = self.bell
-
     -- images
     self.heartImage = Image.createFromName("heart")
     self.background = Image.createFromName(self.metaData.background)
