@@ -128,6 +128,12 @@ function Collidable:checkCollidableFromPoints(pixelsToCheck)
         local tile = GlobalState.level:tileFromPoint(checkpoint)
         if tile and tile.solid then
             return tile
+        else
+            for _, blockType in pairs(GlobalState.level["collider-" .. ColliderTypes.BLOCK]) do
+                if blockType:pointInside(checkpoint) then
+                    return blockType
+                end
+            end
         end
     end
     return false
