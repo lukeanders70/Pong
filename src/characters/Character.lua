@@ -26,6 +26,15 @@ function Character:init(indexX, indexY, width, height, color, options)
     self.children = {}
 end
 
+function Character:setPos(indexX, indexY)
+    self.x = Constants.TILE_SIZE * (indexX - 1)
+    self.y = Constants.TILE_SIZE * (indexY - 1)
+    self.velocity.x = 0
+    self.velocity.y = 0
+    self.acceleration.x = 0
+    self.acceleration.y = 0
+end
+
 function Character:update(dt)
     Collidable.update(self, dt)
     if self.gravity and self:anyBlocksDirectlyBelow() then

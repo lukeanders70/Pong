@@ -80,10 +80,10 @@ function Player:capPosition()
         self.velocity.x = 0
         self.acceleration.x = 0
         self.x = 0
-    elseif self.x + self.width > GlobalState.level.xMax then
+    elseif self.x + self.width > GlobalState.subLevel.xMax then
         self.velocity.x = 0
         self.acceleration.x = 0
-        self.x = GlobalState.level.xMax - self.width
+        self.x = GlobalState.subLevel.xMax - self.width
     end
 end
 

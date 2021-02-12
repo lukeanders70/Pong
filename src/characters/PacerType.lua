@@ -31,7 +31,7 @@ function PacerType:update(dt)
 end
 
 function PacerType:anyBlockBelowAndRight()
-    local block = GlobalState.level:tileFromPoint({
+    local block = GlobalState.subLevel:tileFromPoint({
         x = self.x + self.width,
         y = self.y + self.height
     })
@@ -39,7 +39,7 @@ function PacerType:anyBlockBelowAndRight()
 end
 
 function PacerType:anyBlockBelowAndLeft()
-    local block = GlobalState.level:tileFromPoint({
+    local block = GlobalState.subLevel:tileFromPoint({
         x = self.x - 1,
         y = self.y + self.height
     })

@@ -64,7 +64,7 @@ function Collidable:intersect(col2)
 end
 
 function Collidable:isOffScreenBottom()
-    return self:lowerLeft().y > GlobalState.level.yMax
+    return self:lowerLeft().y > GlobalState.subLevel.yMax
 end
 
 function Collidable:anyBlocksDirectlyBelow()
@@ -125,11 +125,11 @@ end
 
 function Collidable:checkCollidableFromPoints(pixelsToCheck)
     for _, checkpoint in pairs(pixelsToCheck) do
-        local tile = GlobalState.level:tileFromPoint(checkpoint)
+        local tile = GlobalState.subLevel:tileFromPoint(checkpoint)
         if tile and tile.solid then
             return tile
         else
-            for _, blockType in pairs(GlobalState.level["collider-" .. ColliderTypes.BLOCK]) do
+            for _, blockType in pairs(GlobalState.subLevel["collider-" .. ColliderTypes.BLOCK]) do
                 if blockType:pointInside(checkpoint) then
                     return blockType
                 end
@@ -193,7 +193,7 @@ end
 function Collidable:getCollisionCandidates()
     local candidates = {}
     for type, _ in pairs(self.doesCollideWith) do
-        for _, collider in pairs(GlobalState.level["collider-" .. type]) do
+        for _, collider in pairs(GlobalState.subLevel["collider-" .. type]) do
             -- collider is not this object or one of this objects children
             if (not (collider == self)) and (not (startsWith(collider.id, self.id .. '-'))) then
                 table.insert(candidates, collider)
@@ -203,8 +203,8 @@ function Collidable:getCollisionCandidates()
     -- add surrounding blocks
     for indexX = self:lowestIndexX(), self:highestIndexX() do
         for indexY = self:lowestIndexY(), self:highestIndexY() do
-            if GlobalState.level.tiles[indexX] and GlobalState.level.tiles[indexX][indexY] then
-                table.insert(candidates, GlobalState.level.tiles[indexX][indexY])
+            if GlobalState.subLevel.tiles[indexX] and GlobalState.subLevel.tiles[indexX][indexY] then
+                table.insert(candidates, GlobalState.subLevel.tiles[indexX][indexY])
             end
         end
     end
@@ -214,7 +214,7 @@ end
 function Collidable:destroy()
     Renderable.destroy(self)
     self.destroyed = true
-    GlobalState.level:destroy(self)
+    GlobalState.subLevel:destroy(self)
 end
 
 function Collidable:render()

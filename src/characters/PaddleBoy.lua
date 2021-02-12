@@ -61,7 +61,7 @@ function PaddleBoy:updatePaddle(dt)
 end
 
 function PaddleBoy:anyBlockBelowAndRight()
-    local block = GlobalState.level:tileFromPoint({
+    local block = GlobalState.subLevel:tileFromPoint({
         x = self.x + self.width,
         y = self.y + self.height
     })
@@ -69,7 +69,7 @@ function PaddleBoy:anyBlockBelowAndRight()
 end
 
 function PaddleBoy:anyBlockBelowAndLeft()
-    local block = GlobalState.level:tileFromPoint({
+    local block = GlobalState.subLevel:tileFromPoint({
         x = self.x - 1,
         y = self.y + self.height
     })
@@ -109,7 +109,7 @@ function PaddleBoy:fire(xDirMultiplider, yFraction)
     )
     ball:moveOutsideOf(self, { x = xDirMultiplider, y = 0 })
     ball.velocity.x = velocityX
-    GlobalState.level:addObject(ball)
+    GlobalState.subLevel:addObject(ball)
     ball:update(0.01)
 end
 
