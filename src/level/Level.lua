@@ -59,6 +59,13 @@ function Level.safeLoadMetaData(worldName, levelId)
     return result
 end
 
+function Level:swapSubLevel(subLevelId, playerPosition)
+    local newSubLevel = SubLevel(self.worldName, self, subLevelId)
+    self.subLevel = newSubLevel
+    self.player:setPos(playerPosition.x or 0, playerPosition.y or 0)
+    self.subLevel:addObject(self.player)
+end
+
 function Level:render()
     self.subLevel:render()
 end
