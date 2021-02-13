@@ -58,6 +58,8 @@ end
 function Player:inputHandleKeyPress(key)
     if key == 'w' then
         self:jump()
+    elseif key == 's' then
+        self:keyDown()
     end
 end
 
@@ -143,6 +145,13 @@ function Player:jump()
     elseif not self.doubleJumped then
         self.velocity.y = -200
         self.doubleJumped = true
+    end
+end
+
+function Player:keyDown()
+    local object = self:anyBlocksDirectlyBelow()
+    if object and object.downTrigger then
+        object:downTrigger()
     end
 end
 
