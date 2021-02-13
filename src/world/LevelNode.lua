@@ -9,7 +9,7 @@ function LevelNode:init(x, y, neighbors, levelId, graph)
     if self.levelMetadata then
         self.levelName = self.levelMetadata.name
     else
-        Logger('e', 'Level Node failed to load metadata for level ID: ' .. self.levelId)
+        logger('e', 'Level Node failed to load metadata for level ID: ' .. self.levelId)
     end
     Node.init(self, x, y, neighbors, graph)
 end

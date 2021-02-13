@@ -38,9 +38,8 @@ function PaddlerType:init(indexX, indexY, width, height, color, options)
         {255, 255, 255, 255},
         "left"
     )
-
-    GlobalState.level:addCollidable(self.paddleRight)
-    GlobalState.level:addCollidable(self.paddleLeft)
+    GlobalState.subLevel:addCollidable(self.paddleRight)
+    GlobalState.subLevel:addCollidable(self.paddleLeft)
 
     self.children = { self.paddleRight, self.paddleLeft }
 end

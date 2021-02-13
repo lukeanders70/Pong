@@ -1,13 +1,17 @@
 # Data Structure
 Each level is made of two parts:
 1. a 'metadata.lua' file
+2. a subLevel folder
+
+Each sublevel has:
+1. a 'metadata.lua' file
 2. a 'level.txt' file
 
 # Metadata
 the metadata file contains information like the level's name
 
-# Level
-the level file encodes what the level actually looks like. Each tile is defined by four characters
+# SubLevel
+the level.txt file encodes what the level actually looks like. Each tile is defined by four characters
 ```
 0001
 ```

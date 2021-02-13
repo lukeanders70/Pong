@@ -44,7 +44,7 @@ function TurretType:attack()
             )
             ball:moveOutsideOf(self, direction)
             ball.velocity = {x = direction.x * self.FIRE_SPEED, y = direction.y * self.FIRE_SPEED}
-            GlobalState.level:addObject(ball)
+            GlobalState.subLevel:addObject(ball)
             ball:update(0.01) -- move it a little away so that if Flappy updates first it does not move into it and kill itself :(
             return true
         end
