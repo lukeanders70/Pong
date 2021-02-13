@@ -27,7 +27,7 @@ function SubLevel:init(worldName, level, subLevelId)
     self.id = subLevelId
     self.metaData = SubLevel.safeLoadMetaData(worldName, self.level.id, self.id)
 
-    local SubLevelData = SubLevel.safeLoadData(worldName, self.level.id, self.id, self.metaData.segmentLength or 26, self.metaData.segmentHeight or 10)
+    local SubLevelData = SubLevel.safeLoadData(worldName, self.level.id, self.id, self.metaData, self.metaData.segmentLength or 26, self.metaData.segmentHeight or 10)
 
     self.tiles = SubLevelData.tiles
     self:addObjects(SubLevelData.objects)
@@ -112,7 +112,7 @@ function SubLevel.safeLoadMetaData(worldName, levelId, subLevelId)
     return result
 end
 
-function SubLevel.safeLoadData(worldName, levelId, subLevelId, segmentLength, segmentHeight)
+function SubLevel.safeLoadData(worldName, levelId, subLevelId, metaData, segmentLength, segmentHeight)
     local path = "data/worlds/" .. worldName .. "/levels/" .. levelId .. "/" .. subLevelId .. "/" .. "level.txt"
     local tiles = {}
     local objects = {}
@@ -126,7 +126,7 @@ function SubLevel.safeLoadData(worldName, levelId, subLevelId, segmentLength, se
         else
             for tileData in string.gmatch(line, "[^ ]+") do
                 local tileIndex = {x = indexX + (segment * segmentLength), y = indexY - (segment * segmentHeight)}
-                local newTile = SubLevel.parseTileFromData(tileData, tileIndex.x, tileIndex.y)
+                local newTile = SubLevel.parseTileFromData(tileData, metaData, tileIndex.x, tileIndex.y)
 
                 if not tiles[tileIndex.x] then
                     tiles[tileIndex.x] = {}
@@ -145,7 +145,7 @@ function SubLevel.safeLoadData(worldName, levelId, subLevelId, segmentLength, se
     return { tiles = tiles, objects = objects }
 end
 
-function SubLevel.parseTileFromData(tileData, indexX, indexY)
+function SubLevel.parseTileFromData(tileData, metaData, indexX, indexY)
     local isBlock = tileData:sub(1,1) == "0"
     local isEnemy = tileData:sub(1,1) == "1"
     local isGameObject = tileData:sub(1,1) == "2"
@@ -174,13 +174,16 @@ function SubLevel.parseTileFromData(tileData, indexX, indexY)
         local returnObj = {}
         -- sky block behind gameObject
         returnObj.tile = TileIndex.create(indexX, indexY, '00', isSolid)
-        local gameObjectName = getOrElse(GameObjectMap, id, nil, "Game Object ID: " .. id .. " not found")
-        if gameObjectName and table.hasKey(SubLevel.gameObjectClassCache, gameObjectName) then
-            returnObj.object = SubLevel.gameObjectClassCache[gameObjectName](indexX, indexY)
-        else
-            local gameObjectClass = GameObjectMap.loadClassFromName(gameObjectName)
-            SubLevel.gameObjectClassCache[gameObjectName] = gameObjectName
-            returnObj.object = gameObjectClass(indexX, indexY)
+        if metaData.gameObjects and metaData.gameObjects[id] then
+            local gameObjectType = metaData.gameObjects[id].objectType
+            local gameObjectParams = metaData.gameObjects[id].parameters
+            if gameObjectType and table.hasKey(SubLevel.gameObjectClassCache, gameObjectType) then
+                returnObj.object = SubLevel.gameObjectClassCache[gameObjectType](indexX, indexY, gameObjectParams)
+            else
+                local gameObjectClass = GameObjectMap.loadClassFromName(gameObjectType)
+                SubLevel.gameObjectClassCache[gameObjectType] = gameObjectClass
+                returnObj.object = gameObjectClass(indexX, indexY, gameObjectParams)
+            end
         end
         return returnObj
     else

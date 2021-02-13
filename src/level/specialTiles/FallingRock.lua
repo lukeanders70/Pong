@@ -22,7 +22,7 @@ function FallingRock:init(indexX, indexY, id, isSolid, level)
 end
 
 function FallingRock:update(dt)
-    if (not self.falling) and (GlobalState.subLevel) and (GlobalState.subLevel.player) and (self:isDirectlyAbove(GlobalState.subLevel.player)) then
+    if (not self.falling) and (GlobalState.subLevel) and (GlobalState.level.player) and (self:isDirectlyAbove(GlobalState.level.player)) then
         self:triggerFall()
     end
 end
