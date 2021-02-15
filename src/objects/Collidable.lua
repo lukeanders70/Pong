@@ -68,6 +68,10 @@ function Collidable:isOffScreenBottom()
 end
 
 function Collidable:anyBlocksDirectlyBelow()
+    return #self:getObjectsDirectlyBelow() > 0
+end
+
+function Collidable:getObjectsDirectlyBelow()
     local pixelsToCheck = {}
     local PixelToAddX = self:lowerLeft().x
 
@@ -77,7 +81,7 @@ function Collidable:anyBlocksDirectlyBelow()
     end
     table.insert(pixelsToCheck, {x = self:lowerRight().x, y = self:lowerRight().y + 1})
 
-    return self:checkCollidableFromPoints(pixelsToCheck)
+    return self:getCollidablesFromPoints(pixelsToCheck)
 end
 
 function Collidable:anyBlocksDirectlyAbove()
@@ -90,7 +94,7 @@ function Collidable:anyBlocksDirectlyAbove()
     end
     table.insert(pixelsToCheck, {x = self:lowerRight().x, y = self:upperRight().y + 1})
 
-    return self:checkCollidableFromPoints(pixelsToCheck)
+    return #self:getCollidablesFromPoints(pixelsToCheck) > 0
 end
 
 function Collidable:isDirectlyAbove(collidable)
@@ -107,7 +111,7 @@ function Collidable:anyBlocksDirectlyLeft()
     end
     table.insert(pixelsToCheck, {x = self:lowerLeft().x - 1, y = self:lowerLeft().y})
 
-    return self:checkCollidableFromPoints(pixelsToCheck)
+    return #self:getCollidablesFromPoints(pixelsToCheck) > 0
 end
 
 function Collidable:anyBlocksDirectlyRight()
@@ -120,23 +124,24 @@ function Collidable:anyBlocksDirectlyRight()
     end
     table.insert(pixelsToCheck, {x = self:lowerRight().x + 1, y = self:lowerRight().y})
 
-    return self:checkCollidableFromPoints(pixelsToCheck)
+    return #self:getCollidablesFromPoints(pixelsToCheck) > 0
 end
 
-function Collidable:checkCollidableFromPoints(pixelsToCheck)
+function Collidable:getCollidablesFromPoints(pixelsToCheck)
+    objects = {}
     for _, checkpoint in pairs(pixelsToCheck) do
         local tile = GlobalState.subLevel:tileFromPoint(checkpoint)
         if tile and tile.solid then
-            return tile
+            table.insert(objects, tile)
         else
             for _, blockType in pairs(GlobalState.subLevel["collider-" .. ColliderTypes.BLOCK]) do
                 if blockType:pointInside(checkpoint) then
-                    return blockType
+                    table.insert(objects, blockType)
                 end
             end
         end
     end
-    return false
+    return objects
 end
 
 function Collidable:moveOutsideOf(collidable, direction)

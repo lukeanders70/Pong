@@ -42,11 +42,13 @@ function CursorPaddle:conditinallyfireCapturedBall()
     end
     if (self.capturedBall ~= nil) and (not love.mouse.isDown(self.associatedButtonNumber)) then
         if self.side == "left" then
+            self.capturedBall.x = self.capturedBall.x - 0.5
             self.capturedBall.velocity.x = self.velocity.x - CursorPaddle.BALL_FIRE_SPEED
-            self.capturedBall.velocity.y = self.velocity.y
+            self.capturedBall.velocity.y = 0
         elseif self.side == "right" then
+            self.capturedBall.x = self.capturedBall.x + 0.5
             self.capturedBall.velocity.x = self.velocity.x + CursorPaddle.BALL_FIRE_SPEED
-            self.capturedBall.velocity.y = self.velocity.y
+            self.capturedBall.velocity.y = 0
         end
         self.capturedBall = nil
     end

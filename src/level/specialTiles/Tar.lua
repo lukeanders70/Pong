@@ -1,4 +1,5 @@
 local Tile = require('src/level/Tiles')
+local ColliderTypes = require('src/objects/ColliderTypes')
 
 local Tar = Class{__includes = Tile}
 

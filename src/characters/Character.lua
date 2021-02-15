@@ -37,9 +37,15 @@ end
 
 function Character:update(dt)
     Collidable.update(self, dt)
-    if self.gravity and self:anyBlocksDirectlyBelow() then
+    local objectsBelow = self:getObjectsDirectlyBelow()
+    if self.gravity and (#objectsBelow > 0) then
         self.velocity.y = math.min(self.velocity.y, 0)
         Physics.update(self, dt, true)
+        for _, object in pairs(objectsBelow) do
+            if object.steppedOn then
+                object:steppedOn(self, dt)
+            end
+        end
     else
         Physics.update(self, dt)
     end

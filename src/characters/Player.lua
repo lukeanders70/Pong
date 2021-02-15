@@ -121,13 +121,13 @@ end
 
 function Player:left()
     if not self:anyBlocksDirectlyLeft() then
-        self.acceleration.x = -2000
+        self.acceleration.x = -1500
     end
 end
 
 function Player:right()
     if not self:anyBlocksDirectlyRight() then
-        self.acceleration.x = 2000
+        self.acceleration.x = 1500
     end
 end
 
@@ -149,9 +149,11 @@ function Player:jump()
 end
 
 function Player:keyDown()
-    local object = self:anyBlocksDirectlyBelow()
-    if object and object.downTrigger then
-        object:downTrigger()
+    local objects = self:getObjectsDirectlyBelow()
+    for _, object in pairs(objects) do
+        if object.downTrigger then
+            object:downTrigger()
+        end
     end
 end
 
