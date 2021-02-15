@@ -10,16 +10,18 @@ function PacerType:init(indexX, indexY, width, height, color, options)
 
     self.directionMultiplier = -1
     self.velocity.x = self.MOVEMENT_SPEED * self.directionMultiplier
+
+    self.fallOffEdges = false
 end
 
 function PacerType:update(dt)
-    if (self.directionMultiplier == -1) and ((self:anyBlocksDirectlyLeft()) or (not self:anyBlockBelowAndLeft())) then
+    if (self.directionMultiplier == -1) and ((self:anyBlocksDirectlyLeft()) or ((not self:anyBlockBelowAndLeft()) and (not self.fallOffEdges))) then
         self.directionMultiplier = 1
         self:unflipHorizontal()
         for _, child in pairs(self.children) do
             child:unflipHorizontal()
         end
-    elseif (self.directionMultiplier == 1) and ((self:anyBlocksDirectlyRight()) or (not self:anyBlockBelowAndRight())) then
+    elseif (self.directionMultiplier == 1) and ((self:anyBlocksDirectlyRight()) or ((not self:anyBlockBelowAndRight()) and (not self.fallOffEdges))) then
         self.directionMultiplier = -1
         self:flipHorizontal()
         for _, child in pairs(self.children) do
