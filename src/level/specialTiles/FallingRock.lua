@@ -21,8 +21,8 @@ function FallingRock:init(indexX, indexY, id, isSolid, level)
     self.originalImage = self.image
 end
 
-function FallingRock:update(dt)
-    if (not self.falling) and (GlobalState.subLevel) and (GlobalState.level.player) and (self:isDirectlyAbove(GlobalState.level.player)) then
+function FallingRock:steppedOn(character, dt)
+    if not self.isFalling then
         self:triggerFall()
     end
 end
