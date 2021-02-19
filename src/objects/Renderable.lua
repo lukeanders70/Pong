@@ -15,6 +15,7 @@ function Renderable:init(x, y, width, height)
     self.height = assert(height)
 
     self.xScale = 1
+    self.yScale = 1
     self.xRenderOffset = 0
     self.yRenderOffset = 0
 
@@ -67,6 +68,16 @@ function Renderable:unflipHorizontal()
 	self.xRenderOffset = 0
 end
 
+function Renderable:flipVertical()
+    self.yScale = -1
+	self.yRenderOffset = self.height
+end
+
+function Renderable:unflipVertical()
+    self.yScale = 1
+	self.yRenderOffset = 0
+end
+
 function Renderable:update(dt)
     if #self.timerGroup > 0 then
         Timer.update(dt, self.timerGroup)
@@ -80,7 +91,7 @@ end
 function Renderable:render()
     love.graphics.setColor(unpack(self.color))
     if self.image then
-        GlobalState.camera:draw(self.image.texture, self.image.quad, self.x, self.y, nil, nil, self.xScale, 1, self.xRenderOffset, self.yRenderOffset)
+        GlobalState.camera:draw(self.image.texture, self.image.quad, self.x, self.y, nil, nil, self.xScale, self.yScale, self.xRenderOffset, self.yRenderOffset)
     else
         GlobalState.camera:rectangle(
             "fill",

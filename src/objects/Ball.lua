@@ -62,14 +62,14 @@ function Ball:collide(collidable)
 end
 
 function Ball:blockCollide(collidable)
-    self:bounceCollide(collidable)
+    self:bounceCollide(collidable, "block")
 end
 
 function Ball:paddleCollide(collidable)
-    self:bounceCollide(collidable)
+    self:bounceCollide(collidable, 'paddle')
 end
 
-function Ball:bounceCollide(collidable)
+function Ball:bounceCollide(collidable, source)
     self.acceleration.y = 0
 
     local velocityBefore = {x = self.velocity.x, y = self.velocity.y}
@@ -77,7 +77,10 @@ function Ball:bounceCollide(collidable)
     self.velocity = velocityBefore
 
     self.bounces = self.bounces - 1
-    if self.bounces < 0 then
+    if (source ~= "paddle") and (self.bounces < 0) then
+        self:destroy()
+    -- paddles get one extra bounce
+    elseif (source == "paddle") and (self.bounces < -1) then
         self:destroy()
     end
     if moveData and moveData.axis then

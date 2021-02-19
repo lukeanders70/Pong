@@ -5,7 +5,8 @@ local TurretType = Class{__includes = Character}
 
 TurretType.FIRE_SPEED = 100
 TurretType.SIGHT_RANGE = 12
-
+TurretType.NUM_BOUNCES = 3
+TurretType.FIRE_RATE = 2
 function TurretType:init(indexX, indexY, options)
     local width = 20
     local height = 20
@@ -17,7 +18,7 @@ function TurretType:init(indexX, indexY, options)
 
     self.fireFrequency = (options and options.fireFrequency) or 3
 
-    Timer.every(3, function()
+    Timer.every(self.FIRE_RATE, function()
         if self.alive then
             self:attack()
         end
@@ -34,12 +35,12 @@ function TurretType:attack()
         local player = GlobalState.level.player
         local distance = vectorEuclidian(self:getCenter(), player:getCenter())
         local direction = vectorDirection(self:getCenter(), player:getCenter())
-        if distance < (TurretType.SIGHT_RANGE * Constants.TILE_SIZE) then
+        if distance < (self.SIGHT_RANGE * Constants.TILE_SIZE) then
             local ball = Ball(
                 self:getCenter().x,
                 self:getCenter().y,
                 {x = direction.x * self.FIRE_SPEED, y = direction.y * self.FIRE_SPEED},
-                3,
+                self.NUM_BOUNCES,
                 {255, 255, 255, 255}
             )
             ball:moveOutsideOf(self, direction)

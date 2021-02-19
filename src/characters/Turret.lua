@@ -4,6 +4,8 @@ local ObjectTextureIndex = require('src/textures/ObjectTextureIndex')
 
 local Turret = Class{__includes = TurretType}
 
+Turret.NUM_BOUNCES = 0
+TurretType.FIRE_RATE = 3
 function Turret:init(indexX, indexY)
     TurretType.init(self, indexX, indexY)
     self.width = 32

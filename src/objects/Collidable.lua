@@ -84,6 +84,20 @@ function Collidable:getObjectsDirectlyBelow()
     return self:getCollidablesFromPoints(pixelsToCheck)
 end
 
+function Collidable:getObjectsNearlyAbove()
+    local pixelsToCheck = {}
+    local PixelToAddX = self:upperLeft().x
+
+    while PixelToAddX < self:upperRight().x do
+        -- five because we're looking a little higher than directly above
+        table.insert(pixelsToCheck, {x = PixelToAddX, y = self:upperLeft().y - 5})
+        PixelToAddX = PixelToAddX + Constants.TILE_SIZE
+    end
+    table.insert(pixelsToCheck, {x = self:upperRight().x, y = self:upperRight().y - 5})
+
+    return self:getCollidablesFromPoints(pixelsToCheck)
+end
+
 function Collidable:anyBlocksDirectlyAbove()
     local pixelsToCheck = {}
     local PixelToAddX = self:upperLeft().x

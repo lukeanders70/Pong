@@ -2,9 +2,9 @@ local Collidable = require('src/objects/Collidable')
 local ColliderTypes = require('src/objects/ColliderTypes')
 local ObjectTextureIndex = require('src/textures/ObjectTextureIndex')
 
-local Well = Class{__includes = Collidable}
+local WellBelow = Class{__includes = Collidable}
 
-function Well:init(indexX, indexY, parameters)
+function WellBelow:init(indexX, indexY, parameters)
     Collidable.init(self,
     {
         x = (indexX - 1) * Constants.TILE_SIZE,
@@ -12,21 +12,19 @@ function Well:init(indexX, indexY, parameters)
         width = 48,
         height = 32
     })
-    self.yRenderOffset = -16
     self.colliderType = ColliderTypes.BLOCK
     self.id = tostring(tostring(self.x) .. "|" .. tostring(self.y))
-    self.image = ObjectTextureIndex.getImage('well', self.width, self.height - (self.yRenderOffset))
+    self.image = ObjectTextureIndex.getImage('well-below', self.width, self.height)
 
     if parameters then
         self.transportSubLevelId = parameters.subLevelId
-        self.transportPosition =parameters.playerPosition
+        self.transportPosition = parameters.playerPosition
     end
 end
 
-function Well:downTrigger()
+function WellBelow:upTrigger()
     if self.transportSubLevelId then
         GlobalState.level:swapSubLevel(self.transportSubLevelId, self.transportPosition)
     end
 end
-
-return Well
+return WellBelow

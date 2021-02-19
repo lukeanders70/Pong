@@ -64,6 +64,11 @@ function Level:swapSubLevel(subLevelId, playerPosition)
     self.subLevel = newSubLevel
     self.player:setPos(playerPosition.x or 0, playerPosition.y or 0)
     self.subLevel:addObject(self.player)
+    GlobalState.camera:setLimits({
+        xMin = 0,
+        xMax = math.max(self.subLevel.xMax - Constants.VIRTUAL_WIDTH, 0),
+        yMax = self.subLevel.yMax - Constants.VIRTUAL_HEIGHT
+    })
 end
 
 function Level:render()
