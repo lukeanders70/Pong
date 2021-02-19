@@ -58,6 +58,7 @@ end
 function Player:inputHandleKeyPress(key)
     if key == 'w' then
         self:jump()
+        self:keyUp()
     elseif key == 's' then
         self:keyDown()
     end
@@ -154,6 +155,23 @@ function Player:keyDown()
         if object.downTrigger then
             object:downTrigger()
         end
+    end
+end
+
+function Player:keyUp()
+    local objects = self:getObjectsNearlyAbove()
+    for _, object in pairs(objects) do
+        if object.upTrigger then
+            object:upTrigger()
+        end
+    end
+end
+
+function Player:addHealth()
+    if self.health == 3 then
+        return
+    else
+        self.health = self.health + 1
     end
 end
 

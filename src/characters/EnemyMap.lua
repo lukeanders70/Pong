@@ -5,7 +5,9 @@ local EnemyMap = {
     ['03'] = "paddleBoy",
     ['04'] = "crawler",
     ['05'] = "turret",
-    ['06'] = "crawlerBlue"
+    ['06'] = "crawlerBlue",
+    ['07'] = "ceilingCrawler",
+    ['08'] = "fastTurret"
 }
 
 function EnemyMap.loadClassFromName(enemyName) 
