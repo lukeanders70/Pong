@@ -93,7 +93,7 @@ function Collidable:getObjectsNearlyAbove()
         table.insert(pixelsToCheck, {x = PixelToAddX, y = self:upperLeft().y - 5})
         PixelToAddX = PixelToAddX + Constants.TILE_SIZE
     end
-    table.insert(pixelsToCheck, {x = self:upperRight().x, y = self:upperRight().y - 5})
+    table.insert(pixelsToCheck, {x = self:upperRight().x, y = self:upperRight().y - 10})
 
     return self:getCollidablesFromPoints(pixelsToCheck)
 end

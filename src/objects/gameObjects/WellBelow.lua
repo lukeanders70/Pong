@@ -20,10 +20,12 @@ function WellBelow:init(indexX, indexY, parameters)
         self.transportSubLevelId = parameters.subLevelId
         self.transportPosition = parameters.playerPosition
     end
+    self.alreadyPresssed = false
 end
 
 function WellBelow:upTrigger()
-    if self.transportSubLevelId then
+    if self.transportSubLevelId and (not self.alreadyPressed) then
+        self.alreadyPressed = true
         GlobalState.level:swapSubLevel(self.transportSubLevelId, self.transportPosition)
     end
 end
