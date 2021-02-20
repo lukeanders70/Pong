@@ -50,8 +50,12 @@ function SubLevel:init(worldName, level, subLevelId)
 
 end
 
-function SubLevel:placePlayer()
-    self.level.player:setPos(self.metaData.playerStart.x, self.metaData.playerStart.y)
+function SubLevel:placePlayer(position)
+    if position then
+        self.level.player:setPos(position.x, position.y)
+    else
+        self.level.player:setPos(self.metaData.playerStart.x, self.metaData.playerStart.y)
+    end
     self:addObject(self.level.player)
 end
 
