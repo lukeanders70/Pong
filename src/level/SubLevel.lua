@@ -45,6 +45,7 @@ function SubLevel:init(worldName, level, subLevelId)
     -- useful values
     self.yMax = #self.tiles[1] * Constants.TILE_SIZE
     self.xMax = #self.tiles * Constants.TILE_SIZE
+    self.yMin = self.metaData.yMin
     self.segmentHeight = self.metaData.segmentHeight or 10
 
 end

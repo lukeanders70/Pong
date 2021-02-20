@@ -11,13 +11,14 @@ function Level:init(worldName, id)
     GlobalState.level = self
     self.worldName = worldName
     self.id = id
-    self.subLevel = SubLevel(self.worldName, self, 1)
+    self.subLevel = SubLevel(self.worldName, self, 2)
     self.player = Player(0, 0)
     self.subLevel:placePlayer()
     GlobalState.camera:setLimits({
         xMin = 0,
         xMax = math.max(self.subLevel.xMax - Constants.VIRTUAL_WIDTH, 0),
-        yMax = self.subLevel.yMax - Constants.VIRTUAL_HEIGHT
+        yMax = self.subLevel.yMax - Constants.VIRTUAL_HEIGHT,
+        yMin = self.subLevel.yMin,
     })
 
     self.levelCompleted = false
@@ -67,7 +68,8 @@ function Level:swapSubLevel(subLevelId, playerPosition)
     GlobalState.camera:setLimits({
         xMin = 0,
         xMax = math.max(self.subLevel.xMax - Constants.VIRTUAL_WIDTH, 0),
-        yMax = self.subLevel.yMax - Constants.VIRTUAL_HEIGHT
+        yMax = self.subLevel.yMax - Constants.VIRTUAL_HEIGHT,
+        yMin = self.subLevel.yMin
     })
 end
 
