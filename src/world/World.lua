@@ -38,7 +38,6 @@ function World.safeLoadMetaData(path)
 
     local ok, result = pcall(chunk) -- execute the chunk safely
     if not ok then -- will be false if there is an error
-        print(result)
         logger('e', "failed to load world at path: " .. path ..": " .. tostring(result))
         return World.defaultMetaData
     end
