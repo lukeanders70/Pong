@@ -115,6 +115,18 @@ function Player:lowerHealth(amount)
     end
 end
 
+function Player:setPos(indexX, indexY)
+    self.x = Constants.TILE_SIZE * (indexX - 1)
+    self.y = Constants.TILE_SIZE * (indexY - 1)
+    self.velocity.x = 0
+    self.velocity.y = 0
+    self.acceleration.x = 0
+    self.acceleration.y = 0
+    for _, child in pairs(self.children) do
+        child:update(1)
+    end
+end
+
 function Player:destroy()
     PaddlerType.destroy(self)
     GlobalState.level:levelFailed()

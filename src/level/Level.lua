@@ -11,7 +11,7 @@ function Level:init(worldName, id)
     GlobalState.level = self
     self.worldName = worldName
     self.id = id
-    self.subLevel = SubLevel(self.worldName, self, 2)
+    self.subLevel = SubLevel(self.worldName, self, 3)
     self.player = Player(0, 0)
     self.subLevel:placePlayer()
     GlobalState.camera:setLimits({
@@ -22,6 +22,10 @@ function Level:init(worldName, id)
     })
 
     self.levelCompleted = false
+    self.shouldRenderLevel = true
+    self:warpAnimation(Constants.VIRTUAL_HEIGHT, 0, function()
+        self.shouldUpdateLevel = true
+    end)
 end
 
 function Level:levelComplete()
@@ -61,24 +65,55 @@ function Level.safeLoadMetaData(worldName, levelId)
 end
 
 function Level:swapSubLevel(subLevelId, playerPosition)
-    local newSubLevel = SubLevel(self.worldName, self, subLevelId)
-    self.subLevel = newSubLevel
-    self.player:setPos(playerPosition.x or 0, playerPosition.y or 0)
-    self.subLevel:addObject(self.player)
-    GlobalState.camera:setLimits({
-        xMin = 0,
-        xMax = math.max(self.subLevel.xMax - Constants.VIRTUAL_WIDTH, 0),
-        yMax = self.subLevel.yMax - Constants.VIRTUAL_HEIGHT,
-        yMin = self.subLevel.yMin
-    })
+    self.shouldUpdateLevel = false
+    self:warpAnimation(0, Constants.VIRTUAL_HEIGHT, function()
+        local newSubLevel = SubLevel(self.worldName, self, subLevelId)
+        self.subLevel = newSubLevel
+        self.subLevel:placePlayer(playerPosition)
+        GlobalState.camera:setLimits({
+            xMin = 0,
+            xMax = math.max(self.subLevel.xMax - Constants.VIRTUAL_WIDTH, 0),
+            yMax = self.subLevel.yMax - Constants.VIRTUAL_HEIGHT,
+            yMin = self.subLevel.yMin
+        })
+        self:warpAnimation(Constants.VIRTUAL_HEIGHT, 0, function()
+            self.shouldUpdateLevel = true
+        end)
+    end)
+end
+
+function Level:warpAnimation(startHeight, endHeight, callback)
+    self.transition = {
+        height = startHeight,
+        render = function()
+            love.graphics.setColor(0, 0, 0, 255)
+            love.graphics.rectangleScaled( "fill",  0, 0, Constants.VIRTUAL_WIDTH, self.transition.height )
+            love.graphics.setColor(255, 255, 255, 255)
+        end
+    }
+    Timer.tween(0.5, {
+        [self.transition] = { height = endHeight }
+    }):finish(function()
+        Timer.after(0.2, function()
+            self.transition = nil
+            callback()
+        end)
+    end)
 end
 
 function Level:render()
-    self.subLevel:render()
+    if self.shouldRenderLevel then
+        self.subLevel:render()
+    end
+    if self.transition then
+        self.transition:render()
+    end
 end
 
 function Level:update(dt)
-    self.subLevel:update(dt)
+    if self.shouldUpdateLevel then
+        self.subLevel:update(dt)
+    end
 end
 
 return Level
