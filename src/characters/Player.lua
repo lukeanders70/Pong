@@ -17,6 +17,8 @@ function Player:init(indexX, indexY)
     self.id = "player"
     self.staticImage = ObjectTextureIndex.getImage('player', self.width, self.height)
     self.moveAnimation = ObjectTextureIndex.getAnimation('player-walk', self.width, self.height, self.timerGroup)
+    self.spinAnimation = ObjectTextureIndex.getAnimation('player-spin', self.width, self.height, self.timerGroup)
+    self.spinAnimation.frameDelay = 0.05
 
     self.image = self.staticImage
 
@@ -26,23 +28,25 @@ end
 function Player:update(dt)
     self.acceleration.x = 0
     self.acceleration.y = 0
+
+    self.anyBlocksBelowThisFrame = self:anyBlocksDirectlyBelow()
     
     -- for when keys are held down
     if love.keyboard.isDown( 'a' ) then
-        if self.image == self.staticImage then 
+        if (self.image ~= self.moveAnimation) and self.anyBlocksBelowThisFrame then 
             self.image = self.moveAnimation
             self.moveAnimation:continousCycling()
         end
         self:flipHorizontal()
         self:left()
     elseif love.keyboard.isDown( 'd' ) then
-        if self.image == self.staticImage then 
+        if (self.image ~= self.moveAnimation) and self.anyBlocksBelowThisFrame then 
             self.image = self.moveAnimation
             self.moveAnimation:continousCycling()
         end
         self:unflipHorizontal()
         self:right()
-    elseif self.image == self.moveAnimation then
+    elseif (self.image == self.moveAnimation) then
         self.image = self.staticImage
         self.moveAnimation:stopCycle()
     end
@@ -146,7 +150,7 @@ end
 
 -- when jumping, allows holding up to increase jump height
 function Player:struggleUp()
-    if self.velocity.y < 0 and (not self.doubleJumped) and (not self:anyBlocksDirectlyBelow()) then
+    if self.velocity.y < 0 and (not self.doubleJumped) and (not self.anyBlocksBelowThisFrame) then
         self.acceleration.y = -900
     end
 end
@@ -156,7 +160,9 @@ function Player:jump()
         self.velocity.y = -300
         self.doubleJumped = false
     elseif not self.doubleJumped then
-        self.velocity.y = -200
+        self.image = self.spinAnimation
+        self.image:cycleOnce()
+        self.velocity.y = -300
         self.doubleJumped = true
     end
 end
