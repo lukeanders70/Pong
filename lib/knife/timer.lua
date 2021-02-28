@@ -168,6 +168,10 @@ local function easeLinear (elapsed, initial, change, duration)
     return change * elapsed / duration + initial
 end
 
+local function easeSqr (elapsed, initial, change, duration)
+    return (change * math.pow(elapsed / duration, 2)) + initial
+end
+
 local function easeLinearFloored (elapsed, initial, change, duration)
     return math.floor(easeLinear(elapsed, initial, change, duration))
 end
@@ -220,6 +224,17 @@ function Timer.tween (duration, definition)
         plan = planTween(definition),
         update = updateTween,
         easeField = easeLinear,
+        ease = ease,
+        finish = finish,
+    }
+end
+
+function Timer.tweenSqr (duration, definition)
+    return initialize {
+        duration = duration,
+        plan = planTween(definition),
+        update = updateTween,
+        easeField = easeSqr,
         ease = ease,
         finish = finish,
     }

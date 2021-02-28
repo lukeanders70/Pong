@@ -23,6 +23,8 @@ function Player:init(indexX, indexY)
     self.image = self.staticImage
 
     self.doubleJumped = true
+
+    self.levelComplete = false
 end
 
 function Player:update(dt)
@@ -32,26 +34,28 @@ function Player:update(dt)
     self.anyBlocksBelowThisFrame = self:anyBlocksDirectlyBelow()
     
     -- for when keys are held down
-    if love.keyboard.isDown( 'a' ) then
-        if (self.image ~= self.moveAnimation) and self.anyBlocksBelowThisFrame then 
-            self.image = self.moveAnimation
-            self.moveAnimation:continousCycling()
+    if not self.levelComplete then
+        if love.keyboard.isDown( 'a' ) then
+            if (self.image ~= self.moveAnimation) and self.anyBlocksBelowThisFrame then 
+                self.image = self.moveAnimation
+                self.moveAnimation:continousCycling()
+            end
+            self:flipHorizontal()
+            self:left()
+        elseif love.keyboard.isDown( 'd' ) then
+            if (self.image ~= self.moveAnimation) and self.anyBlocksBelowThisFrame then 
+                self.image = self.moveAnimation
+                self.moveAnimation:continousCycling()
+            end
+            self:unflipHorizontal()
+            self:right()
+        elseif (self.image == self.moveAnimation) then
+            self.image = self.staticImage
+            self.moveAnimation:stopCycle()
         end
-        self:flipHorizontal()
-        self:left()
-    elseif love.keyboard.isDown( 'd' ) then
-        if (self.image ~= self.moveAnimation) and self.anyBlocksBelowThisFrame then 
-            self.image = self.moveAnimation
-            self.moveAnimation:continousCycling()
+        if love.keyboard.isDown( 'w' ) then
+            self:struggleUp()
         end
-        self:unflipHorizontal()
-        self:right()
-    elseif (self.image == self.moveAnimation) then
-        self.image = self.staticImage
-        self.moveAnimation:stopCycle()
-    end
-    if love.keyboard.isDown( 'w' ) then
-        self:struggleUp()
     end
     self:capMovementSpeed()
     self:capPosition()
@@ -60,12 +64,20 @@ end
 
 -- for when keys are pressed
 function Player:inputHandleKeyPress(key)
-    if key == 'w' then
-        self:jump()
-        self:keyUp()
-    elseif key == 's' then
-        self:keyDown()
+    if not self.levelComplete then
+        if key == 'w' then
+            self:jump()
+            self:keyUp()
+        elseif key == 's' then
+            self:keyDown()
+        end
     end
+end
+
+function Player:setLevelComplete()
+    self.levelComplete = true
+    self.image = self.spinAnimation
+    self.image:cycleOnce()
 end
 
 function Player:capMovementSpeed()
