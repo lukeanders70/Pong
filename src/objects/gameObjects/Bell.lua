@@ -23,11 +23,15 @@ function Bell:init(indexX, indexY)
     self.image = ObjectTextureIndex.getAnimation('bell-idle', self.width, self.height, self.timerGroup)
     self.image:continousCycling()
 
+    self.ringImage = ObjectTextureIndex.getAnimation('bell-ring', self.width, self.height, self.timerGroup)
+
     self.alreadyRemoved = false
 end
 
 function Bell:collide(collidable)
     if (collidable.colliderType == ColliderTypes.CHARACTER) and (collidable.id == "player") and (not self.alreadyRemoved) then
+        self.image = self.ringImage
+        self.image:continousCycling()
         GlobalState.level:levelComplete()
         self.alreadyRemoved = true
     end

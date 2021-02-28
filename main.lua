@@ -83,7 +83,6 @@ function love.update(dt)
 end
 
 function love.draw()
-
 	-- stateMachine will draw all open states
 	GlobalState.stateMachine:render()
 

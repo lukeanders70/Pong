@@ -4,14 +4,14 @@ local Player = require('src/characters/Player')
 local Level = Class{}
 
 Level.defaultMetaData = {name="Default Level", playerStart={x = 0, y = 1}}
-Level.levelCompleteWait = 2 -- seconds
+Level.levelCompleteWait = 3 -- seconds
 Level.levelCompleteMotionSlowMultipler = 0.25
 
 function Level:init(worldName, id)
     GlobalState.level = self
     self.worldName = worldName
     self.id = id
-    self.subLevel = SubLevel(self.worldName, self, 1)
+    self.subLevel = SubLevel(self.worldName, self, 3)
     self.player = Player(0, 0)
     self.subLevel:placePlayer()
     GlobalState.camera:setLimits({
@@ -30,13 +30,16 @@ end
 
 function Level:levelComplete()
     if not self.levelCompleted then
+        self.player:setLevelComplete()
         Timer.after(self.levelCompleteWait, function()
             GlobalState.saveData:levelComplete(self.worldName, self.id)
             GlobalState.saveData:save()
-            GlobalState.stateMachine:add('levelComplete', {callback = function()
-                GlobalState.stateMachine:swap('map', {worldName = self.worldName})
-                GlobalState.subLevel = nil
-            end})
+            GlobalState.stateMachine:add('levelComplete', {
+                numHearts = self.player.health,
+                callback = function()
+                    GlobalState.stateMachine:swap('map', {worldName = self.worldName})
+                    GlobalState.subLevel = nil
+                end})
         end)
     end
     self.levelCompleted = true
