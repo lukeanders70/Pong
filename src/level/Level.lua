@@ -11,7 +11,7 @@ function Level:init(worldName, id)
     GlobalState.level = self
     self.worldName = worldName
     self.id = id
-    self.subLevel = SubLevel(self.worldName, self, 3)
+    self.subLevel = SubLevel(self.worldName, self, 1)
     self.player = Player(0, 0)
     self.subLevel:placePlayer()
     GlobalState.camera:setLimits({
