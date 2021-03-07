@@ -6,7 +6,7 @@ local ObjectTextureIndex = require('src/textures/ObjectTextureIndex')
 
 local Door = Class{__includes = Collidable}
 
-function  Door:init(indexX, indexY)
+function  Door:init(indexX, indexY, parameters)
     Collidable.init(self,
     {
         x = (indexX - 1) * Constants.TILE_SIZE,
@@ -24,11 +24,24 @@ function  Door:init(indexX, indexY)
     self.openAnimation = ObjectTextureIndex.getAnimation('door', self.width, self.height, self.timerGroup)
     self.image = self.staticImage
 
-    self.alreadyRemoved = false
+    if parameters then
+        self.transportSubLevelId = parameters.subLevelId
+        self.transportPosition = parameters.playerPosition
+    end
+
+    self.alreadyPressed = false
 end
 
-function  Door:render(dt)
-    Collidable.render(self, dt)
+function Door:collide(collidable)
+    if (collidable.colliderType == ColliderTypes.CHARACTER) and (collidable.id == "player") and (not self.alreadyPressed) then
+        if love.keyboard.isDown( 'w' ) and (self.transportSubLevelId) then
+            self.alreadyPressed = true
+            self.image = self.openAnimation
+            self.image:cycleOnce(function()
+                GlobalState.level:swapSubLevel(self.transportSubLevelId, self.transportPosition)
+            end)
+        end
+    end
 end
 
-return  Door
+return Door
