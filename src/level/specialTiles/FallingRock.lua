@@ -12,6 +12,9 @@ function FallingRock:init(indexX, indexY, id, isSolid, level)
     self.isShaking = false
     self.isUpdateable = true
 
+    local replaceID = tonumber(Tile.removeZeroPrefix(GlobalState.subLevel.metaData.replaceTexture or '00'))
+    self.replaceTexture = TileTextureIndex.fromId(20)
+
     local images = TileTextureIndex.animationFromId(self.id, 3)
     quads = {}
     for _, image in pairs(images) do
@@ -42,7 +45,6 @@ function FallingRock:triggerFall()
         self.image = self.breakAnimation
         self.breakAnimation:cycleOnce(function()
             self.solid = false
-            self.isRenderable = false
             self.image = nil
             self.color = {0,0,0,0}
             self:triggerReform()
@@ -56,10 +58,14 @@ function FallingRock:triggerReform()
         self.isUpdateable = true
         self.xRenderOffset = 0
         self.solid = true
-        self.isRenderable = true
         self.image = self.originalImage
         self.color = {255, 255, 255, 255}
     end)
+end
+
+function FallingRock:render()
+    GlobalState.camera:draw(self.replaceTexture.texture, self.replaceTexture.quad, self.x, self.y)
+    Tile.render(self)
 end
 
 return FallingRock

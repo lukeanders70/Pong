@@ -154,6 +154,7 @@ function SubLevel.parseTileFromData(tileData, metaData, indexX, indexY)
     local isBlock = tileData:sub(1,1) == "0"
     local isEnemy = tileData:sub(1,1) == "1"
     local isGameObject = tileData:sub(1,1) == "2"
+    local replaceTexture = metaData.replaceTexture or "00"
 
     local isSolid = tileData:sub(2,2) == "1"
 
@@ -165,7 +166,7 @@ function SubLevel.parseTileFromData(tileData, metaData, indexX, indexY)
     elseif isEnemy then
         local returnObj = {}
         -- sky block behind enemy
-        returnObj.tile = TileIndex.create(indexX, indexY, '00', isSolid)
+        returnObj.tile = TileIndex.create(indexX, indexY, replaceTexture, isSolid)
         local enemyName = getOrElse(EnemyMap, id, nil, "Enemey ID: " .. id .. " not found")
         if enemyName and table.hasKey(SubLevel.enemyClassCache, enemyName) then
             returnObj.object = SubLevel.enemyClassCache[enemyName](indexX, indexY)
@@ -178,7 +179,7 @@ function SubLevel.parseTileFromData(tileData, metaData, indexX, indexY)
     elseif isGameObject then
         local returnObj = {}
         -- sky block behind gameObject
-        returnObj.tile = TileIndex.create(indexX, indexY, '00', isSolid)
+        returnObj.tile = TileIndex.create(indexX, indexY, replaceTexture, isSolid)
         if metaData.gameObjects and metaData.gameObjects[id] then
             local gameObjectType = metaData.gameObjects[id].objectType
             local gameObjectParams = metaData.gameObjects[id].parameters
