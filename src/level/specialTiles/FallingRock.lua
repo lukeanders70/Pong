@@ -1,19 +1,16 @@
-local Tile = require('src/level/Tiles')
+local TransparentTile = require('src/level/TransparentTile')
 local TileTextureIndex = require('src/textures/TileTextureIndex')
 local Animation = require('src/textures/Animation')
 
-local FallingRock = Class{__includes = Tile}
+local FallingRock = Class{__includes = TransparentTile}
 
 FallingRock.SHAKE_TIME = 2
 FallingRock.REFORM_TIME = 5
 function FallingRock:init(indexX, indexY, id, isSolid, level)
-    Tile.init(self, indexX, indexY, id, isSolid)
+    TransparentTile.init(self, indexX, indexY, id, isSolid)
     self.isFalling = false
     self.isShaking = false
     self.isUpdateable = true
-
-    local replaceID = tonumber(Tile.removeZeroPrefix(GlobalState.subLevel.metaData.replaceTexture or '00'))
-    self.replaceTexture = TileTextureIndex.fromId(20)
 
     local images = TileTextureIndex.animationFromId(self.id, 3)
     quads = {}
@@ -61,11 +58,6 @@ function FallingRock:triggerReform()
         self.image = self.originalImage
         self.color = {255, 255, 255, 255}
     end)
-end
-
-function FallingRock:render()
-    GlobalState.camera:draw(self.replaceTexture.texture, self.replaceTexture.quad, self.x, self.y)
-    Tile.render(self)
 end
 
 return FallingRock
