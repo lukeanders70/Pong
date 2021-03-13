@@ -103,10 +103,10 @@ function Collidable:anyBlocksDirectlyAbove()
     local PixelToAddX = self:upperLeft().x
 
     while PixelToAddX < self:upperRight().x do
-        table.insert(pixelsToCheck, {x = PixelToAddX, y = self:upperRight().y + 1})
+        table.insert(pixelsToCheck, {x = PixelToAddX, y = self:upperRight().y - 1})
         PixelToAddX = PixelToAddX + Constants.TILE_SIZE
     end
-    table.insert(pixelsToCheck, {x = self:lowerRight().x, y = self:upperRight().y + 1})
+    table.insert(pixelsToCheck, {x = self:lowerRight().x, y = self:upperRight().y - 1})
 
     return #self:getCollidablesFromPoints(pixelsToCheck) > 0
 end
