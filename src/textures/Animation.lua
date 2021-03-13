@@ -46,7 +46,7 @@ function Animation:cycleOnce(callback)
     self:setFrame(1)
     self.currentTimer = Timer.every(self.frameDelay, function()
         self:cycle()
-    end):limit(self.numFrames - 1):group(self.timerGroup)
+    end):limit(self.numFrames):group(self.timerGroup)
 
     if callback and type(callback) == 'function' then
         self.currentTimer:finish(callback)

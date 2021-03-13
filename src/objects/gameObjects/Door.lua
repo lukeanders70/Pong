@@ -34,7 +34,7 @@ end
 
 function Door:collide(collidable)
     if (collidable.colliderType == ColliderTypes.CHARACTER) and (collidable.id == "player") and (not self.alreadyPressed) then
-        if love.keyboard.isDown( 'w' ) and (self.transportSubLevelId) then
+        if love.keyboard.isDown( 's' ) and (self.transportSubLevelId) then
             self.alreadyPressed = true
             self.image = self.openAnimation
             self.image:cycleOnce(function()

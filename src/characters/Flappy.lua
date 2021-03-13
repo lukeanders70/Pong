@@ -24,12 +24,16 @@ function Flappy:init(indexX, indexY)
 end
 
 function Flappy:update(dt)
-    if self:isOutOfIndexRangeLeft() or self:anyBlocksDirectlyLeft() then
+    if self:anyBlocksDirectlyAbove() then
         self.directionMultiplier = 1
-        self.x = ((self.startingIndex - Flappy.INDEX_RANGE) * Constants.TILE_SIZE)
-    elseif self:isOutOfIndexRangeRight() or self:anyBlocksDirectlyRight() then
+    elseif self:isOutOfIndexRangeUp() then
+        self.directionMultiplier = 1
+        self.y = ((self.startingIndex - Flappy.INDEX_RANGE) * Constants.TILE_SIZE)
+    elseif self:anyBlocksDirectlyBelow() then
         self.directionMultiplier = -1
-        self.x = ((self.startingIndex + Flappy.INDEX_RANGE) * Constants.TILE_SIZE)
+    elseif self:isOutOfIndexRangeDown() then 
+        self.directionMultiplier = -1
+        self.y = ((self.startingIndex + Flappy.INDEX_RANGE) * Constants.TILE_SIZE)
     end
     self.velocity.x = Flappy.MAX_MOVEMENT_SPEED * self.directionMultiplier
     TurretType.update(self, dt)
