@@ -7,9 +7,9 @@ TurretType.FIRE_SPEED = 100
 TurretType.SIGHT_RANGE = 12
 TurretType.NUM_BOUNCES = 3
 TurretType.FIRE_RATE = 2
-function TurretType:init(indexX, indexY, options)
-    local width = 20
-    local height = 20
+function TurretType:init(indexX, indexY, width, height, options)
+    local width = width or 20
+    local height = height or 20
     local color = {255, 100, 100, 255}
     
     Character.init(self, indexX, indexY, width, height, color, { gravity = false })

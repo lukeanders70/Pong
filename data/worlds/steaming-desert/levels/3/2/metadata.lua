@@ -1,6 +1,6 @@
 local data = {
     name = "Small World",
-    playerStart = {x = 29, y = 70},
+    playerStart = {x = 9, y = 48},
     gameObjects = {
         ["00"] = {objectType = "bell", parameters = {}},
         ["01"] = {objectType = "door", parameters = {subLevelId = 1, playerPosition = {x = 2, y = 1}}}
