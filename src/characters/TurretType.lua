@@ -18,6 +18,8 @@ function TurretType:init(indexX, indexY, width, height, options)
 
     self.fireFrequency = (options and options.fireFrequency) or 3
 
+    self.fireDirection = (options and options.fireDirection) or nil
+
     Timer.every(self.FIRE_RATE, function()
         if self.alive then
             self:attack()
@@ -31,26 +33,32 @@ function TurretType:update(dt)
 end
 
 function TurretType:attack()
-    if GlobalState.level.player then
+    if self.fireDirection then
+        self:attackInDirection(self.fireDirection)
+    elseif GlobalState.level.player then
         local player = GlobalState.level.player
         local distance = vectorEuclidian(self:getCenter(), player:getCenter())
         local direction = vectorDirection(self:getCenter(), player:getCenter())
         if distance < (self.SIGHT_RANGE * Constants.TILE_SIZE) then
-            local ball = Ball(
-                self:getCenter().x,
-                self:getCenter().y,
-                {x = direction.x * self.FIRE_SPEED, y = direction.y * self.FIRE_SPEED},
-                self.NUM_BOUNCES,
-                {255, 255, 255, 255}
-            )
-            ball:moveOutsideOf(self, direction)
-            ball.velocity = {x = direction.x * self.FIRE_SPEED, y = direction.y * self.FIRE_SPEED}
-            GlobalState.subLevel:addObject(ball)
-            ball:update(0.01) -- move it a little away so that if Flappy updates first it does not move into it and kill itself :(
-            return true
+            self:attackInDirection(direction)
         end
     end
     return false
+end
+
+function TurretType:attackInDirection(direction)
+    local ball = Ball(
+        self:getCenter().x,
+        self:getCenter().y,
+        {x = direction.x * self.FIRE_SPEED, y = direction.y * self.FIRE_SPEED},
+        self.NUM_BOUNCES,
+        {255, 255, 255, 255}
+    )
+    ball:moveOutsideOf(self, direction)
+    ball.velocity = {x = direction.x * self.FIRE_SPEED, y = direction.y * self.FIRE_SPEED}
+    GlobalState.subLevel:addObject(ball)
+    ball:update(0.01) -- move it a little away so that if Flappy updates first it does not move into it and kill itself :(
+    return true
 end
 
 return TurretType

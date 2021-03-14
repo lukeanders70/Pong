@@ -37,7 +37,9 @@ function FallingRock:triggerFall()
     end):group(GlobalState.timerGroup)
 
     Timer.after(FallingRock.SHAKE_TIME, function()
-        shakeTimer:remove()
+        if shakeTimer then
+            shakeTimer:remove()
+        end
         
         self.image = self.breakAnimation
         self.breakAnimation:cycleOnce(function()
@@ -46,7 +48,7 @@ function FallingRock:triggerFall()
             self.color = {0,0,0,0}
             self:triggerReform()
         end)
-    end)
+    end):group(GlobalState.timerGroup)
 end
 
 function FallingRock:triggerReform()
@@ -57,7 +59,7 @@ function FallingRock:triggerReform()
         self.solid = true
         self.image = self.originalImage
         self.color = {255, 255, 255, 255}
-    end)
+    end):group(GlobalState.timerGroup)
 end
 
 return FallingRock

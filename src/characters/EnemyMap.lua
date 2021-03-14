@@ -9,7 +9,9 @@ local EnemyMap = {
     ['07'] = "ceilingCrawler",
     ['08'] = "fastTurret",
     ['09'] = "blinky",
-    ['10'] = "blocker"
+    ['10'] = "blocker",
+    ['11']= "straightShooterLeft",
+    ['12']= "straightShooterRight"
 }
 
 function EnemyMap.loadClassFromName(enemyName) 
