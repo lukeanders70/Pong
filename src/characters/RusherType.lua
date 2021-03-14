@@ -4,7 +4,8 @@ local RusherType = Class{__includes = Character}
 
 RusherType.MOVEMENT_SPEED = 30
 RusherType.MIN_DISTANCE = 0
-RusherType.NOTICE_DISTANCE = 15 * Constants.TILE_SIZE
+RusherType.NOTICE_DISTANCE = 25 * Constants.TILE_SIZE
+RusherType.DISTANCE_MULTIPLIER = 0
 function RusherType:init(indexX, indexY, width, height)
     self.color = {255, 255, 255, 255}
     Character.init(self, indexX, indexY, width, height, self.color, {})
@@ -16,7 +17,7 @@ function RusherType:update(dt)
         local directionToPlayer = vectorDirection(self:getCenter(), player:getCenter())
         local distanceToPlayer = vectorEuclidian(self:getCenter(), player:getCenter())
         if (distanceToPlayer > self.MIN_DISTANCE) and (distanceToPlayer < self.NOTICE_DISTANCE) then
-            self.velocity = vectorScalerMultiply(directionToPlayer, self.MOVEMENT_SPEED)
+            self.velocity = vectorScalerMultiply(directionToPlayer, self.MOVEMENT_SPEED + ((distanceToPlayer - self.MIN_DISTANCE) * self.DISTANCE_MULTIPLIER))
         else
             self.velocity = {x = 0, y = 0}
         end

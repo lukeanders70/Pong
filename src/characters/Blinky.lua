@@ -8,6 +8,7 @@ local Blinky = Class{__includes = {TurretType, RusherType}}
 Blinky.NUM_BOUNCES = 5
 Blinky.FIRE_RATE = 3
 Blinky.MIN_DISTANCE = 6 * Constants.TILE_SIZE
+Blinky.DISTANCE_MULTIPLIER = 0.2
 function Blinky:init(indexX, indexY)
     self.width = 16
     self.height = 16
