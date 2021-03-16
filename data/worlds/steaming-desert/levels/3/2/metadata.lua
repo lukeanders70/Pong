@@ -1,9 +1,10 @@
 local data = {
     name = "Small World",
-    playerStart = {x = 17, y = 113},
+    playerStart = {x = 17, y = 114},
     gameObjects = {
-        ["00"] = {objectType = "bell", parameters = {}},
-        ["01"] = {objectType = "door", parameters = {subLevelId = 1, playerPosition = {x = 2, y = 1}}}
+        ["00"] = {objectType = "door", parameters = {subLevelId = 3, playerPosition = {x = 16, y = 93}}},
+        ["01"] = {objectType = "door", parameters = {subLevelId = 1, playerPosition = {x = 154, y = 14}}},
+        ["02"] = {objectType = "heartContainer", parameters = {}},
     },
     background = "background-cave",
     midgrounds = { { name="midground-cave-1", paralaxDivider= 3}, { name="midground-cave-2", paralaxDivider= 2} },
