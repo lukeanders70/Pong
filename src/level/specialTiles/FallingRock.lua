@@ -17,7 +17,7 @@ function FallingRock:init(indexX, indexY, id, isSolid, level)
     for _, image in pairs(images) do
         table.insert(quads, image.quad)
     end
-    self.breakAnimation = Animation(TileTextureIndex.texture, quads)
+    self.breakAnimation = Animation(TileTextureIndex.texture, quads, GlobalState.timerGroup)
     self.originalImage = self.image
 end
 
