@@ -34,13 +34,13 @@ end
 
 function TurretType:attack()
     if self.fireDirection then
-        self:attackInDirection(self.fireDirection)
+        return self:attackInDirection(self.fireDirection)
     elseif GlobalState.level.player then
         local player = GlobalState.level.player
         local distance = vectorEuclidian(self:getCenter(), player:getCenter())
         local direction = vectorDirection(self:getCenter(), player:getCenter())
         if distance < (self.SIGHT_RANGE * Constants.TILE_SIZE) then
-            self:attackInDirection(direction)
+            return self:attackInDirection(direction)
         end
     end
     return false

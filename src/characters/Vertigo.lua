@@ -1,5 +1,7 @@
 local TurretType = require('src/characters/TurretType')
 local Ball = require('src/objects/Ball')
+local ObjectTextureIndex = require('src/textures/ObjectTextureIndex')
+
 
 local Vertigo = Class{__includes = TurretType}
 
@@ -12,6 +14,11 @@ function Vertigo:init(indexX, indexY)
     self.directionMultiplier = -1
     self.velocity.y = self.directionMultiplier * Vertigo.MAX_MOVEMENT_SPEED
     self.startingIndex = indexY
+
+    self.staticImage = ObjectTextureIndex.getImage('vertigo', self.width, self.height)
+    self.attackAnimation = ObjectTextureIndex.getAnimation('vertigo', self.width, self.height, self.timerGroup)
+
+    self.image = self.staticImage
 end
 
 function Vertigo:update(dt)
@@ -24,6 +31,16 @@ function Vertigo:update(dt)
     end
     self.velocity.y = Vertigo.MAX_MOVEMENT_SPEED * self.directionMultiplier
     TurretType.update(self, dt)
+end
+
+function Vertigo:attack()
+    local didFire = TurretType.attack(self)
+    if didFire then
+        self.image = self.attackAnimation
+        self.attackAnimation:cycleOnce(function()
+            self.image = self.staticImage
+        end)
+    end
 end
 
 function Vertigo:isOutOfIndexRangeDown()
