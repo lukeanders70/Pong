@@ -14,6 +14,8 @@ end
 function TitleScreenState:enter()
     self.titleImage = Image.createFromName("title-screen")
 
+    self.music = love.audio.newSource("assets/main-theme.mp3", "stream")
+
     self.buttonSet = ButtonSet({
         CursorButton(
             UITextureIndex.continueHover,
@@ -46,6 +48,12 @@ function TitleScreenState:enter()
         self.buttonSet
     )
 
+    self.music:play()
+
+end
+
+function TitleScreenState:exit()
+    self.music:stop()
 end
 
 function TitleScreenState:inputHandleKeyPress(key)
