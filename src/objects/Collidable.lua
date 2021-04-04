@@ -173,15 +173,24 @@ function Collidable:moveOutsideOf(collidable, direction)
         end
 
         local multOptions = {
-            { axis = 'x', mult = (collidable.x - self.x - self.width) / directionOut.x }, -- move out to left of collidable
-            { axis = 'x', mult = (collidable.x + collidable.width - self.x) / directionOut.x }, -- move out to right of collidable
-            { axis = 'y', mult = (collidable.y - self.y - self.height) / directionOut.y }, -- move out on top of collidable
-            { axis = 'y', mult = (collidable.y + collidable.height - self.y) / directionOut.y } -- move out on bottom of collidable
+            { axis = 'x', relPos = {x = -1, y = 0} , mult = (collidable.x - self.x - self.width) / directionOut.x }, -- move out to left of collidable
+            { axis = 'x', relPos = {x = 1, y = 0} ,mult = (collidable.x + collidable.width - self.x) / directionOut.x }, -- move out to right of collidable
+            { axis = 'y', relPos = {x = 0, y = -1} ,mult = (collidable.y - self.y - self.height) / directionOut.y }, -- move out on top of collidable
+            { axis = 'y', relPos = {x = 0, y = 1} ,mult = (collidable.y + collidable.height - self.y) / directionOut.y } -- move out on bottom of collidable
         }
 
         -- also tests if it's infinity, negative infinity, or NaN
+        -- then confirms we are not moving into an ajecent tile that's also solid
         local multOptionsGreaterThanZero = table.filter(multOptions, function(k, mult) 
-            return (mult.mult ~= nil) and (mult.mult > 0) and (not (mult.mult == math.huge)) and (not (mult.mult == -math.huge)) and (not (mult.mult ~= mult.mult))
+            return (mult.mult ~= nil) and 
+                (mult.mult > 0) and 
+                (not (mult.mult == math.huge)) and 
+                (not (mult.mult == -math.huge)) and 
+                (not (mult.mult ~= mult.mult)) and
+                (
+                    (not collidable.isTile) or
+                    (not GlobalState.subLevel:isSolidTileRelative(collidable, mult.relPos))
+                )
         end)
 
         local multiplier = table.min(multOptionsGreaterThanZero, function(mult) 

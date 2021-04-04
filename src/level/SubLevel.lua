@@ -209,6 +209,19 @@ function SubLevel:tileFromPoint(point)
     end
 end
 
+function SubLevel:tileRelative(tile, relative)
+    if self.tiles[tile.indexX + relative.x] and self.tiles[tile.indexX + relative.x][tile.indexY + relative.y] then
+        return self.tiles[tile.indexX + relative.x][tile.indexY + relative.y] 
+    else
+        return false
+    end
+end
+
+function SubLevel:isSolidTileRelative(tile, relative)
+    local relativeTile = self:tileRelative(tile, relative)
+    return relativeTile and relativeTile.solid
+end
+
 function SubLevel:update(dt)
     for indexX = self:minVisbileIndexX(), self:maxVisibleIndexX() do
         for indexY = self:minVisbileIndexY(), self:maxVisibleIndexY() do
