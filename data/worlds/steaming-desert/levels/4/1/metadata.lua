@@ -1,6 +1,6 @@
 local data = {
     name = "House",
-    playerStart = {x = 2, y = 1},
+    playerStart = {x = 2, y = 8},
     background = "background-2",
     midgrounds = { { name="midground-2-1", paralaxDivider= 3}, { name="midground-2-2", paralaxDivider= 2} },
     gameObjects = {

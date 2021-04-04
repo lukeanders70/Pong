@@ -17,6 +17,8 @@ function Tile:init(indexX, indexY, id, isSolid)
     self.indexX = indexX
     self.indexY = indexY
 
+    self.isTile = true
+
     self.id = tonumber(Tile.removeZeroPrefix(id))
 
     self.isUpdateable = false
