@@ -28,7 +28,7 @@ function love.load(args)
 	-- Basic Setup
 	math.randomseed(os.time())
 	
-	love.window.setMode( 1000, 700, {fullscreen = true} )
+	love.window.setMode( 1024, 574, {fullscreen = false} )
 
 	setDimensions(love.graphics.getWidth(), love.graphics.getHeight())
 
