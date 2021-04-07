@@ -1,5 +1,5 @@
 local data = {
-    name = "Great Planes 3",
+    name = "Great Planes",
 }
 
 return data
