@@ -13,7 +13,7 @@ World.defaultMetaData = {
     nodes = {},
     paths = {}
 }
-function World:init(name)
+function World:init(name, playerLocationId)
 
     self.name = name
 
@@ -26,7 +26,9 @@ function World:init(name)
     self.mapImage:continousCycling()
 
     self.pathGraph = PathGraph(self.metadata.nodes, self.metadata.paths, self)
-    self.player = OverworldPlayer(self.pathGraph.nodes[1], self)
+    
+    local playerLocation = self.pathGraph:getNodeFromLevelId(playerLocationId)
+    self.player = OverworldPlayer(playerLocation or self.pathGraph.nodes[1], self)
 end
 
 function World.safeLoadMetaData(path)
