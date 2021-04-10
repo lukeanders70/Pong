@@ -37,7 +37,7 @@ function Level:levelComplete()
             GlobalState.stateMachine:add('levelComplete', {
                 numHearts = self.player.health,
                 callback = function()
-                    GlobalState.stateMachine:swap('map', {worldName = self.worldName})
+                    GlobalState.stateMachine:swap('map', {worldName = self.worldName, levelId = self.id})
                     GlobalState.subLevel = nil
                 end})
         end)
@@ -46,7 +46,7 @@ function Level:levelComplete()
 end
 
 function Level:levelFailed()
-    GlobalState.stateMachine:swap('map', {worldName = self.worldName})
+    GlobalState.stateMachine:swap('map', {worldName = self.worldName, levelId = self.id})
     self.levelComplete = true
 end
 

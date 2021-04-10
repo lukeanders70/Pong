@@ -9,7 +9,8 @@ end
 
 function MapState:enter(params)
     local worldName = getOrElse(params, "worldName", "steaming-desert", "MapState world name not found in params")
-    self.world = World(worldName)
+    local playerLocationId = getOrElse(params, "levelId", 1)
+    self.world = World(worldName, playerLocationId)
     self:addRenderable(self.world)
 end
 

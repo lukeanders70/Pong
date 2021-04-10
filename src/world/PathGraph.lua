@@ -40,6 +40,15 @@ function PathGraph:init(nodesData, pathsData, world)
     end
 end
 
+function PathGraph:getNodeFromLevelId(levelId)
+    for _, node in pairs(self.nodes) do
+        if node.levelId == levelId then
+            return node
+        end
+    end
+    return nil
+end
+
 function PathGraph:render()
     for _, path in pairs(self.paths) do
         path:render()
