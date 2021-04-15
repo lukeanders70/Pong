@@ -20,6 +20,7 @@ local SaveData = require('src/SaveData')
 
 -- States
 local PlayState = require('src/states/play/PlayState')
+local PauseState = require('src/states/pause/PauseState')
 local MapState = require('src/states/map/MapState')
 local TitleScreenState = require('src/states/titleScreen/TitleScreenState')
 local LevelCompleteState = require('src/states/levelComplete/LevelCompleteState')
@@ -43,7 +44,8 @@ function love.load(args)
 		['play'] = function() return PlayState() end,
 		['map'] = function() return  MapState() end,
 		['titleScreen'] = function() return TitleScreenState() end,
-		['levelComplete'] = function() return LevelCompleteState() end
+		['levelComplete'] = function() return LevelCompleteState() end,
+		['pause'] = function() return PauseState() end
 	}
 	GlobalState.saveData = SaveData(true)
 

@@ -47,7 +47,7 @@ end
 
 function Level:levelFailed()
     GlobalState.stateMachine:swap('map', {worldName = self.worldName, levelId = self.id})
-    self.levelComplete = true
+    self.levelCompleted = true
 end
 
 function Level.safeLoadMetaData(worldName, levelId)

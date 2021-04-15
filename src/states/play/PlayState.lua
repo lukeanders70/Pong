@@ -33,7 +33,11 @@ function PlayState:update(dt)
 end
 
 function PlayState:inputHandleKeyPress(key)
-    self.player:inputHandleKeyPress(key)
+    if key == "escape" then
+        GlobalState.stateMachine:add("pause", {level = self.level})
+    else
+        self.player:inputHandleKeyPress(key)
+    end
 end
 
 function PlayState:updateCallback()

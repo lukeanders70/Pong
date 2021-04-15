@@ -6,7 +6,10 @@ function CursorButton:init(hoveredImage, unhoveredImage, x, y, active, clickFunc
     self.hovered = false
     self.hoveredImage = hoveredImage
     self.unhoveredImage = unhoveredImage
-    Renderable.init(self, x, y, self.unhoveredImage.width, self.unhoveredImage.height)
+
+    self.x = x
+    self.y = y
+
     self.image = self.unhoveredImage
 
     self.clickFunction = clickFunction or function() return end
@@ -45,6 +48,10 @@ end
 
 function CursorButton:press()
     self.clickFunction()
+end
+
+function CursorButton:render()
+    love.graphics.drawScaled(self.image.texture, self.image.quad, self.x, self.y, nil, nil, 1, 1)
 end
 
 return CursorButton
