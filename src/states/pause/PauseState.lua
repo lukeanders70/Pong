@@ -15,22 +15,26 @@ function PauseState:enter(params)
     --self.image = Image.createFromName("pause")
     self.level = params.level
 
+    self.xOffset = 0
+    self.yOffset = 0
+    self.image = Image.createFromName("pause")
+
     self.buttonSet = ButtonSet({
         CursorButton(
             UITextureIndex.continueHover,
             UITextureIndex.continue,
             math.floor((Constants.VIRTUAL_WIDTH - UITextureIndex.continue.width) / 2),
-            190,
+            168,
             true,
             function()
                 GlobalState.stateMachine:remove()
             end
         ),
         CursorButton(
-            UITextureIndex.newGameHover,
-            UITextureIndex.newGame,
-            math.floor((Constants.VIRTUAL_WIDTH - UITextureIndex.newGame.width) / 2),
-            225,
+            UITextureIndex.quitHover,
+            UITextureIndex.quit,
+            math.floor((Constants.VIRTUAL_WIDTH - UITextureIndex.quit.width) / 2),
+            200,
             true,
             function()
                 GlobalState.stateMachine:remove()
@@ -43,6 +47,11 @@ function PauseState:enter(params)
         self.buttonSet
     )
 
+end
+
+function PauseState:render()
+    love.graphics.drawScaled(self.image.texture, self.image.quad, self.xOffset, self.yOffset, 0, self.scaleX, self.scaleY)
+    State.render(self)
 end
 
 function PauseState:inputHandleKeyPress(key)

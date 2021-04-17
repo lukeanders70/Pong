@@ -47,8 +47,28 @@ UITextureIndex.selector = Image(
     UITextureIndex.baseTexture,
     love.graphics.newQuad(
         0,
-        60,
+        90,
         15,
+        15,
+         UITextureIndex.baseTexture:getDimensions()
+    )
+)
+UITextureIndex.quitHover = Image(
+    UITextureIndex.baseTexture,
+    love.graphics.newQuad(
+        0,
+        60,
+        125,
+        15,
+         UITextureIndex.baseTexture:getDimensions()
+    )
+)
+UITextureIndex.quit = Image(
+    UITextureIndex.baseTexture,
+    love.graphics.newQuad(
+        0,
+        75,
+        75,
         15,
          UITextureIndex.baseTexture:getDimensions()
     )
