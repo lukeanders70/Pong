@@ -15,6 +15,9 @@ function MapState:enter(params)
 end
 
 function MapState:inputHandleKeyPress(key)
+    if key == "escape" then
+        GlobalState.stateMachine:add("menu", {})
+    end
     self.world:inputHandleKeyPress(key)
 end
 
