@@ -3,6 +3,7 @@ local State = require("src/states/State")
 local ButtonSet = require('src/objects/ButtonSet')
 local CursorButton = require('src/objects/CursorButton')
 local UITextureIndex = require("src/textures/UITextureIndex")
+local Renderable = require('src/objects/Renderable')
 
 local MenuState = Class{__includes = State}
 
@@ -14,11 +15,10 @@ function MenuState:enter(params)
 
     self.level = params.level
 
-    -- self.xOffset = 0
-    -- self.yOffset = 0
-    -- self.image = Image.createFromName("pause")
     self.rectWidth = 200
     self.rectHeight = 120
+
+    self.titleImage = Image.createFromName("menu")
 
     self.buttonSet = ButtonSet({
         CursorButton(
@@ -44,22 +44,13 @@ function MenuState:enter(params)
     })
 
     self:addRenderable(
+        Renderable.fromImage(self.titleImage, 0, 0)
+    )
+
+    self:addRenderable(
         self.buttonSet
     )
 
-end
-
-function MenuState:render()
-    love.graphics.setColor(0, 0, 0, 255)
-    love.graphics.rectangleScaled(
-        "fill",
-        math.floor((Constants.VIRTUAL_WIDTH - self.rectWidth) / 2),
-        math.floor((Constants.VIRTUAL_HEIGHT - self.rectHeight) / 2),
-        self.rectWidth,
-        self.rectHeight
-    )
-    love.graphics.setColor(255, 255, 255, 255)
-    State.render(self)
 end
 
 function MenuState:inputHandleKeyPress(key)
