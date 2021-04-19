@@ -21,7 +21,7 @@ function TitleScreenState:enter()
             UITextureIndex.continueHover,
             UITextureIndex.continue,
             math.floor((Constants.VIRTUAL_WIDTH - UITextureIndex.continue.width) / 2),
-            190,
+            170,
             not GlobalState.saveData:isEmpty(),
             function()
                 GlobalState.stateMachine:swap('map', {worldName = "steaming-desert"})
@@ -31,17 +31,27 @@ function TitleScreenState:enter()
             UITextureIndex.newGameHover,
             UITextureIndex.newGame,
             math.floor((Constants.VIRTUAL_WIDTH - UITextureIndex.newGame.width) / 2),
-            225,
+            205,
             true,
             function()
                 GlobalState.saveData:clear()
                 GlobalState.stateMachine:swap('map', {worldName = "steaming-desert"})
             end
+        ),
+        CursorButton(
+            UITextureIndex.quitHover,
+            UITextureIndex.quit,
+            math.floor((Constants.VIRTUAL_WIDTH - UITextureIndex.quit.width) / 2),
+            240,
+            true,
+            function()
+                love.event.quit()
+            end
         )
     })
 
     self:addRenderable(
-        Renderable.fromImage(self.titleImage, 0, 0)
+        Renderable.fromImage(self.titleImage, 0, -10)
     )
 
     self:addRenderable(

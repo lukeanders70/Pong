@@ -24,6 +24,7 @@ local PauseState = require('src/states/pause/PauseState')
 local MapState = require('src/states/map/MapState')
 local TitleScreenState = require('src/states/titleScreen/TitleScreenState')
 local LevelCompleteState = require('src/states/levelComplete/LevelCompleteState')
+local MenuState = require('src/states/menu/MenuState')
 
 function love.load(args)
 	-- Basic Setup
@@ -45,7 +46,8 @@ function love.load(args)
 		['map'] = function() return  MapState() end,
 		['titleScreen'] = function() return TitleScreenState() end,
 		['levelComplete'] = function() return LevelCompleteState() end,
-		['pause'] = function() return PauseState() end
+		['pause'] = function() return PauseState() end,
+		['menu'] = function() return MenuState() end
 	}
 	GlobalState.saveData = SaveData(true)
 
