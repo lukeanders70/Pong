@@ -21,4 +21,8 @@ Play as a stoic acolyte as she battles mysterious monolithic enemies armed only 
 \
 \
 \
+![World](screenshots/world.png?raw=true)
+\
+\
+\
 ![Victory](screenshots/victory.png?raw=true)
