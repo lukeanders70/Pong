@@ -51,10 +51,6 @@ function TitleScreenState:enter()
     })
 
     self:addRenderable(
-        Renderable.fromImage(self.titleImage, 0, -10)
-    )
-
-    self:addRenderable(
         self.buttonSet
     )
 
@@ -68,6 +64,11 @@ end
 
 function TitleScreenState:inputHandleKeyPress(key)
     self.buttonSet:inputHandleKeyPress(key)
+end
+
+function TitleScreenState:render()
+    love.graphics.drawScaled(self.titleImage.texture, self.titleImage.quad, 0, 0, 0, 1, 1)
+    State.render(self)
 end
 
 return TitleScreenState

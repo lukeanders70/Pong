@@ -1,6 +1,6 @@
 local Collidable = require('src/objects/Collidable')
 local ColliderTypes = require('src/objects/ColliderTypes')
-local basicTexturesIndex = require('src/textures/basicTexturesIndex')
+local basicTexturesIndex = require('src/textures/BasicTexturesIndex')
 
 local Paddle = Class{__includes = Collidable}
 
