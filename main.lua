@@ -30,11 +30,11 @@ function love.load(args)
 	-- Basic Setup
 	math.randomseed(os.time())
 	
-	love.window.setMode( 1024, 574, {fullscreen = false} )
+	love.window.setMode( 1024, 574, {fullscreen = true} )
 
 	setDimensions(love.graphics.getWidth(), love.graphics.getHeight())
 
-	--setup fonts
+	-- setup fonts
 	-- fontWhite = love.graphics.newImageFont("graphics/font-small.png"," ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/")
 	-- fontBlack = love.graphics.newImageFont("graphics/font-small-black.png"," ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/")
     -- love.graphics.setFont(fontBlack)
