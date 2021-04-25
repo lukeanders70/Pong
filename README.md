@@ -6,7 +6,10 @@ Pong II is a 2D platformer written in Lua and using the [Love 2D framework](http
 Play as a stoic acolyte as she battles mysterious monolithic enemies armed only with two trusty shields. You'll need to jump and spin your way over trecherous terrain, all while deflecting enemy fire with your sheilds.
 
 
-
+## How to Play (Windows only)
+1. Navigate to the [releases page](https://github.com/lukeanders70/Pong/releases/tag/v1.0) on this repo and find the latest release.
+2. Under assets, find and download the zip file named Pong-v<version>.zip
+3. unzip the folder, open, and run Pong.exe
 
 ## Screenshots
 ![Desert](screenshots/desert.png?raw=true)
