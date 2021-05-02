@@ -11,6 +11,11 @@ Play as a stoic acolyte as she battles mysterious monolithic enemies armed only 
 2. Under assets, find and download the zip file named Pong-v<version>.zip
 3. unzip the folder, open, and run Pong.exe
 
+## Controls
+![controls](https://user-images.githubusercontent.com/15095707/116824027-d3849100-ab3c-11eb-912a-39cb936a8f8a.png)
+
+
+
 ## Screenshots
 ![Desert](screenshots/desert.png?raw=true)
 \
