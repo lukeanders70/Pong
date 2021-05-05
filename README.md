@@ -8,7 +8,7 @@ Play as a stoic acolyte as she battles mysterious monolithic enemies armed only 
 
 ## How to Play (Windows only)
 1. Navigate to the [releases page](https://github.com/lukeanders70/Pong/releases/tag/v1.0) on this repo and find the latest release.
-2. Under assets, find and download the zip file named Pong-v<version>.zip
+2. Under assets, find and download the zip file named Pong-v\<version\>.zip
 3. unzip the folder, open, and run Pong.exe
 
 ## Controls
