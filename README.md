@@ -1,4 +1,4 @@
-# Pong II: Paddle of Destiny
+# Pong II: Shields of Destiny
 ![Pause](screenshots/pause.png?raw=true)
 
 Pong II is a 2D platformer written in Lua and using the [Love 2D framework](https://love2d.org/). It's a short game, more of a demo really, with four levels and no music. Still, it has environmental hazards, 19 different enemy types, an overworld, and much more. All of the artwork and animations are original, as is the physics engine, collision detection, and most of the internals running the show.
