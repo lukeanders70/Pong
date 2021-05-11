@@ -12,7 +12,7 @@ Play as a stoic acolyte as she battles mysterious monolithic enemies armed only 
 3. unzip the folder, open, and run Pong.exe
 
 ## Controls
-![controls](https://user-images.githubusercontent.com/15095707/116824027-d3849100-ab3c-11eb-912a-39cb936a8f8a.png)
+![controls](screenshots/controls.png?raw=true)
 
 
 
